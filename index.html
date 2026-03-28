@@ -1116,93 +1116,67 @@ function toast(msg) {
 window.toast = toast;
 
 // ── Daily Alerts from SimplifyJobs GitHub ────────────────────
-const COMPANY_NAMES = COMPANIES.map(c => c.name.toLowerCase());
-
 async function fetchDailyAlerts() {
   const container = document.getElementById('alert-companies');
   const dateEl = document.getElementById('alert-date');
+  if (!container) return;
   container.innerHTML = '<span class="alert-loading">Fetching latest postings...</span>';
-
+  const now = new Date();
+  dateEl.textContent = 'Checked: ' + now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
   try {
-    // Fetch the SimplifyJobs Summer 2026 README via GitHub API
     const res = await fetch('https://api.github.com/repos/SimplifyJobs/Summer2026-Internships/commits?per_page=5');
     const commits = await res.json();
-
-    if (!commits || !commits.length) throw new Error('No commits found');
-
-    // Get today and yesterday's date
-    const now = new Date();
-    const today = now.toDateString();
-    const yesterday = new Date(now - 86400000).toDateString();
-
-    // Filter commits from last 24 hours
-    const recentCommits = commits.filter(c => {
-      const commitDate = new Date(c.commit.author.date).toDateString();
-      return commitDate === today || commitDate === yesterday;
-    });
-
-    dateEl.textContent = 'Last checked: ' + now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-
-    if (!recentCommits.length) {
-      container.innerHTML = '<span class="alert-loading">No new postings in the last 24 hours — check back later!</span>';
+    if (!commits || !commits.length) throw new Error('no commits');
+    const cutoff = new Date(now - 86400000);
+    const recent = commits.filter(c => new Date(c.commit.author.date) > cutoff);
+    if (!recent.length) {
+      container.innerHTML = '<span class="alert-loading">No repo updates in last 24h. <a href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank" style="color:var(--accent3)">View on GitHub ↗</a></span>';
       return;
     }
-
-    // Fetch the diff of recent commits to find added companies
-    const addedCompanies = new Set();
-    for (const commit of recentCommits.slice(0, 3)) {
+    const found = new Set();
+    for (const commit of recent.slice(0,3)) {
       try {
-        const diffRes = await fetch(commit.url, {headers: {'Accept':'application/vnd.github.v3+json'}});
-        const diffData = await diffRes.json();
-        if (diffData.files) {
-          for (const file of diffData.files) {
-            if (file.patch) {
-              // Find added lines (starting with +) that contain company names
-              const addedLines = file.patch.split('\n').filter(l => l.startsWith('+') && !l.startsWith('+++'));
-              for (const line of addedLines) {
-                // Check if any of our tracked companies appear in this line
-                for (const company of COMPANIES) {
-                  const name = company.name.toLowerCase();
-                  if (line.toLowerCase().includes(name) && name.length > 3) {
-                    addedCompanies.add(company.id);
-                  }
-                }
-              }
+        const dr = await fetch(commit.url);
+        const dd = await dr.json();
+        if (!dd.files) continue;
+        for (const file of dd.files) {
+          if (!file.patch) continue;
+          const added = file.patch.split('\n').filter(l => l.startsWith('+') && !l.startsWith('+++'));
+          for (const line of added) {
+            const low = line.toLowerCase();
+            for (const co of COMPANIES) {
+              if (co.name.length > 3 && low.includes(co.name.toLowerCase())) found.add(co.id);
             }
           }
         }
-      } catch(e) { /* skip individual commit errors */ }
+      } catch(e) {}
     }
-
-    // Also mark cards
-    document.querySelectorAll('.card').forEach(card => card.classList.remove('has-new'));
-
-    if (addedCompanies.size === 0) {
-      container.innerHTML = `<span class="alert-loading">No tracked companies posted new internships today. <a href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank" style="color:var(--accent3);">View full list ↗</a></span>`;
+    document.querySelectorAll('.card.has-new').forEach(el => el.classList.remove('has-new'));
+    if (!found.size) {
+      container.innerHTML = '<span class="alert-loading">No tracked companies in today's updates. <a href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank" style="color:var(--accent3)">View all ↗</a></span>';
       return;
     }
-
-    // Show chips for companies with new postings
-    const chips = [...addedCompanies].map(id => {
-      const company = COMPANIES.find(c => c.id === id);
-      if (!company) return '';
-      // Mark the card
-      const card = document.querySelector(`.card[data-id="${id}"]`);
-      if (card) { card.classList.add('has-new'); card.scrollIntoView && null; }
-      return `<span class="alert-chip" onclick="document.querySelector('.card[data-id=\'${id}\']')?.scrollIntoView({behavior:'smooth',block:'center'})">
-        ${company.name} <span style="opacity:.6;font-size:9px;">new</span>
-      </span>`;
-    }).join('');
-
-    container.innerHTML = chips || '<span class="alert-loading">No tracked companies found in today's postings.</span>';
-
-  } catch(err) {
-    container.innerHTML = `<span class="alert-loading">Could not fetch — <a href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank" style="color:var(--accent3);">check GitHub directly ↗</a></span>`;
+    let chips = '';
+    found.forEach(id => {
+      const co = COMPANIES.find(c => c.id === id);
+      if (!co) return;
+      const card = document.querySelector('.card[data-id="' + id + '"]');
+      if (card) card.classList.add('has-new');
+      chips += '<span class="alert-chip" onclick="scrollToCard('' + id + '')">' + co.name + ' <span style="opacity:.6;font-size:9px;">new</span></span>';
+    });
+    container.innerHTML = chips;
+  } catch(e) {
+    container.innerHTML = '<span class="alert-loading">Could not fetch. <a href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank" style="color:var(--accent3)">Check GitHub ↗</a></span>';
   }
 }
 
-// Run on page load
+window.scrollToCard = function(id) {
+  const card = document.querySelector('.card[data-id="' + id + '"]');
+  if (card) card.scrollIntoView({behavior:'smooth', block:'center'});
+};
+
 setTimeout(fetchDailyAlerts, 1500);
+
 
 // ── Close modal on overlay click ─────────────────────────────
 document.getElementById("add-modal").addEventListener("click", e => {
