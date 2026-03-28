@@ -3,1088 +3,654 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Princeton CS — Intern Tracker</title>
+<title>Intern Alert — Daily Job Postings</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Clash+Display:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-/* ── Reset & Variables ──────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:        #0A0C14;
-  --surface:   #111420;
-  --card:      #161928;
-  --border:    #252A3E;
-  --accent:    #6C63FF;
-  --accent2:   #FF6B6B;
-  --accent3:   #43E97B;
-  --text:      #E8EAF6;
-  --muted:     #6B7299;
-  --t1: #6C63FF; --t1bg: #1A1830;
-  --t2: #43E97B; --t2bg: #0E1F16;
-  --t3: #FF9F43; --t3bg: #201608;
-  --t4: #54A0FF; --t4bg: #0D1A2A;
-  --t5: #FF6B6B; --t5bg: #200E0E;
-  --t6: #A29BFE; --t6bg: #141230;
-  --t7: #00CEC9; --t7bg: #0A1E1E;
-  --radius: 10px;
-  --font-head: 'Syne', sans-serif;
-  --font-mono: 'DM Mono', monospace;
-  --font-body: 'DM Sans', sans-serif;
+  --bg: #050508;
+  --surface: #0c0c12;
+  --card: #111118;
+  --border: #1e1e2a;
+  --green: #00FF87;
+  --green-dim: rgba(0,255,135,.12);
+  --green-border: rgba(0,255,135,.25);
+  --amber: #FFB800;
+  --red: #FF4D6D;
+  --text: #E8E8F0;
+  --muted: #5a5a6e;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-head: 'Clash Display', sans-serif;
 }
-
-html { scroll-behavior: smooth; }
 
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-body);
+  font-family: var(--font-mono);
   min-height: 100vh;
   overflow-x: hidden;
 }
 
-/* ── Grid noise background ──────────────────── */
+/* Scanline effect */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,135,.008) 2px, rgba(0,255,135,.008) 4px);
+  pointer-events: none; z-index: 100;
+}
+
+/* Grid bg */
 body::before {
   content: '';
   position: fixed; inset: 0;
-  background-image:
-    linear-gradient(rgba(108,99,255,.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(108,99,255,.03) 1px, transparent 1px);
-  background-size: 40px 40px;
+  background-image: linear-gradient(rgba(0,255,135,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,135,.04) 1px, transparent 1px);
+  background-size: 32px 32px;
   pointer-events: none; z-index: 0;
 }
 
-/* ── Header ─────────────────────────────────── */
+/* ── Header ─────────────────────────────────────────────── */
 header {
   position: relative; z-index: 10;
-  padding: 48px 40px 32px;
+  padding: 40px 48px 32px;
   border-bottom: 1px solid var(--border);
-  background: linear-gradient(180deg, rgba(108,99,255,.08) 0%, transparent 100%);
 }
 
-.header-inner { max-width: 1400px; margin: 0 auto; }
-
-.tag {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-family: var(--font-mono); font-size: 11px;
-  color: var(--accent); background: rgba(108,99,255,.12);
-  border: 1px solid rgba(108,99,255,.3);
-  padding: 4px 10px; border-radius: 20px; margin-bottom: 16px;
-  letter-spacing: .05em;
+.header-top {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px; margin-bottom: 24px;
 }
 
-.tag::before { content: '◈'; }
+.logo {
+  display: flex; align-items: center; gap: 12px;
+}
 
-h1 {
+.logo-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 12px var(--green);
+  animation: blink 1.2s ease-in-out infinite;
+}
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+.logo-text {
   font-family: var(--font-head);
-  font-size: clamp(28px, 4vw, 48px);
-  font-weight: 800;
-  line-height: 1.1;
-  background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 10px;
+  font-size: 22px; font-weight: 700;
+  color: var(--text);
+  letter-spacing: -.02em;
 }
 
-.subtitle {
-  font-family: var(--font-mono); font-size: 13px;
-  color: var(--muted); margin-bottom: 28px;
+.logo-sub {
+  font-size: 11px; color: var(--muted);
+  margin-top: 2px; letter-spacing: .1em;
 }
 
-/* ── Stats bar ───────────────────────────────── */
-.stats {
-  display: flex; gap: 24px; flex-wrap: wrap; margin-top: 16px;
+.back-btn {
+  font-size: 11px; color: var(--muted);
+  text-decoration: none; border: 1px solid var(--border);
+  padding: 6px 14px; border-radius: 4px;
+  transition: all .15s;
+}
+.back-btn:hover { color: var(--green); border-color: var(--green-border); }
+
+.status-bar {
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
 }
 
-.stat {
+.status-item {
   display: flex; align-items: center; gap: 8px;
-  font-family: var(--font-mono); font-size: 12px; color: var(--muted);
+  font-size: 11px; color: var(--muted);
 }
 
-.stat-num {
+.status-val {
   font-size: 20px; font-weight: 700;
-  font-family: var(--font-head); color: var(--text);
+  font-family: var(--font-head); color: var(--green);
 }
 
-/* ── Controls ────────────────────────────────── */
-.controls {
-  position: sticky; top: 0; z-index: 20;
-  background: rgba(10,12,20,.92);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
-  padding: 14px 40px;
-}
+#last-updated { font-size: 11px; color: var(--muted); margin-left: auto; }
 
-.controls-inner {
-  max-width: 1400px; margin: 0 auto;
-  display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
-}
-
-.search-wrap {
-  position: relative; flex: 1; min-width: 220px;
-}
-
-.search-wrap::before {
-  content: '⌕';
-  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-  color: var(--muted); font-size: 16px; pointer-events: none;
-}
-
-input[type="search"] {
-  width: 100%;
-  background: var(--surface); border: 1px solid var(--border);
-  color: var(--text); font-family: var(--font-mono); font-size: 13px;
-  padding: 9px 12px 9px 34px;
-  border-radius: var(--radius); outline: none;
-  transition: border-color .2s;
-}
-
-input[type="search"]:focus { border-color: var(--accent); }
-
-.filter-pills { display: flex; gap: 6px; flex-wrap: wrap; }
-
-.pill {
-  font-family: var(--font-mono); font-size: 11px;
-  padding: 6px 12px; border-radius: 20px; cursor: pointer;
-  border: 1px solid var(--border); background: var(--surface);
-  color: var(--muted); transition: all .15s; white-space: nowrap;
-}
-
-.pill:hover { border-color: var(--accent); color: var(--text); }
-.pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-
-.btn-add {
-  font-family: var(--font-mono); font-size: 12px;
-  padding: 8px 16px; border-radius: var(--radius);
-  background: var(--accent); border: none; color: #fff;
-  cursor: pointer; transition: opacity .15s; white-space: nowrap;
-}
-
-.btn-add:hover { opacity: .85; }
-
-/* ── Main grid ───────────────────────────────── */
+/* ── Main ────────────────────────────────────────────────── */
 main {
   position: relative; z-index: 1;
-  max-width: 1400px; margin: 0 auto;
-  padding: 32px 40px 80px;
+  max-width: 1200px; margin: 0 auto;
+  padding: 32px 48px 80px;
 }
 
-/* ── Section headers ─────────────────────────── */
-.tier-section { margin-bottom: 40px; }
-
-.tier-header {
+/* ── Refresh btn ──────────────────────────────────────────── */
+.refresh-row {
   display: flex; align-items: center; gap: 12px;
-  margin-bottom: 16px; padding-bottom: 10px;
+  margin-bottom: 28px;
+}
+
+.refresh-btn {
+  font-family: var(--font-mono); font-size: 12px;
+  padding: 9px 20px; border-radius: 4px;
+  background: var(--green-dim); border: 1px solid var(--green-border);
+  color: var(--green); cursor: pointer; transition: all .15s;
+  display: flex; align-items: center; gap: 8px;
+}
+.refresh-btn:hover { background: var(--green); color: #000; }
+.refresh-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+.spin { animation: spin .8s linear infinite; display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.filter-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.filter-btn {
+  font-family: var(--font-mono); font-size: 10px;
+  padding: 5px 12px; border-radius: 3px;
+  background: transparent; border: 1px solid var(--border);
+  color: var(--muted); cursor: pointer; transition: all .15s;
+}
+.filter-btn.active, .filter-btn:hover { border-color: var(--green-border); color: var(--green); background: var(--green-dim); }
+
+/* ── Job cards ────────────────────────────────────────────── */
+.section-label {
+  font-size: 10px; color: var(--muted);
+  letter-spacing: .15em; text-transform: uppercase;
+  margin-bottom: 14px; padding-bottom: 8px;
   border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
 }
 
-.tier-dot {
-  width: 10px; height: 10px; border-radius: 50%;
+.section-label::before {
+  content: ''; display: inline-block;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green);
 }
 
-.tier-label {
-  font-family: var(--font-head); font-weight: 700; font-size: 15px;
-}
-
-.tier-count {
-  font-family: var(--font-mono); font-size: 11px;
-  color: var(--muted); margin-left: auto;
-}
-
-/* ── Company cards ───────────────────────────── */
-.cards-grid {
+.jobs-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 12px; margin-bottom: 40px;
 }
 
-.card {
+.job-card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px 20px;
-  transition: transform .15s, border-color .15s, box-shadow .15s;
+  border-radius: 6px;
+  padding: 16px 18px;
+  transition: border-color .15s, transform .15s;
+  animation: fadeIn .3s ease both;
   position: relative; overflow: hidden;
-  animation: fadeUp .35s ease both;
 }
 
-.card::before {
+.job-card::before {
   content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: var(--tier-color, var(--accent));
-  opacity: 0; transition: opacity .2s;
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: var(--green); opacity: 0;
+  transition: opacity .2s;
 }
 
-.card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,.4); }
-.card:hover::before { opacity: 1; }
-.card:hover { border-color: rgba(108,99,255,.35); }
+.job-card:hover { border-color: var(--green-border); transform: translateY(-1px); }
+.job-card:hover::before { opacity: 1; }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.card-top {
+.job-top {
   display: flex; align-items: flex-start;
-  justify-content: space-between; gap: 8px; margin-bottom: 10px;
-}
-
-.company-name {
-  font-family: var(--font-head); font-weight: 700; font-size: 16px;
-  color: var(--text); line-height: 1.2;
-}
-
-.sector-badge {
-  font-family: var(--font-mono); font-size: 10px;
-  padding: 3px 8px; border-radius: 4px;
-  background: rgba(255,255,255,.05); color: var(--muted);
-  white-space: nowrap; flex-shrink: 0;
-}
-
-.card-notes {
-  font-size: 12px; color: var(--muted); line-height: 1.5;
-  margin-bottom: 14px;
-}
-
-.card-footer {
-  display: flex; align-items: center;
   justify-content: space-between; gap: 8px;
+  margin-bottom: 8px;
 }
 
-.apply-btn {
-  font-family: var(--font-mono); font-size: 11px;
-  padding: 6px 12px; border-radius: 6px;
-  background: rgba(108,99,255,.15);
-  border: 1px solid rgba(108,99,255,.3);
-  color: var(--accent); cursor: pointer;
-  text-decoration: none; transition: all .15s;
-  display: inline-flex; align-items: center; gap: 4px;
+.job-company {
+  font-family: var(--font-head); font-size: 15px;
+  font-weight: 600; color: var(--text);
 }
 
-.apply-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+.job-new {
+  font-size: 9px; padding: 2px 7px; border-radius: 3px;
+  background: var(--green-dim); border: 1px solid var(--green-border);
+  color: var(--green); flex-shrink: 0;
+  animation: blink 2s infinite;
+}
 
-/* ── Status controls ─────────────────────────── */
-.status-group { display: flex; gap: 6px; align-items: center; }
+.job-role {
+  font-size: 12px; color: var(--muted);
+  margin-bottom: 10px; line-height: 1.5;
+}
 
-.status-select {
+.job-meta {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.meta-tag {
+  font-size: 10px; padding: 2px 8px; border-radius: 3px;
+  background: rgba(255,255,255,.04); border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.job-actions { display: flex; gap: 8px; }
+
+.job-btn {
   font-family: var(--font-mono); font-size: 10px;
-  background: var(--surface); border: 1px solid var(--border);
-  color: var(--text); padding: 5px 8px; border-radius: 6px;
-  cursor: pointer; outline: none;
+  padding: 5px 12px; border-radius: 3px;
+  text-decoration: none; transition: all .15s;
+  border: 1px solid var(--green-border);
+  background: var(--green-dim); color: var(--green);
+}
+.job-btn:hover { background: var(--green); color: #000; }
+
+.job-btn.secondary {
+  background: transparent; border-color: var(--border); color: var(--muted);
+}
+.job-btn.secondary:hover { border-color: var(--green-border); color: var(--green); }
+
+/* ── Empty / Loading states ───────────────────────────────── */
+.state-box {
+  text-align: center; padding: 60px 20px;
+  color: var(--muted); font-size: 13px;
 }
 
-.status-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--muted); flex-shrink: 0;
-  transition: background .2s;
+.state-icon { font-size: 40px; display: block; margin-bottom: 16px; filter: grayscale(1); opacity: .4; }
+.state-title { font-family: var(--font-head); font-size: 18px; color: var(--text); margin-bottom: 8px; }
+
+.terminal-loader {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--green);
+  margin-bottom: 8px;
 }
+.cursor { animation: blink .8s infinite; }
 
-/* ── Status badge colors ─────────────────────── */
-.s-not-applied .status-dot  { background: #444; }
-.s-applied     .status-dot  { background: var(--accent); }
-.s-interviewing .status-dot { background: var(--accent3); }
-.s-offered     .status-dot  { background: #FFD700; }
-.s-rejected    .status-dot  { background: var(--accent2); }
-
-/* ── Empty state ─────────────────────────────── */
-.empty {
-  text-align: center; padding: 80px 20px;
-  color: var(--muted); font-family: var(--font-mono);
-}
-
-.empty-icon { font-size: 48px; display: block; margin-bottom: 16px; }
-
-/* ── Toast ───────────────────────────────────── */
-.toast {
-  position: fixed; bottom: 30px; right: 30px; z-index: 999;
-  font-family: var(--font-mono); font-size: 12px;
-  background: var(--card); border: 1px solid var(--accent);
-  color: var(--text); padding: 12px 20px; border-radius: var(--radius);
-  box-shadow: 0 8px 32px rgba(0,0,0,.5);
-  transform: translateY(80px); opacity: 0;
-  transition: all .3s; pointer-events: none;
-}
-
-.toast.show { transform: translateY(0); opacity: 1; }
-
-/* ── Modal ───────────────────────────────────── */
-.modal-overlay {
-  display: none; position: fixed; inset: 0; z-index: 100;
-  background: rgba(0,0,0,.7); backdrop-filter: blur(6px);
-  align-items: center; justify-content: center; padding: 20px;
-}
-
-.modal-overlay.open { display: flex; }
-
-.modal {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 14px; padding: 32px; width: 100%; max-width: 500px;
-  animation: fadeUp .25s ease;
-}
-
-.modal h2 {
-  font-family: var(--font-head); font-size: 20px;
-  margin-bottom: 20px;
-}
-
-.form-group { margin-bottom: 16px; }
-
-.form-group label {
-  display: block; font-family: var(--font-mono); font-size: 11px;
-  color: var(--muted); margin-bottom: 6px; letter-spacing: .05em;
-}
-
-.form-group input, .form-group select, .form-group textarea {
-  width: 100%; background: var(--surface); border: 1px solid var(--border);
-  color: var(--text); font-family: var(--font-mono); font-size: 13px;
-  padding: 10px 12px; border-radius: var(--radius); outline: none;
-  transition: border-color .2s;
-}
-
-.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-  border-color: var(--accent);
-}
-
-.form-group textarea { resize: vertical; min-height: 80px; }
-
-.form-group select option { background: var(--card); }
-
-.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
-
-.btn-cancel {
-  font-family: var(--font-mono); font-size: 12px;
-  padding: 9px 18px; border-radius: var(--radius);
+/* ── Company filter chips ─────────────────────────────────── */
+.company-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+.company-chip {
+  font-size: 10px; padding: 3px 10px; border-radius: 20px;
   background: transparent; border: 1px solid var(--border);
-  color: var(--muted); cursor: pointer;
+  color: var(--muted); cursor: pointer; transition: all .15s;
 }
+.company-chip.active { background: var(--green-dim); border-color: var(--green-border); color: var(--green); }
 
-.btn-save {
-  font-family: var(--font-mono); font-size: 12px;
-  padding: 9px 18px; border-radius: var(--radius);
-  background: var(--accent); border: none; color: #fff; cursor: pointer;
+/* ── Resources sidebar ────────────────────────────────────── */
+.resources {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 6px; padding: 16px 18px; margin-bottom: 28px;
 }
-
-/* ── User badge ───────────────────────────────── */
-.user-input-bar {
-  display: flex; gap: 10px; align-items: center;
-  padding: 12px 40px;
-  background: rgba(108,99,255,.05);
-  border-bottom: 1px solid var(--border);
+.resources-title { font-size: 10px; color: var(--muted); letter-spacing: .15em; text-transform: uppercase; margin-bottom: 12px; }
+.resource-links { display: flex; gap: 8px; flex-wrap: wrap; }
+.resource-link {
+  font-size: 11px; padding: 5px 12px; border-radius: 3px;
+  text-decoration: none; border: 1px solid var(--border);
+  color: var(--muted); transition: all .15s;
 }
+.resource-link:hover { color: var(--green); border-color: var(--green-border); }
 
-.user-input-bar input {
-  background: var(--surface); border: 1px solid var(--border);
-  color: var(--text); font-family: var(--font-mono); font-size: 12px;
-  padding: 7px 12px; border-radius: 20px; outline: none; width: 200px;
-  transition: border-color .2s;
-}
-
-.user-input-bar input:focus { border-color: var(--accent); }
-
-.user-label {
-  font-family: var(--font-mono); font-size: 11px; color: var(--muted);
-}
-
-.netid-badge {
-  font-family: var(--font-mono); font-size: 11px;
-  color: var(--accent3); background: rgba(67,233,123,.1);
-  border: 1px solid rgba(67,233,123,.3);
-  padding: 4px 10px; border-radius: 20px;
-}
-
-/* ── Loading ──────────────────────────────────── */
-.loading {
-  text-align: center; padding: 60px;
-  font-family: var(--font-mono); color: var(--muted);
-}
-
-.spinner {
-  width: 32px; height: 32px;
-  border: 2px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin .7s linear infinite;
-  margin: 0 auto 16px;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ── Responsive ───────────────────────────────── */
 @media (max-width: 600px) {
-  header, .controls, main, .user-input-bar { padding-left: 20px; padding-right: 20px; }
-  .cards-grid { grid-template-columns: 1fr; }
+  header, main { padding-left: 20px; padding-right: 20px; }
+  .jobs-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
-
 <body>
 
-<!-- ── Header ──────────────────────────────── -->
 <header>
-  <div class="header-inner">
-      <h1>Summer Internship Tracker</h1>
-    <p class="subtitle">// track applications · share progress · land the offer</p>
-    <div class="stats">
-      <div class="stat"><span class="stat-num" id="stat-total">—</span>&nbsp;companies</div>
-      <div class="stat"><span class="stat-num" id="stat-applied">—</span>&nbsp;applied</div>
-      <div class="stat"><span class="stat-num" id="stat-interviewing">—</span>&nbsp;interviewing</div>
-      <div class="stat"><span class="stat-num" id="stat-offered">—</span>&nbsp;offered 🎉</div>
+  <div class="header-top">
+    <div>
+      <div class="logo">
+        <div class="logo-dot"></div>
+        <div>
+          <div class="logo-text">Intern Alert</div>
+          <div class="logo-sub">DAILY POSTINGS // SIMPLIFY JOBS + GITHUB</div>
+        </div>
+      </div>
     </div>
+    <a href="index.html" class="back-btn">← Back to Tracker</a>
+  </div>
+  <div class="status-bar">
+    <div class="status-item"><span class="status-val" id="count-new">—</span>&nbsp;new today</div>
+    <div class="status-item"><span class="status-val" id="count-commits">—</span>&nbsp;repo commits</div>
+    <div class="status-item"><span class="status-val" id="count-companies">288</span>&nbsp;companies tracked</div>
+    <span id="last-updated"></span>
   </div>
 </header>
 
-<!-- ── NetID bar ────────────────────────────── -->
-<div class="user-input-bar">
-  <span class="user-label">Your NetID:</span>
-  <input type="text" id="netid-input" placeholder="e.g. jsmith3" maxlength="20">
-  <span class="netid-badge" id="netid-display" style="display:none"></span>
-  <span class="user-label" style="margin-left:auto; font-size:10px;">Your updates are saved under your NetID and visible to the group</span>
-</div>
+<main>
 
-<!-- ── Controls ─────────────────────────────── -->
-<div class="controls">
-  <div class="controls-inner">
-    <div class="search-wrap">
-      <input type="search" id="search" placeholder="Search companies, sectors...">
+  <!-- Resources -->
+  <div class="resources">
+    <div class="resources-title">Quick links</div>
+    <div class="resource-links">
+      <a class="resource-link" href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank">SimplifyJobs GitHub ↗</a>
+      <a class="resource-link" href="https://simplify.jobs/l/Top-AI-Startup-Internships" target="_blank">Simplify: AI Startups ↗</a>
+      <a class="resource-link" href="https://simplify.jobs/l/Freshman-and-Sophomore-Internships" target="_blank">Simplify: Freshman ↗</a>
+      <a class="resource-link" href="https://princeton.joinhandshake.com/" target="_blank">Handshake ↗</a>
+      <a class="resource-link" href="https://swelist.com" target="_blank">SWEList Email Alerts ↗</a>
+      <a class="resource-link" href="https://careerdevelopment.princeton.edu/" target="_blank">Princeton Careers ↗</a>
     </div>
-    <div class="filter-pills">
-      <div class="pill active" data-filter="all">All</div>
-      <div class="pill" data-filter="tier1">Tier 1 — AI</div>
-      <div class="pill" data-filter="tier2">Tier 2 — Big Tech</div>
-      <div class="pill" data-filter="tier3">Tier 3 — Consumer</div>
-      <div class="pill" data-filter="tier4">Tier 4 — SaaS</div>
-      <div class="pill" data-filter="tier5">Tier 5 — Cloud</div>
-      <div class="pill" data-filter="tier6">Tier 6 — Legacy</div>
-      <div class="pill" data-filter="tier7">Tier 7 — Global IT</div>
-      <div class="pill" data-filter="tier8">Tier 8 — Unicorns</div>
-      <div class="pill" data-filter="applied">My Applied</div>
-    </div>
-    <a class="btn-add" href="https://simplify.jobs/l/Top-AI-Startup-Internships" target="_blank" rel="noopener" style="text-decoration:none;background:#FF6B35;">Simplify: AI ↗</a>
-    <a class="btn-add" href="https://simplify.jobs/l/Freshman-and-Sophomore-Internships" target="_blank" rel="noopener" style="text-decoration:none;background:#43a047;">Simplify: Freshman ↗</a>
-    <a class="btn-add" href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank" rel="noopener" style="text-decoration:none;background:#24292f;">GitHub Live List ↗</a>
-    <a class="btn-add" href="https://princeton.joinhandshake.com/" target="_blank" rel="noopener" style="text-decoration:none;background:#E8185C;">Handshake ↗</a>
-    <a class="btn-add" href="https://careerdevelopment.princeton.edu/" target="_blank" rel="noopener" style="text-decoration:none;background:#F77F00;">Princeton Careers ↗</a>
-    <button class="btn-add" onclick="openAddModal()">+ Add Company</button>
   </div>
-</div>
 
-<!-- ── Main ──────────────────────────────────── -->
-<main id="main-content">
-  <div class="loading"><div class="spinner"></div>Loading tracker...</div>
+  <!-- Controls -->
+  <div class="refresh-row">
+    <button class="refresh-btn" id="refresh-btn" onclick="fetchAlerts()">
+      <span id="refresh-icon">⟳</span> Check for new postings
+    </button>
+    <div class="filter-row">
+      <button class="filter-btn active" onclick="setFilter('all', this)">All tiers</button>
+      <button class="filter-btn" onclick="setFilter('tier1', this)">Tier 1 — AI</button>
+      <button class="filter-btn" onclick="setFilter('tier2', this)">Tier 2 — Big Tech</button>
+      <button class="filter-btn" onclick="setFilter('tier3', this)">Tier 3 — Consumer</button>
+      <button class="filter-btn" onclick="setFilter('tier8', this)">Tier 8 — Unicorns</button>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div id="results">
+    <div class="state-box">
+      <span class="state-icon">📡</span>
+      <div class="state-title">Ready to scan</div>
+      <div>Click "Check for new postings" to fetch today's internship updates from the SimplifyJobs GitHub repo</div>
+    </div>
+  </div>
+
 </main>
 
-<!-- ── Add Company Modal ─────────────────────── -->
-<div class="modal-overlay" id="add-modal">
-  <div class="modal">
-    <h2>Add Company</h2>
-    <div class="form-group">
-      <label>COMPANY NAME</label>
-      <input type="text" id="m-company" placeholder="e.g. Jane Street">
-    </div>
-    <div class="form-group">
-      <label>SECTOR</label>
-      <input type="text" id="m-sector" placeholder="e.g. Quant Finance">
-    </div>
-    <div class="form-group">
-      <label>TIER</label>
-      <select id="m-tier">
-        <option value="Tier 1 – AI & High-Growth">Tier 1 – AI & High-Growth</option>
-        <option value="Tier 2 – Big Tech">Tier 2 – Big Tech</option>
-        <option value="Tier 3 – Consumer/Fintech">Tier 3 – Consumer/Fintech</option>
-        <option value="Tier 4 – Enterprise SaaS">Tier 4 – Enterprise SaaS</option>
-        <option value="Tier 5 – Cloud/Infra">Tier 5 – Cloud/Infra</option>
-        <option value="Tier 6 – Legacy/Hardware">Tier 6 – Legacy/Hardware</option>
-        <option value="Tier 7 – Global IT Services">Tier 7 – Global IT Services</option>
-                <option value="Tier 8 – Unicorn Startups">Tier 8 – Unicorn Startups</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>INTERN PORTAL LINK</label>
-      <input type="url" id="m-link" placeholder="https://careers.example.com">
-    </div>
-    <div class="form-group">
-      <label>NOTES / TIPS</label>
-      <textarea id="m-notes" placeholder="Any tips for this company..."></textarea>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeAddModal()">Cancel</button>
-      <button class="btn-save" onclick="saveNewCompany()">Add Company</button>
-    </div>
-  </div>
-</div>
-
-<!-- ── Toast ──────────────────────────────────── -->
-<div class="toast" id="toast"></div>
-
-<!-- ── Firebase ─────────────────────────────── -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, doc, setDoc, onSnapshot, updateDoc, addDoc, serverTimestamp }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-// ── CONFIGURE YOUR FIREBASE PROJECT HERE ────────────────
-// Replace with your own Firebase project config
-// (same project as the birthday page works fine)
-const firebaseConfig = {
-  apiKey: "AIzaSyBSSugZ3SSzGrksPys-dhPvKnXtLt5qoM0",
-  authDomain: "summer-intern-tracker.firebaseapp.com",
-  projectId: "summer-intern-tracker",
-  storageBucket: "summer-intern-tracker.firebasestorage.app",
-  messagingSenderId: "108872454487571",
-  appId: "1:108872454487571:web:35b90cc78789b3311fd7bc"
-};
-// ────────────────────────────────────────────────────────
-
-const app  = initializeApp(firebaseConfig);
-const db   = getFirestore(app);
-
-// ── Seed data ────────────────────────────────────────────
+<script>
+// ── All 288 tracked companies ────────────────────────────────
 const COMPANIES = [
-  // Tier 1
-  {id:"netflix",    name:"Netflix",       sector:"AI/Streaming",    tier:"Tier 1 – AI & High-Growth", link:"https://jobs.netflix.com/search?q=intern",                           notes:"SWE & data science tracks; extremely competitive"},
-  {id:"anthropic",  name:"Anthropic",     sector:"AI Safety",       tier:"Tier 1 – AI & High-Growth", link:"https://www.anthropic.com/careers",                                  notes:"Research & SWE; safety-focused AI company"},
-  {id:"databricks", name:"Databricks",    sector:"Data/AI Platform",tier:"Tier 1 – AI & High-Growth", link:"https://www.databricks.com/company/careers",                         notes:"Strong ML & data engineering roles"},
-  {id:"snowflake",  name:"Snowflake",     sector:"Cloud Data",      tier:"Tier 1 – AI & High-Growth", link:"https://careers.snowflake.com/us/en/search-results?keywords=intern",  notes:"SWE & data platform intern roles"},
-  {id:"openai",     name:"OpenAI",        sector:"AI Research",     tier:"Tier 1 – AI & High-Growth", link:"https://openai.com/careers",                                          notes:"Extremely competitive; research & SWE tracks"},
-  {id:"deepmind",   name:"DeepMind",      sector:"AI Research",     tier:"Tier 1 – AI & High-Growth", link:"https://www.deepmind.com/careers",                                   notes:"London HQ; stellar research intern program"},
-  {id:"xai",        name:"xAI",           sector:"AI",              tier:"Tier 1 – AI & High-Growth", link:"https://x.ai/careers",                                                notes:"Elon Musk's AI company; very new program"},
-  {id:"hft",        name:"HFT Firms",     sector:"Quant Finance",   tier:"Tier 1 – AI & High-Growth", link:"https://www.imc.com/us/careers/",                                    notes:"Jane Street, IMC, Citadel — top quant internships"},
-  // Tier 2
-  {id:"meta",       name:"Meta",          sector:"Social/AI",       tier:"Tier 2 – Big Tech",         link:"https://www.metacareers.com/students-and-grads/",                    notes:"Large intern class; SWE, ML, infra tracks"},
-  {id:"google",     name:"Google",        sector:"Search/Cloud/AI", tier:"Tier 2 – Big Tech",         link:"https://careers.google.com/students/",                               notes:"STEP (freshman) & SWE intern — apply early Sep"},
-  {id:"nvidia",     name:"NVIDIA",        sector:"Semiconductors",  tier:"Tier 2 – Big Tech",         link:"https://nvidia.wd5.myworkdayjobs.com/UniversityJobs",                notes:"GPU, CUDA, AI infra; hardware focus"},
-  {id:"apple",      name:"Apple",         sector:"Consumer Tech",   tier:"Tier 2 – Big Tech",         link:"https://jobs.apple.com/en-us/search?team=internships-STDNT-INTRN",   notes:"Broad SWE & hardware tracks"},
-  {id:"microsoft",  name:"Microsoft",     sector:"Cloud/AI/OS",     tier:"Tier 2 – Big Tech",         link:"https://careers.microsoft.com/students/us/en/usuniversityinternship", notes:"Explore (freshman) & SWE intern — opens Aug"},
-  {id:"amazon",     name:"Amazon",        sector:"E-commerce/Cloud",tier:"Tier 2 – Big Tech",         link:"https://www.amazon.jobs/en/business_units/internships-and-student-programs", notes:"SDE intern program; opens Aug–Sep"},
-  // Tier 3
-  {id:"roblox",     name:"Roblox",        sector:"Gaming Platform", tier:"Tier 3 – Consumer/Fintech", link:"https://corp.roblox.com/careers/",                                   notes:"Game platform & engine engineering roles"},
-  {id:"figma",      name:"Figma",         sector:"Design Tools",    tier:"Tier 3 – Consumer/Fintech", link:"https://www.figma.com/careers/",                                     notes:"SWE & product design interns"},
-  {id:"airbnb",     name:"Airbnb",        sector:"Travel Platform", tier:"Tier 3 – Consumer/Fintech", link:"https://careers.airbnb.com/university/",                             notes:"SWE intern program"},
-  {id:"pinterest",  name:"Pinterest",     sector:"Visual Discovery",tier:"Tier 3 – Consumer/Fintech", link:"https://www.pinterestcareers.com/university-recruiting/",             notes:"SWE intern program"},
-  {id:"uber",       name:"Uber",          sector:"Ride-share",      tier:"Tier 3 – Consumer/Fintech", link:"https://university-uber.icims.com/",                                 notes:"SWE & data science internships"},
-  {id:"palantir",   name:"Palantir",      sector:"Data Analytics",  tier:"Tier 3 – Consumer/Fintech", link:"https://www.palantir.com/careers/",                                  notes:"SWE & Forward Deployed Engineer internships"},
-  {id:"anduril",    name:"Anduril",       sector:"Defense Tech",    tier:"Tier 3 – Consumer/Fintech", link:"https://www.anduril.com/open-roles/",                                notes:"US citizenship often required for clearance"},
-  {id:"coinbase",   name:"Coinbase",      sector:"Crypto",          tier:"Tier 3 – Consumer/Fintech", link:"https://www.coinbase.com/careers",                                   notes:"SWE intern roles in crypto infrastructure"},
-  {id:"doordash",   name:"DoorDash",      sector:"Food Delivery",   tier:"Tier 3 – Consumer/Fintech", link:"https://careers.doordash.com/university",                            notes:"SWE intern program; solid mentorship"},
-  {id:"reddit",     name:"Reddit",        sector:"Social Media",    tier:"Tier 3 – Consumer/Fintech", link:"https://www.redditinc.com/careers",                                  notes:"SWE internships"},
-  {id:"snapchat",   name:"Snap",          sector:"Social/Camera",   tier:"Tier 3 – Consumer/Fintech", link:"https://snap.com/en-US/jobs",                                        notes:"SWE intern program; camera & AR tech"},
-  {id:"tiktok",     name:"TikTok",        sector:"Social Media",    tier:"Tier 3 – Consumer/Fintech", link:"https://careers.tiktok.com/",                                        notes:"US & global intern tracks available"},
-  {id:"stripe",     name:"Stripe",        sector:"Payments",        tier:"Tier 3 – Consumer/Fintech", link:"https://stripe.com/jobs/university",                                 notes:"Highly competitive SWE intern — top-tier pay"},
-  {id:"robinhood",  name:"Robinhood",     sector:"Fintech",         tier:"Tier 3 – Consumer/Fintech", link:"https://careers.robinhood.com/",                                     notes:"SWE & data internships"},
-  {id:"shopify",    name:"Shopify",       sector:"E-commerce",      tier:"Tier 3 – Consumer/Fintech", link:"https://www.shopify.com/careers/interns",                            notes:"Dev degree & intern programs"},
-  {id:"block",      name:"Block",         sector:"Fintech",         tier:"Tier 3 – Consumer/Fintech", link:"https://careers.block.xyz/",                                         notes:"Square/Cash App parent company"},
-  {id:"notion",     name:"Notion",        sector:"Productivity",    tier:"Tier 3 – Consumer/Fintech", link:"https://www.notion.so/careers",                                      notes:"Small but fast-growing intern program"},
-  {id:"brex",       name:"Brex",          sector:"Fintech/Banking", tier:"Tier 3 – Consumer/Fintech", link:"https://www.brex.com/careers",                                       notes:"SWE internships in fintech infra"},
-  {id:"datadog",    name:"Datadog",       sector:"Observability",   tier:"Tier 3 – Consumer/Fintech", link:"https://www.datadoghq.com/careers/",                                 notes:"SWE & infrastructure roles"},
-  {id:"linkedin",   name:"LinkedIn",      sector:"Professional Net",tier:"Tier 3 – Consumer/Fintech", link:"https://careers.linkedin.com/students",                              notes:"REACH & SWE intern program"},
-  // Tier 4
-  {id:"salesforce", name:"Salesforce",    sector:"CRM/Cloud",       tier:"Tier 4 – Enterprise SaaS",  link:"https://www.salesforce.com/company/careers/university-recruiting/",  notes:"Futureforce intern program — great mentorship"},
-  {id:"twilio",     name:"Twilio",        sector:"Comm APIs",       tier:"Tier 4 – Enterprise SaaS",  link:"https://www.twilio.com/en-us/company/jobs",                           notes:"SWE internships in API infrastructure"},
-  {id:"discord",    name:"Discord",       sector:"Gaming Comms",    tier:"Tier 4 – Enterprise SaaS",  link:"https://discord.com/jobs",                                            notes:"SWE intern program"},
-  {id:"spacex",     name:"SpaceX",        sector:"Aerospace",       tier:"Tier 4 – Enterprise SaaS",  link:"https://www.spacex.com/careers/university",                           notes:"US citizenship required; avionics & SWE"},
-  {id:"atlassian",  name:"Atlassian",     sector:"Dev Tools",       tier:"Tier 4 – Enterprise SaaS",  link:"https://www.atlassian.com/company/careers/interns",                  notes:"Jira/Confluence — SWE intern program"},
-  {id:"broadcom",   name:"Broadcom",      sector:"Semiconductors",  tier:"Tier 4 – Enterprise SaaS",  link:"https://careers.broadcom.com/",                                      notes:"HW & SW engineering roles"},
-  {id:"dropbox",    name:"Dropbox",       sector:"Cloud Storage",   tier:"Tier 4 – Enterprise SaaS",  link:"https://jobs.dropbox.com/teams/university",                           notes:"SWE intern program"},
-  {id:"cloudflare", name:"Cloudflare",    sector:"Networking/CDN",  tier:"Tier 4 – Enterprise SaaS",  link:"https://www.cloudflare.com/careers/jobs/",                            notes:"SWE & network engineering roles"},
-  {id:"gitlab",     name:"GitLab",        sector:"DevOps",          tier:"Tier 4 – Enterprise SaaS",  link:"https://about.gitlab.com/jobs/",                                     notes:"Remote-first; strong DevOps culture"},
-  {id:"adobe",      name:"Adobe",         sector:"Creative Software",tier:"Tier 4 – Enterprise SaaS", link:"https://www.adobe.com/careers/university.html",                       notes:"SWE & research intern tracks"},
-  {id:"mongodb",    name:"MongoDB",       sector:"Database",        tier:"Tier 4 – Enterprise SaaS",  link:"https://www.mongodb.com/careers/university-recruiting",               notes:"SWE internships"},
-  {id:"workday",    name:"Workday",       sector:"HCM SaaS",        tier:"Tier 4 – Enterprise SaaS",  link:"https://www.workday.com/en-us/company/careers/early-career.html",     notes:"SWE intern program"},
-  {id:"canva",      name:"Canva",         sector:"Design Tools",    tier:"Tier 4 – Enterprise SaaS",  link:"https://www.canva.com/careers/",                                      notes:"Australia-based; growing US presence"},
-  {id:"spotify",    name:"Spotify",       sector:"Music Streaming", tier:"Tier 4 – Enterprise SaaS",  link:"https://www.lifeatspotify.com/students",                              notes:"HATCH internship program — competitive"},
-  {id:"asana",      name:"Asana",         sector:"Project Mgmt",    tier:"Tier 4 – Enterprise SaaS",  link:"https://asana.com/jobs",                                              notes:"SWE internships"},
-  {id:"epicgames",  name:"Epic Games",    sector:"Gaming/Unreal",   tier:"Tier 4 – Enterprise SaaS",  link:"https://www.epicgames.com/site/en-US/careers",                        notes:"Game engine & SWE roles"},
-  {id:"qualcomm",   name:"Qualcomm",      sector:"Semiconductors",  tier:"Tier 4 – Enterprise SaaS",  link:"https://www.qualcomm.com/company/careers/interns-and-students",       notes:"SWE & hardware intern tracks"},
-  // Tier 5
-  {id:"sap",        name:"SAP",           sector:"ERP/Cloud",       tier:"Tier 5 – Cloud/Infra",      link:"https://jobs.sap.com/",                                               notes:"Global intern program; SWE & data roles"},
-  {id:"servicenow", name:"ServiceNow",    sector:"IT Workflow",     tier:"Tier 5 – Cloud/Infra",      link:"https://careers.servicenow.com/en/internships/",                      notes:"SWE intern program"},
-  {id:"zoom",       name:"Zoom",          sector:"Video Comms",     tier:"Tier 5 – Cloud/Infra",      link:"https://careers.zoom.us/",                                            notes:"SWE internships; infra & product tracks"},
-  {id:"oracle",     name:"Oracle",        sector:"Database/Cloud",  tier:"Tier 5 – Cloud/Infra",      link:"https://www.oracle.com/corporate/careers/students-grads/internships/", notes:"Large program; cloud & DB engineering"},
-  {id:"paloalto",   name:"Palo Alto Networks",sector:"Cybersecurity",tier:"Tier 5 – Cloud/Infra",    link:"https://jobs.paloaltonetworks.com/en/jobs/",                           notes:"Security-focused SWE roles"},
-  {id:"crowdstrike",name:"CrowdStrike",   sector:"Cybersecurity",   tier:"Tier 5 – Cloud/Infra",      link:"https://www.crowdstrike.com/careers/",                                notes:"SWE & threat intelligence roles"},
-  {id:"okta",       name:"Okta",          sector:"Identity/Auth",   tier:"Tier 5 – Cloud/Infra",      link:"https://www.okta.com/company/careers/",                               notes:"SWE intern program"},
-  {id:"docusign",   name:"DocuSign",      sector:"e-Signature",     tier:"Tier 5 – Cloud/Infra",      link:"https://www.docusign.com/company/careers",                            notes:"SWE internships"},
-  {id:"unity",      name:"Unity",         sector:"Game Engine",     tier:"Tier 5 – Cloud/Infra",      link:"https://careers.unity.com/",                                          notes:"SWE & graphics engineering roles"},
-  {id:"expedia",    name:"Expedia",       sector:"Travel Tech",     tier:"Tier 5 – Cloud/Infra",      link:"https://lifeatexpediagroup.com/",                                      notes:"SWE intern program"},
-  {id:"paypal",     name:"PayPal",        sector:"Payments",        tier:"Tier 5 – Cloud/Infra",      link:"https://careers.pypl.com/students.html",                              notes:"STEP intern program"},
-  {id:"lyft",       name:"Lyft",          sector:"Ride-share",      tier:"Tier 5 – Cloud/Infra",      link:"https://www.lyft.com/careers",                                        notes:"SWE intern program"},
-  {id:"ebay",       name:"eBay",          sector:"E-commerce",      tier:"Tier 5 – Cloud/Infra",      link:"https://careers.ebayinc.com/students/",                               notes:"SWE internships"},
-  {id:"intuit",     name:"Intuit",        sector:"Fintech/Tax",     tier:"Tier 5 – Cloud/Infra",      link:"https://jobs.intuit.com/category/students-and-interns/",              notes:"TurboTax/QuickBooks; solid intern program"},
-  {id:"rubrik",     name:"Rubrik",        sector:"Data Security",   tier:"Tier 5 – Cloud/Infra",      link:"https://www.rubrik.com/company/careers",                              notes:"SWE & security engineering"},
-  // Tier 6
-  {id:"tesla",      name:"Tesla",         sector:"EV/Autonomy",     tier:"Tier 6 – Legacy/Hardware",  link:"https://www.tesla.com/careers/search/?type=3",                        notes:"SWE, autonomy & embedded systems"},
-  {id:"ibm",        name:"IBM",           sector:"Enterprise IT",   tier:"Tier 6 – Legacy/Hardware",  link:"https://www.ibm.com/employment/internships/",                         notes:"Quantum, AI, cloud intern tracks"},
-  {id:"cisco",      name:"Cisco",         sector:"Networking",      tier:"Tier 6 – Legacy/Hardware",  link:"https://jobs.cisco.com/jobs/SearchJobs/intern",                       notes:"SWE & network engineering roles"},
-  {id:"intel",      name:"Intel",         sector:"Semiconductors",  tier:"Tier 6 – Legacy/Hardware",  link:"https://jobs.intel.com/en/search-jobs/Intern/",                       notes:"HW/SW intern program"},
-  {id:"dell",       name:"Dell",          sector:"PC/Enterprise HW",tier:"Tier 6 – Legacy/Hardware",  link:"https://jobs.dell.com/",                                              notes:"SWE & HW intern tracks"},
-  {id:"hp",         name:"HP",            sector:"PC/Printing",     tier:"Tier 6 – Legacy/Hardware",  link:"https://careers.hpe.com/us/en/students-and-grads",                   notes:"SWE intern program"},
-  {id:"ea",         name:"Electronic Arts",sector:"Gaming",         tier:"Tier 6 – Legacy/Hardware",  link:"https://www.ea.com/careers/university",                               notes:"Game dev & SWE intern program"},
-  {id:"supermicro", name:"Supermicro",    sector:"Server Hardware", tier:"Tier 6 – Legacy/Hardware",  link:"https://www.supermicro.com/en/about/careers",                         notes:"HW & firmware engineering"},
-  // Tier 7
-  {id:"cognizant",  name:"Cognizant",     sector:"IT Services",     tier:"Tier 7 – Global IT Services", link:"https://careers.cognizant.com/global/en/internship",  notes:"IT consulting & SWE roles"},
-  {id:"infosys",    name:"Infosys",       sector:"IT Services",     tier:"Tier 7 – Global IT Services", link:"https://www.infosys.com/careers/interns.html",         notes:"InStep global intern program"},
-  {id:"wipro",      name:"Wipro",         sector:"IT Services",     tier:"Tier 7 – Global IT Services", link:"https://careers.wipro.com/en-US",                      notes:"Global IT services intern program"},
-  {id:"tcs",        name:"Tata (TCS)",    sector:"IT Services",     tier:"Tier 7 – Global IT Services", link:"https://ibegin.tcs.com/iBegin/",                       notes:"TCS iBegin campus program"},
-  // ── Quant / HFT ──────────────────────────────────────────────
-  {id:"janestreet",  name:"Jane Street",         sector:"Quant Finance",      tier:"Tier 1 – AI & High-Growth", link:"https://www.janestreet.com/join-jane-street/internships/",              notes:"Top quant; SWE & quant researcher tracks"},
-  {id:"citadel",     name:"Citadel",              sector:"Quant Finance",      tier:"Tier 1 – AI & High-Growth", link:"https://www.citadel.com/careers/open-positions/",                       notes:"Citadel & Citadel Securities; top quant internships"},
-  {id:"deshaw",      name:"D.E. Shaw",            sector:"Quant Finance",      tier:"Tier 1 – AI & High-Growth", link:"https://www.deshaw.com/careers/internships",                            notes:"Highly selective; SWE & quant research"},
-  {id:"twosigma",    name:"Two Sigma",            sector:"Quant Finance",      tier:"Tier 1 – AI & High-Growth", link:"https://www.twosigma.com/careers/",                                     notes:"Top quant firm; SWE & data science intern"},
-  {id:"imc",         name:"IMC Trading",          sector:"Quant Finance",      tier:"Tier 1 – AI & High-Growth", link:"https://www.imc.com/us/careers/",                                       notes:"HFT; great SWE intern program"},
-  {id:"jumptrading",  name:"Jump Trading",        sector:"Quant Finance",      tier:"Tier 1 – AI & High-Growth", link:"https://www.jumptrading.com/careers/",                                  notes:"Quant trading; SWE internships"},
-  {id:"hrt",         name:"Hudson River Trading", sector:"Quant Finance",      tier:"Tier 1 – AI & High-Growth", link:"https://www.hudsonrivertrading.com/careers/",                           notes:"Top HFT; SWE internships"},
-  {id:"virtu",       name:"Virtu Financial",      sector:"Quant Finance",      tier:"Tier 1 – AI & High-Growth", link:"https://www.virtu.com/careers/",                                        notes:"HFT firm; SWE & quant roles"},
-  {id:"akuna",       name:"Akuna Capital",        sector:"Quant Finance",      tier:"Tier 1 – AI & High-Growth", link:"https://akunacapital.com/careers",                                      notes:"Options trading; SWE & quant intern"},
-  {id:"optiver",     name:"Optiver",              sector:"Quant Finance",      tier:"Tier 1 – AI & High-Growth", link:"https://optiver.com/working-at-optiver/career-opportunities/",          notes:"Global HFT; SWE & trading intern"},
-  {id:"susquehanna", name:"Susquehanna (SIG)",    sector:"Quant Finance",      tier:"Tier 1 – AI & High-Growth", link:"https://careers.sig.com/",                                              notes:"Quant trading; SWE & quant researcher"},
-  // ── AI Startups ───────────────────────────────────────────────
-  {id:"mistral",     name:"Mistral AI",           sector:"AI/LLM",             tier:"Tier 1 – AI & High-Growth", link:"https://mistral.ai/careers/",                                           notes:"$6B; Europe's top LLM startup"},
-  {id:"cohere",      name:"Cohere",               sector:"AI/LLM",             tier:"Tier 1 – AI & High-Growth", link:"https://cohere.com/careers",                                            notes:"$5B; enterprise LLM platform"},
-  {id:"perplexity",  name:"Perplexity AI",        sector:"AI Search",          tier:"Tier 1 – AI & High-Growth", link:"https://www.perplexity.ai/hub/careers",                                 notes:"$9B; AI answer engine"},
-  {id:"scaleai",     name:"Scale AI",             sector:"AI Data",            tier:"Tier 1 – AI & High-Growth", link:"https://scale.com/careers",                                             notes:"$13.8B; AI training data leader"},
-  {id:"huggingface", name:"Hugging Face",         sector:"AI Platform",        tier:"Tier 1 – AI & High-Growth", link:"https://apply.workable.com/huggingface/",                               notes:"$4.5B; open source AI hub"},
-  {id:"wandb",       name:"Weights & Biases",     sector:"MLOps",              tier:"Tier 1 – AI & High-Growth", link:"https://wandb.ai/site/careers",                                         notes:"$1.25B; ML experiment tracking"},
-  {id:"together",    name:"Together AI",          sector:"AI Infrastructure",  tier:"Tier 1 – AI & High-Growth", link:"https://www.together.ai/careers",                                       notes:"$3B; open source AI cloud"},
-  {id:"coreweave",   name:"CoreWeave",            sector:"AI Cloud",           tier:"Tier 1 – AI & High-Growth", link:"https://www.coreweave.com/careers",                                     notes:"$19B; GPU cloud for AI workloads"},
-  {id:"groq",        name:"Groq",                 sector:"AI Hardware",        tier:"Tier 1 – AI & High-Growth", link:"https://groq.com/careers/",                                             notes:"$2.8B; fastest AI inference chips"},
-  {id:"cerebras",    name:"Cerebras Systems",     sector:"AI Hardware",        tier:"Tier 1 – AI & High-Growth", link:"https://www.cerebras.net/careers/",                                     notes:"Wafer-scale AI chips; SWE & HW internships"},
-  {id:"anyscale",    name:"Anyscale",             sector:"AI Infrastructure",  tier:"Tier 1 – AI & High-Growth", link:"https://www.anyscale.com/careers",                                      notes:"Ray framework; distributed AI computing"},
-  {id:"runway",      name:"Runway ML",            sector:"Generative AI",      tier:"Tier 1 – AI & High-Growth", link:"https://runwayml.com/careers/",                                         notes:"AI video generation; SWE & ML internships"},
-  {id:"elevenlab",   name:"ElevenLabs",           sector:"AI Audio",           tier:"Tier 1 – AI & High-Growth", link:"https://elevenlabs.io/careers",                                         notes:"$3.3B; AI voice synthesis leader"},
-  {id:"cursor",      name:"Cursor (Anysphere)",   sector:"AI Dev Tools",       tier:"Tier 1 – AI & High-Growth", link:"https://www.cursor.com/careers",                                        notes:"$9B; AI code editor; tiny elite team"},
-  {id:"glean",       name:"Glean",                sector:"Enterprise AI",      tier:"Tier 1 – AI & High-Growth", link:"https://www.glean.com/careers",                                         notes:"$4.6B; AI enterprise search"},
-  {id:"harvey",      name:"Harvey AI",            sector:"Legal AI",           tier:"Tier 1 – AI & High-Growth", link:"https://www.harvey.ai/careers",                                         notes:"$3B; AI for law firms"},
-  {id:"tempus",      name:"Tempus AI",            sector:"Healthcare AI",      tier:"Tier 1 – AI & High-Growth", link:"https://www.tempus.com/careers/",                                       notes:"$8B; AI precision medicine"},
-  {id:"waymo",       name:"Waymo",                sector:"Autonomous Vehicles",tier:"Tier 1 – AI & High-Growth", link:"https://waymo.com/careers/",                                            notes:"$45B; Alphabet self-driving unit"},
-  {id:"figure",      name:"Figure AI",            sector:"Robotics",           tier:"Tier 1 – AI & High-Growth", link:"https://www.figure.ai/careers",                                         notes:"$2.6B; humanoid robot startup"},
-  {id:"boston",      name:"Boston Dynamics",      sector:"Robotics",           tier:"Tier 1 – AI & High-Growth", link:"https://bostondynamics.com/careers/",                                   notes:"Spot & Atlas robots; SWE & robotics"},
-  {id:"cruise",      name:"Cruise",               sector:"Autonomous Vehicles",tier:"Tier 1 – AI & High-Growth", link:"https://getcruise.com/careers/",                                        notes:"GM AV subsidiary; SWE & robotics"},
-  {id:"aurora",      name:"Aurora Innovation",    sector:"Autonomous Vehicles",tier:"Tier 1 – AI & High-Growth", link:"https://aurora.tech/careers",                                           notes:"Self-driving trucks; SWE & ML"},
-  // ── Big Tech additions ────────────────────────────────────────
-  {id:"bytedance",   name:"ByteDance",            sector:"Social/AI",          tier:"Tier 2 – Big Tech",         link:"https://jobs.bytedance.com/en/campus",                                   notes:"$268B; TikTok parent; strong ML roles"},
-  {id:"twitter",     name:"X (Twitter)",          sector:"Social Media",       tier:"Tier 2 – Big Tech",         link:"https://careers.x.com/en",                                              notes:"SWE internships"},
-  {id:"twitch",      name:"Twitch",               sector:"Gaming/Streaming",   tier:"Tier 2 – Big Tech",         link:"https://www.twitch.tv/p/en/jobs/",                                      notes:"Amazon subsidiary; live streaming"},
-  // ── Consumer/Fintech additions ────────────────────────────────
-  {id:"goldmansachs",name:"Goldman Sachs",        sector:"Investment Banking", tier:"Tier 3 – Consumer/Fintech", link:"https://www.goldmansachs.com/careers/students/",                        notes:"Engineering division; SWE & quant"},
-  {id:"jpmorgan",    name:"JPMorgan Chase",       sector:"Banking/Fintech",    tier:"Tier 3 – Consumer/Fintech", link:"https://careers.jpmorgan.com/us/en/students/programs",                   notes:"Tech & data science; Code for Good"},
-  {id:"morganst",    name:"Morgan Stanley",       sector:"Investment Banking", tier:"Tier 3 – Consumer/Fintech", link:"https://www.morganstanley.com/people/students-graduates",                notes:"Technology analyst program"},
-  {id:"blackrock",   name:"BlackRock",            sector:"Asset Management",   tier:"Tier 3 – Consumer/Fintech", link:"https://careers.blackrock.com/early-careers/",                          notes:"Aladdin platform; SWE & data science"},
-  {id:"bloomberg",   name:"Bloomberg",            sector:"Financial Data",     tier:"Tier 3 – Consumer/Fintech", link:"https://www.bloomberg.com/careers/technology/",                         notes:"Bloomberg terminal; SWE internships"},
-  {id:"visa",        name:"Visa",                 sector:"Payments",           tier:"Tier 3 – Consumer/Fintech", link:"https://usa.visa.com/careers/students-graduates.html",                   notes:"Global payments; SWE & data science"},
-  {id:"mastercard",  name:"Mastercard",           sector:"Payments",           tier:"Tier 3 – Consumer/Fintech", link:"https://careers.mastercard.com/us/en/students",                         notes:"Tech & data internships"},
-  {id:"plaid",       name:"Plaid",                sector:"Fintech API",        tier:"Tier 3 – Consumer/Fintech", link:"https://plaid.com/careers/",                                            notes:"$13B; banking infrastructure API"},
-  {id:"affirm",      name:"Affirm",               sector:"BNPL/Fintech",       tier:"Tier 3 – Consumer/Fintech", link:"https://www.affirm.com/careers",                                        notes:"Buy now pay later; SWE intern"},
-  {id:"klarna",      name:"Klarna",               sector:"BNPL/Fintech",       tier:"Tier 3 – Consumer/Fintech", link:"https://www.klarna.com/careers/",                                       notes:"$14B; BNPL leader going public"},
-  {id:"chime",       name:"Chime",                sector:"Neobank",            tier:"Tier 3 – Consumer/Fintech", link:"https://www.chime.com/careers/",                                        notes:"$25B; largest US neobank"},
-  {id:"ramp",        name:"Ramp",                 sector:"Fintech/Spend",      tier:"Tier 3 – Consumer/Fintech", link:"https://ramp.com/careers",                                              notes:"$7.65B; fastest growing fintech"},
-  {id:"rippling",    name:"Rippling",             sector:"HR/IT Platform",     tier:"Tier 3 – Consumer/Fintech", link:"https://www.rippling.com/careers",                                      notes:"$13.5B; workforce management"},
-  {id:"duolingo",    name:"Duolingo",             sector:"EdTech",             tier:"Tier 3 – Consumer/Fintech", link:"https://careers.duolingo.com/",                                         notes:"Language learning; SWE intern"},
-  {id:"mckinsey",    name:"McKinsey QuantumBlack",sector:"Consulting/AI",      tier:"Tier 3 – Consumer/Fintech", link:"https://www.mckinsey.com/careers/students",                             notes:"AI division; data science intern"},
-  {id:"bcg",         name:"BCG Gamma",            sector:"Consulting/AI",      tier:"Tier 3 – Consumer/Fintech", link:"https://www.bcg.com/careers/paths/internship",                          notes:"BCG AI division; data & AI consulting"},
-  // ── Enterprise SaaS additions ─────────────────────────────────
-  {id:"amd",         name:"AMD",                  sector:"Semiconductors",     tier:"Tier 4 – Enterprise SaaS",  link:"https://jobs.amd.com/go/Students-&-New-Graduates/2567701/",             notes:"GPU & CPU chip design; SWE & HW intern"},
-  {id:"arm",         name:"Arm",                  sector:"Semiconductors",     tier:"Tier 4 – Enterprise SaaS",  link:"https://careers.arm.com/internships",                                   notes:"CPU architecture; SWE internships"},
-  {id:"mobileye",    name:"Mobileye",             sector:"Autonomous Vehicles",tier:"Tier 4 – Enterprise SaaS",  link:"https://www.mobileye.com/careers/",                                     notes:"Intel subsidiary; ADAS & computer vision"},
-  {id:"elastic",     name:"Elastic",              sector:"Search/Analytics",   tier:"Tier 4 – Enterprise SaaS",  link:"https://www.elastic.co/about/careers",                                  notes:"Elasticsearch; SWE intern roles"},
-  {id:"confluent",   name:"Confluent",            sector:"Data Streaming",     tier:"Tier 4 – Enterprise SaaS",  link:"https://www.confluent.io/careers/",                                     notes:"Kafka-based; SWE internships"},
-  {id:"hashicorp",   name:"HashiCorp",            sector:"DevOps/Cloud",       tier:"Tier 4 – Enterprise SaaS",  link:"https://www.hashicorp.com/jobs",                                        notes:"Terraform, Vault; now part of IBM"},
-  {id:"miro",        name:"Miro",                 sector:"Collaboration",      tier:"Tier 4 – Enterprise SaaS",  link:"https://miro.com/careers/",                                             notes:"$17.5B; online whiteboard"},
-  {id:"airtable",    name:"Airtable",             sector:"No-code/Database",   tier:"Tier 4 – Enterprise SaaS",  link:"https://airtable.com/careers",                                         notes:"$11B; no-code database"},
-  {id:"notion2",     name:"Notion",               sector:"Productivity",       tier:"Tier 4 – Enterprise SaaS",  link:"https://www.notion.so/careers",                                         notes:"$10B; all-in-one workspace"},
-  {id:"retool",      name:"Retool",               sector:"Low-code",           tier:"Tier 4 – Enterprise SaaS",  link:"https://retool.com/careers/",                                           notes:"$3.2B; internal tool builder"},
-  {id:"webflow",     name:"Webflow",              sector:"No-code/Web",        tier:"Tier 4 – Enterprise SaaS",  link:"https://webflow.com/careers",                                           notes:"$4B; visual web development"},
-  {id:"vercel",      name:"Vercel",               sector:"Dev Tools/Cloud",    tier:"Tier 4 – Enterprise SaaS",  link:"https://vercel.com/careers",                                            notes:"$3.25B; Next.js deployment"},
-  {id:"supabase",    name:"Supabase",             sector:"Backend/Database",   tier:"Tier 4 – Enterprise SaaS",  link:"https://supabase.com/careers",                                         notes:"$2B; open source Firebase alt"},
-  {id:"linear",      name:"Linear",               sector:"Dev Tools",          tier:"Tier 4 – Enterprise SaaS",  link:"https://linear.app/careers",                                            notes:"$1.7B; issue tracking for eng teams"},
-  {id:"sentry",      name:"Sentry",               sector:"Error Monitoring",   tier:"Tier 4 – Enterprise SaaS",  link:"https://sentry.io/careers/",                                            notes:"Error tracking; SWE internships"},
-  {id:"amplitude",   name:"Amplitude",            sector:"Product Analytics",  tier:"Tier 4 – Enterprise SaaS",  link:"https://amplitude.com/careers",                                         notes:"Product analytics; SWE internships"},
-  {id:"posthog",     name:"PostHog",              sector:"Product Analytics",  tier:"Tier 4 – Enterprise SaaS",  link:"https://posthog.com/careers",                                           notes:"Open source analytics"},
-  {id:"hubspot",     name:"HubSpot",              sector:"CRM/Marketing",      tier:"Tier 4 – Enterprise SaaS",  link:"https://www.hubspot.com/careers/students",                              notes:"Marketing & CRM SaaS; good intern"},
-  {id:"zendesk",     name:"Zendesk",              sector:"Customer Support",   tier:"Tier 4 – Enterprise SaaS",  link:"https://www.zendesk.com/jobs/",                                         notes:"CX/support platform; SWE internships"},
-  {id:"gusto",       name:"Gusto",                sector:"HR/Payroll",         tier:"Tier 4 – Enterprise SaaS",  link:"https://gusto.com/about/careers",                                       notes:"$9.5B; payroll for small business"},
-  {id:"deel",        name:"Deel",                 sector:"HR/Payroll Global",  tier:"Tier 4 – Enterprise SaaS",  link:"https://www.letsdeel.com/careers",                                      notes:"$12B; global payroll platform"},
-  {id:"veeva",       name:"Veeva Systems",        sector:"Life Sciences SaaS", tier:"Tier 4 – Enterprise SaaS",  link:"https://careers.veeva.com/",                                            notes:"Life sciences cloud; strong SWE intern"},
-  {id:"epichealth",  name:"Epic Systems",         sector:"Healthcare IT",      tier:"Tier 4 – Enterprise SaaS",  link:"https://www.epic.com/careers/",                                         notes:"Healthcare EHR; large SW intern class"},
-  {id:"navan",       name:"Navan (TripActions)",  sector:"Travel/Expense",     tier:"Tier 4 – Enterprise SaaS",  link:"https://navan.com/careers",                                             notes:"$9.2B; corporate travel & expense"},
-  {id:"ironclad",    name:"Ironclad",             sector:"Legal Tech",         tier:"Tier 4 – Enterprise SaaS",  link:"https://ironcladapp.com/careers/",                                      notes:"$3.2B; contract management AI"},
-  {id:"rocketlab",   name:"Rocket Lab",           sector:"Aerospace",          tier:"Tier 4 – Enterprise SaaS",  link:"https://www.rocketlabusa.com/careers/",                                 notes:"Small launch vehicles; SWE & avionics"},
-  // ── Cloud/Infra additions ─────────────────────────────────────
-  {id:"sentinelone", name:"SentinelOne",          sector:"Cybersecurity",      tier:"Tier 5 – Cloud/Infra",      link:"https://www.sentinelone.com/careers/",                                  notes:"AI-powered security; SWE internships"},
-  {id:"fortinet",    name:"Fortinet",             sector:"Cybersecurity",      tier:"Tier 5 – Cloud/Infra",      link:"https://www.fortinet.com/corporate/about-us/careers",                   notes:"Network security; SWE & security eng"},
-  {id:"zscaler",     name:"Zscaler",              sector:"Cybersecurity",      tier:"Tier 5 – Cloud/Infra",      link:"https://www.zscaler.com/careers",                                       notes:"Cloud security; zero trust"},
-  {id:"rapid7",      name:"Rapid7",               sector:"Cybersecurity",      tier:"Tier 5 – Cloud/Infra",      link:"https://www.rapid7.com/careers/",                                       notes:"Vulnerability management"},
-  {id:"tenable",     name:"Tenable",              sector:"Cybersecurity",      tier:"Tier 5 – Cloud/Infra",      link:"https://www.tenable.com/careers",                                       notes:"Cybersecurity exposure management"},
-  {id:"newrelic",    name:"New Relic",            sector:"Observability",      tier:"Tier 5 – Cloud/Infra",      link:"https://newrelic.com/about/careers",                                    notes:"App performance monitoring"},
-  {id:"dynatrace",   name:"Dynatrace",            sector:"Observability",      tier:"Tier 5 – Cloud/Infra",      link:"https://www.dynatrace.com/company/careers/",                            notes:"AI-powered observability"},
-  {id:"splunk",      name:"Splunk (Cisco)",       sector:"Data Analytics",     tier:"Tier 5 – Cloud/Infra",      link:"https://www.splunk.com/en_us/careers.html",                             notes:"Now part of Cisco; data & security"},
-  {id:"fidelity",    name:"Fidelity",             sector:"Asset Management",   tier:"Tier 5 – Cloud/Infra",      link:"https://jobs.fidelity.com/",                                            notes:"Technology track internships"},
-  {id:"schwab",      name:"Charles Schwab",       sector:"Brokerage/Fintech",  tier:"Tier 5 – Cloud/Infra",      link:"https://www.schwab.com/careers",                                        notes:"SWE & data science internships"},
-  {id:"walmart",     name:"Walmart Global Tech",  sector:"Retail Tech",        tier:"Tier 5 – Cloud/Infra",      link:"https://careers.walmart.com/technology",                                notes:"Massive tech org; SWE & data intern"},
-  {id:"target",      name:"Target",               sector:"Retail Tech",        tier:"Tier 5 – Cloud/Infra",      link:"https://corporate.target.com/careers/campus",                           notes:"Target Tech; data & SWE intern"},
-  {id:"wayfair",     name:"Wayfair",              sector:"E-commerce",         tier:"Tier 5 – Cloud/Infra",      link:"https://www.wayfair.com/careers/",                                      notes:"Furniture e-commerce; SWE intern"},
-  {id:"etsy",        name:"Etsy",                 sector:"E-commerce",         tier:"Tier 5 – Cloud/Infra",      link:"https://careers.etsy.com/",                                             notes:"Marketplace platform; SWE intern"},
-  {id:"warner",      name:"Warner Bros Discovery",sector:"Media/Streaming",    tier:"Tier 5 – Cloud/Infra",      link:"https://careers.wbd.com/global/en/students",                            notes:"HBO Max, CNN tech; SWE intern"},
-  {id:"disney",      name:"Disney (Tech)",        sector:"Media/Streaming",    tier:"Tier 5 – Cloud/Infra",      link:"https://jobs.disneycareers.com/technology",                             notes:"Disney+, ESPN+ tech; SWE internships"},
-  {id:"nbc",         name:"NBCUniversal",         sector:"Media Tech",         tier:"Tier 5 – Cloud/Infra",      link:"https://www.nbcunicareers.com/early-career",                            notes:"Peacock streaming; SWE & data intern"},
-  {id:"deloitte",    name:"Deloitte",             sector:"Consulting/Tech",    tier:"Tier 5 – Cloud/Infra",      link:"https://www2.deloitte.com/us/en/pages/careers/articles/join-deloitte-internship-programs.html", notes:"Technology consulting; large intern class"},
-  {id:"accenture",   name:"Accenture",            sector:"IT Consulting",      tier:"Tier 5 – Cloud/Infra",      link:"https://www.accenture.com/us-en/careers/explore-careers/students",      notes:"Large tech consulting; SWE roles"},
-  {id:"booz",        name:"Booz Allen Hamilton",  sector:"Defense/Tech",       tier:"Tier 5 – Cloud/Infra",      link:"https://www.boozallen.com/careers/university-recruiting.html",          notes:"Defense & government tech"},
-  {id:"nasa",        name:"NASA",                 sector:"Aerospace/Gov",      tier:"Tier 5 – Cloud/Infra",      link:"https://intern.nasa.gov/",                                              notes:"OSSI portal; SW & systems eng intern"},
-  {id:"pagerduty",   name:"PagerDuty",            sector:"IT Operations",      tier:"Tier 5 – Cloud/Infra",      link:"https://www.pagerduty.com/careers/",                                    notes:"Incident management SaaS"},
-  {id:"box",         name:"Box",                  sector:"Cloud Storage",      tier:"Tier 5 – Cloud/Infra",      link:"https://www.box.com/en-us/careers",                                     notes:"Enterprise cloud storage"},
-  {id:"freshworks",  name:"Freshworks",           sector:"CRM/Support",        tier:"Tier 5 – Cloud/Infra",      link:"https://www.freshworks.com/company/careers/",                           notes:"CRM & helpdesk SaaS"},
-  {id:"mixpanel",    name:"Mixpanel",             sector:"Product Analytics",  tier:"Tier 5 – Cloud/Infra",      link:"https://mixpanel.com/careers/",                                         notes:"Product analytics platform"},
-  {id:"coursera",    name:"Coursera",             sector:"EdTech",             tier:"Tier 5 – Cloud/Infra",      link:"https://careers.coursera.org/",                                         notes:"Online learning; SWE internships"},
-  {id:"khan",        name:"Khan Academy",         sector:"EdTech/Nonprofit",   tier:"Tier 5 – Cloud/Infra",      link:"https://www.khanacademy.org/careers",                                   notes:"Free education nonprofit; SWE intern"},
-  {id:"planet",      name:"Planet Labs",          sector:"Space/Data",         tier:"Tier 5 – Cloud/Infra",      link:"https://www.planet.com/company/careers/",                               notes:"Earth imaging satellites; SWE intern"},
-  {id:"informatica", name:"Informatica",          sector:"Data Management",    tier:"Tier 5 – Cloud/Infra",      link:"https://www.informatica.com/company/careers.html",                      notes:"Data integration & governance"},
-  {id:"toast",       name:"Toast",                sector:"Restaurant Tech",    tier:"Tier 5 – Cloud/Infra",      link:"https://pos.toasttab.com/careers",                                      notes:"$13B; restaurant POS & fintech"},
-  {id:"oscar",       name:"Oscar Health",         sector:"Health Insurance",   tier:"Tier 5 – Cloud/Infra",      link:"https://www.hioscar.com/about/careers",                                 notes:"Tech-first health insurance"},
-  {id:"zapier",      name:"Zapier",               sector:"Automation",         tier:"Tier 5 – Cloud/Infra",      link:"https://zapier.com/jobs/",                                              notes:"Workflow automation; remote-first"},
-  {id:"lattice",     name:"Lattice",              sector:"HR Tech",            tier:"Tier 5 – Cloud/Infra",      link:"https://lattice.com/careers",                                           notes:"$3B; people management SaaS"},
-  {id:"mercury",     name:"Mercury",              sector:"Neobank/Fintech",    tier:"Tier 5 – Cloud/Infra",      link:"https://mercury.com/careers",                                           notes:"$1.6B; banking for startups"},
-  {id:"faire",       name:"Faire",                sector:"B2B Marketplace",    tier:"Tier 5 – Cloud/Infra",      link:"https://www.faire.com/careers",                                         notes:"$12.6B; wholesale marketplace"},
-  {id:"niantic",     name:"Niantic",              sector:"AR/Gaming",          tier:"Tier 5 – Cloud/Infra",      link:"https://nianticlabs.com/careers/",                                      notes:"Pokemon Go; AR & SWE internships"},
-  {id:"synthesia",   name:"Synthesia",            sector:"AI Video",           tier:"Tier 5 – Cloud/Infra",      link:"https://www.synthesia.io/careers",                                      notes:"$2.1B; AI avatar video generation"},
-  {id:"descript",    name:"Descript",             sector:"AI Media",           tier:"Tier 5 – Cloud/Infra",      link:"https://www.descript.com/careers",                                      notes:"AI video & podcast editing"},
-  {id:"replit",      name:"Replit",               sector:"AI Dev Tools",       tier:"Tier 5 – Cloud/Infra",      link:"https://replit.com/site/careers",                                       notes:"$1.16B; AI coding in the browser"},
-  {id:"windsurf",    name:"Windsurf (Codeium)",   sector:"AI Dev Tools",       tier:"Tier 5 – Cloud/Infra",      link:"https://codeium.com/careers",                                           notes:"$1.25B; AI coding assistant"},
-  // ── Legacy/Hardware additions ─────────────────────────────────
-  {id:"micron",      name:"Micron",               sector:"Semiconductors",     tier:"Tier 6 – Legacy/Hardware",  link:"https://www.micron.com/careers/university",                             notes:"Memory & storage chips; SWE & HW"},
-  {id:"ti",          name:"Texas Instruments",    sector:"Semiconductors",     tier:"Tier 6 – Legacy/Hardware",  link:"https://careers.ti.com/university-recruiting",                          notes:"Analog/embedded chips; HW & SWE intern"},
-  {id:"marvell",     name:"Marvell",              sector:"Semiconductors",     tier:"Tier 6 – Legacy/Hardware",  link:"https://www.marvell.com/careers/students.html",                         notes:"Data infrastructure chips"},
-  {id:"att",         name:"AT&T",                 sector:"Telecom/Tech",       tier:"Tier 6 – Legacy/Hardware",  link:"https://www.att.jobs/students-and-graduates",                           notes:"SWE & network engineering; large intern"},
-  {id:"verizon",     name:"Verizon",              sector:"Telecom/Tech",       tier:"Tier 6 – Legacy/Hardware",  link:"https://www.verizon.com/about/careers/students",                        notes:"SWE & data science internships"},
-  {id:"tmobile",     name:"T-Mobile",             sector:"Telecom/Tech",       tier:"Tier 6 – Legacy/Hardware",  link:"https://careers.t-mobile.com/early-careers",                            notes:"SWE intern program"},
-  {id:"pwc",         name:"PwC",                  sector:"Consulting/Tech",    tier:"Tier 6 – Legacy/Hardware",  link:"https://www.pwc.com/us/en/careers/campus.html",                         notes:"Technology consulting track"},
-  {id:"chegg",       name:"Chegg",                sector:"EdTech",             tier:"Tier 6 – Legacy/Hardware",  link:"https://jobs.chegg.com/",                                               notes:"Student platform; SWE intern roles"},
-  {id:"wayfair2",    name:"Chewy",                sector:"E-commerce",         tier:"Tier 6 – Legacy/Hardware",  link:"https://careers.chewy.com/us/en/",                                      notes:"Pet supplies; SWE internships"},
-
-  // ── Tier 8 – Unicorn Startups ($1B+ private companies) ───────
-  {id:"u_openai",     name:"OpenAI",              sector:"AI/LLM",             tier:"Tier 8 – Unicorn Startups", link:"https://openai.com/careers",                                            notes:"$157B — ChatGPT maker; research & SWE intern"},
-  {id:"u_anthropic",  name:"Anthropic",           sector:"AI Safety",          tier:"Tier 8 – Unicorn Startups", link:"https://www.anthropic.com/careers",                                     notes:"$61B — Claude maker; safety-focused AI"},
-  {id:"u_xai",        name:"xAI",                 sector:"AI/LLM",             tier:"Tier 8 – Unicorn Startups", link:"https://x.ai/careers",                                                  notes:"$50B — Grok AI; Elon Musk's company"},
-  {id:"u_spacex",     name:"SpaceX",              sector:"Aerospace",          tier:"Tier 8 – Unicorn Startups", link:"https://www.spacex.com/careers/university",                              notes:"$210B — US citizenship required"},
-  {id:"u_stripe",     name:"Stripe",              sector:"Payments",           tier:"Tier 8 – Unicorn Startups", link:"https://stripe.com/jobs/university",                                     notes:"$65B — top SWE intern pay & prestige"},
-  {id:"u_waymo",      name:"Waymo",               sector:"Autonomous Vehicles",tier:"Tier 8 – Unicorn Startups", link:"https://waymo.com/careers/",                                            notes:"$45B — Alphabet self-driving unit"},
-  {id:"u_bytedance",  name:"ByteDance",           sector:"Social/AI",          tier:"Tier 8 – Unicorn Startups", link:"https://jobs.bytedance.com/en/campus",                                   notes:"$268B — TikTok parent; strong ML roles"},
-  {id:"u_coreweave",  name:"CoreWeave",           sector:"AI Cloud",           tier:"Tier 8 – Unicorn Startups", link:"https://www.coreweave.com/careers",                                     notes:"$19B — GPU cloud for AI workloads"},
-  {id:"u_anduril",    name:"Anduril",             sector:"Defense Tech",       tier:"Tier 8 – Unicorn Startups", link:"https://www.anduril.com/open-roles/",                                   notes:"$14B — defense AI; US citizenship req"},
-  {id:"u_chime",      name:"Chime",               sector:"Neobank",            tier:"Tier 8 – Unicorn Startups", link:"https://www.chime.com/careers/",                                        notes:"$25B — largest US neobank"},
-  {id:"u_rippling",   name:"Rippling",            sector:"HR/IT Platform",     tier:"Tier 8 – Unicorn Startups", link:"https://www.rippling.com/careers",                                      notes:"$13.5B — fastest growing HR tech"},
-  {id:"u_scaleai",    name:"Scale AI",            sector:"AI Data",            tier:"Tier 8 – Unicorn Startups", link:"https://scale.com/careers",                                             notes:"$13.8B — AI training data leader"},
-  {id:"u_klarna",     name:"Klarna",              sector:"BNPL/Fintech",       tier:"Tier 8 – Unicorn Startups", link:"https://www.klarna.com/careers/",                                       notes:"$14B — BNPL leader going public"},
-  {id:"u_faire",      name:"Faire",               sector:"B2B Marketplace",    tier:"Tier 8 – Unicorn Startups", link:"https://www.faire.com/careers",                                         notes:"$12.6B — wholesale marketplace"},
-  {id:"u_brex",       name:"Brex",                sector:"Fintech/Banking",    tier:"Tier 8 – Unicorn Startups", link:"https://www.brex.com/careers",                                          notes:"$12.3B — corporate cards & banking"},
-  {id:"u_miro",       name:"Miro",                sector:"Collaboration",      tier:"Tier 8 – Unicorn Startups", link:"https://miro.com/careers/",                                             notes:"$17.5B — online whiteboard platform"},
-  {id:"u_glean",      name:"Glean",               sector:"Enterprise AI",      tier:"Tier 8 – Unicorn Startups", link:"https://www.glean.com/careers",                                         notes:"$4.6B — AI enterprise search"},
-  {id:"u_perplexity", name:"Perplexity AI",       sector:"AI Search",          tier:"Tier 8 – Unicorn Startups", link:"https://www.perplexity.ai/hub/careers",                                 notes:"$9B — AI answer engine"},
-  {id:"u_cursor",     name:"Cursor (Anysphere)",  sector:"AI Dev Tools",       tier:"Tier 8 – Unicorn Startups", link:"https://www.cursor.com/careers",                                        notes:"$9B — AI code editor; tiny elite team"},
-  {id:"u_navan",      name:"Navan",               sector:"Travel/Expense",     tier:"Tier 8 – Unicorn Startups", link:"https://navan.com/careers",                                             notes:"$9.2B — corporate travel & expense"},
-  {id:"u_cohere",     name:"Cohere",              sector:"AI/LLM",             tier:"Tier 8 – Unicorn Startups", link:"https://cohere.com/careers",                                            notes:"$5B — enterprise LLM platform"},
-  {id:"u_mistral",    name:"Mistral AI",          sector:"AI/LLM",             tier:"Tier 8 – Unicorn Startups", link:"https://mistral.ai/careers/",                                           notes:"$6B — Europe's top LLM startup"},
-  {id:"u_hugging",    name:"Hugging Face",        sector:"AI Platform",        tier:"Tier 8 – Unicorn Startups", link:"https://apply.workable.com/huggingface/",                               notes:"$4.5B — open source AI hub"},
-  {id:"u_groq",       name:"Groq",                sector:"AI Hardware",        tier:"Tier 8 – Unicorn Startups", link:"https://groq.com/careers/",                                             notes:"$2.8B — fastest AI inference chips"},
-  {id:"u_harvey",     name:"Harvey AI",           sector:"Legal AI",           tier:"Tier 8 – Unicorn Startups", link:"https://www.harvey.ai/careers",                                         notes:"$3B — AI for law firms; elite team"},
-  {id:"u_figure",     name:"Figure AI",           sector:"Robotics",           tier:"Tier 8 – Unicorn Startups", link:"https://www.figure.ai/careers",                                         notes:"$2.6B — humanoid robot startup"},
-  {id:"u_elevenlab",  name:"ElevenLabs",          sector:"AI Audio",           tier:"Tier 8 – Unicorn Startups", link:"https://elevenlabs.io/careers",                                         notes:"$3.3B — AI voice synthesis leader"},
-  {id:"u_together",   name:"Together AI",         sector:"AI Infrastructure",  tier:"Tier 8 – Unicorn Startups", link:"https://www.together.ai/careers",                                       notes:"$3B — open source AI cloud"},
-  {id:"u_ramp",       name:"Ramp",                sector:"Fintech/Spend",      tier:"Tier 8 – Unicorn Startups", link:"https://ramp.com/careers",                                              notes:"$7.65B — fastest growing fintech"},
-  {id:"u_plaid",      name:"Plaid",               sector:"Fintech API",        tier:"Tier 8 – Unicorn Startups", link:"https://plaid.com/careers/",                                            notes:"$13B — banking infrastructure API"},
-  {id:"u_figma",      name:"Figma",               sector:"Design Tools",       tier:"Tier 8 – Unicorn Startups", link:"https://www.figma.com/careers/",                                        notes:"$12.5B — collaborative design tool"},
-  {id:"u_canva",      name:"Canva",               sector:"Design Tools",       tier:"Tier 8 – Unicorn Startups", link:"https://www.canva.com/careers/",                                        notes:"$26B — Australia-based design unicorn"},
-  {id:"u_notion",     name:"Notion",              sector:"Productivity",       tier:"Tier 8 – Unicorn Startups", link:"https://www.notion.so/careers",                                         notes:"$10B — all-in-one workspace"},
-  {id:"u_airtable",   name:"Airtable",            sector:"No-code/Database",   tier:"Tier 8 – Unicorn Startups", link:"https://airtable.com/careers",                                          notes:"$11B — no-code database platform"},
-  {id:"u_retool",     name:"Retool",              sector:"Low-code",           tier:"Tier 8 – Unicorn Startups", link:"https://retool.com/careers/",                                           notes:"$3.2B — internal tool builder"},
-  {id:"u_vercel",     name:"Vercel",              sector:"Dev Tools/Cloud",    tier:"Tier 8 – Unicorn Startups", link:"https://vercel.com/careers",                                            notes:"$3.25B — Next.js deployment platform"},
-  {id:"u_webflow",    name:"Webflow",             sector:"No-code/Web",        tier:"Tier 8 – Unicorn Startups", link:"https://webflow.com/careers",                                           notes:"$4B — visual web development"},
-  {id:"u_supabase",   name:"Supabase",            sector:"Backend/Database",   tier:"Tier 8 – Unicorn Startups", link:"https://supabase.com/careers",                                          notes:"$2B — open source Firebase alternative"},
-  {id:"u_linear",     name:"Linear",              sector:"Dev Tools",          tier:"Tier 8 – Unicorn Startups", link:"https://linear.app/careers",                                            notes:"$1.7B — issue tracking for eng teams"},
-  {id:"u_wandb",      name:"Weights & Biases",    sector:"MLOps",              tier:"Tier 8 – Unicorn Startups", link:"https://wandb.ai/site/careers",                                         notes:"$1.25B — ML experiment tracking"},
-  {id:"u_cerebras",   name:"Cerebras Systems",    sector:"AI Hardware",        tier:"Tier 8 – Unicorn Startups", link:"https://www.cerebras.net/careers/",                                     notes:"Wafer-scale AI chips; SWE & HW"},
-  {id:"u_windsurf",   name:"Windsurf (Codeium)",  sector:"AI Dev Tools",       tier:"Tier 8 – Unicorn Startups", link:"https://codeium.com/careers",                                           notes:"$1.25B — AI coding assistant"},
-  {id:"u_replit",     name:"Replit",              sector:"AI Dev Tools",       tier:"Tier 8 – Unicorn Startups", link:"https://replit.com/site/careers",                                       notes:"$1.16B — AI coding in the browser"},
-  {id:"u_tempus",     name:"Tempus AI",           sector:"Healthcare AI",      tier:"Tier 8 – Unicorn Startups", link:"https://www.tempus.com/careers/",                                       notes:"$8B — AI precision medicine"},
-  {id:"u_ironclad",   name:"Ironclad",            sector:"Legal Tech",         tier:"Tier 8 – Unicorn Startups", link:"https://ironcladapp.com/careers/",                                      notes:"$3.2B — contract management AI"},
-  {id:"u_deel",       name:"Deel",                sector:"HR/Payroll Global",  tier:"Tier 8 – Unicorn Startups", link:"https://www.letsdeel.com/careers",                                      notes:"$12B — global payroll platform"},
-  {id:"u_gusto",      name:"Gusto",               sector:"HR/Payroll",         tier:"Tier 8 – Unicorn Startups", link:"https://gusto.com/about/careers",                                       notes:"$9.5B — payroll for small business"},
-  {id:"u_toast",      name:"Toast",               sector:"Restaurant Tech",    tier:"Tier 8 – Unicorn Startups", link:"https://pos.toasttab.com/careers",                                      notes:"$13B — restaurant POS & fintech"},
-  {id:"u_aurora",     name:"Aurora Innovation",   sector:"Autonomous Vehicles",tier:"Tier 8 – Unicorn Startups", link:"https://aurora.tech/careers",                                           notes:"Self-driving trucks; SWE & ML"},
-  {id:"u_nuro",       name:"Nuro",                sector:"Autonomous Vehicles",tier:"Tier 8 – Unicorn Startups", link:"https://www.nuro.ai/careers",                                           notes:"$8.6B — autonomous delivery robots"},
-  {id:"u_cruise",     name:"Cruise",              sector:"Autonomous Vehicles",tier:"Tier 8 – Unicorn Startups", link:"https://getcruise.com/careers/",                                        notes:"GM AV subsidiary; SWE & robotics"},
-  {id:"u_boston",     name:"Boston Dynamics",     sector:"Robotics",           tier:"Tier 8 – Unicorn Startups", link:"https://bostondynamics.com/careers/",                                   notes:"Spot & Atlas robots; SWE & robotics"},
-  {id:"u_synthesia",  name:"Synthesia",           sector:"AI Video",           tier:"Tier 8 – Unicorn Startups", link:"https://www.synthesia.io/careers",                                      notes:"$2.1B — AI avatar video generation"},
-  {id:"u_runway",     name:"Runway ML",           sector:"Generative AI",      tier:"Tier 8 – Unicorn Startups", link:"https://runwayml.com/careers/",                                         notes:"AI video generation; SWE & ML intern"},
-  {id:"u_elevenl2",   name:"ElevenLabs",          sector:"AI Audio",           tier:"Tier 8 – Unicorn Startups", link:"https://elevenlabs.io/careers",                                         notes:"$3.3B — AI voice cloning & synthesis"},
-  {id:"u_anyscale",   name:"Anyscale",            sector:"AI Infrastructure",  tier:"Tier 8 – Unicorn Startups", link:"https://www.anyscale.com/careers",                                      notes:"Ray framework; distributed AI"},
-  {id:"u_modal",      name:"Modal Labs",          sector:"AI Infrastructure",  tier:"Tier 8 – Unicorn Startups", link:"https://modal.com/careers",                                             notes:"Cloud compute for AI; SWE internships"},
-  {id:"u_mercgold",   name:"Mercury",             sector:"Neobank/Fintech",    tier:"Tier 8 – Unicorn Startups", link:"https://mercury.com/careers",                                           notes:"$1.6B — banking for startups"},
-  {id:"u_affirmx",    name:"Affirm",              sector:"BNPL/Fintech",       tier:"Tier 8 – Unicorn Startups", link:"https://www.affirm.com/careers",                                        notes:"BNPL leader; SWE intern program"},
-  {id:"u_lattice",    name:"Lattice",             sector:"HR Tech",            tier:"Tier 8 – Unicorn Startups", link:"https://lattice.com/careers",                                           notes:"$3B — people management SaaS"},
-  {id:"u_rocketlab",  name:"Rocket Lab",          sector:"Aerospace",          tier:"Tier 8 – Unicorn Startups", link:"https://www.rocketlabusa.com/careers/",                                 notes:"Small launch vehicles; SWE & avionics"},
-  {id:"u_planet",     name:"Planet Labs",         sector:"Space/Data",         tier:"Tier 8 – Unicorn Startups", link:"https://www.planet.com/company/careers/",                               notes:"Earth imaging satellites; SWE intern"},
-  {id:"u_niantic",    name:"Niantic",             sector:"AR/Gaming",          tier:"Tier 8 – Unicorn Startups", link:"https://nianticlabs.com/careers/",                                      notes:"Pokemon Go; AR & SWE internships"},
-  {id:"u_gamma",      name:"Gamma",               sector:"AI Productivity",    tier:"Tier 8 – Unicorn Startups", link:"https://gamma.app/careers",                                             notes:"Fast-growing AI presentation startup"},
-  {id:"u_descript",   name:"Descript",            sector:"AI Media",           tier:"Tier 8 – Unicorn Startups", link:"https://www.descript.com/careers",                                      notes:"AI video & podcast editing platform"},
-  {id:"u_photoroom",  name:"Photoroom",           sector:"AI Design",          tier:"Tier 8 – Unicorn Startups", link:"https://www.photoroom.com/careers",                                     notes:"$1B — AI photo editing app"},
-  {id:"u_posthog",    name:"PostHog",             sector:"Product Analytics",  tier:"Tier 8 – Unicorn Startups", link:"https://posthog.com/careers",                                           notes:"Open source analytics; remote-first"},
-  {id:"u_loom",       name:"Loom (Atlassian)",    sector:"Video Messaging",    tier:"Tier 8 – Unicorn Startups", link:"https://www.atlassian.com/company/careers/interns",                     notes:"Acquired by Atlassian; async video"},
-  {id:"u_zapier",     name:"Zapier",              sector:"Automation",         tier:"Tier 8 – Unicorn Startups", link:"https://zapier.com/jobs/",                                              notes:"$5B — workflow automation leader"},
-  {id:"u_miro2",      name:"FigJam (Figma)",      sector:"Collaboration",      tier:"Tier 8 – Unicorn Startups", link:"https://www.figma.com/careers/",                                        notes:"Figma's whiteboard product"},
-  {id:"u_intercom",   name:"Intercom",            sector:"Customer Support AI",tier:"Tier 8 – Unicorn Startups", link:"https://www.intercom.com/careers",                                      notes:"$1.3B — AI customer support platform"},
-  {id:"u_amplitude2", name:"Amplitude",           sector:"Product Analytics",  tier:"Tier 8 – Unicorn Startups", link:"https://amplitude.com/careers",                                         notes:"Product analytics; SWE internships"},
-  {id:"u_sentry",     name:"Sentry",              sector:"Error Monitoring",   tier:"Tier 8 – Unicorn Startups", link:"https://sentry.io/careers/",                                            notes:"$1B+ — error tracking; open source"},
-  {id:"u_braintrust", name:"Braintrust",          sector:"AI Talent",          tier:"Tier 8 – Unicorn Startups", link:"https://www.braintrust.dev/careers",                                    notes:"AI eval platform; growing fast"},
-  {id:"u_comet",      name:"Comet ML",            sector:"MLOps",              tier:"Tier 8 – Unicorn Startups", link:"https://www.comet.com/site/careers/",                                   notes:"ML platform; experiment tracking"},
-  {id:"u_vanta",      name:"Vanta",               sector:"Security Compliance",tier:"Tier 8 – Unicorn Startups", link:"https://www.vanta.com/careers",                                         notes:"$1.6B — automated security compliance"},
-  {id:"u_launchdark", name:"LaunchDarkly",        sector:"Dev Tools",          tier:"Tier 8 – Unicorn Startups", link:"https://launchdarkly.com/careers/",                                     notes:"$3B — feature flag management"},
-  {id:"u_snyk",       name:"Snyk",                sector:"DevSecOps",          tier:"Tier 8 – Unicorn Startups", link:"https://snyk.io/careers/",                                              notes:"$8.5B — developer security platform"},
-  {id:"u_orca",       name:"Orca Security",       sector:"Cloud Security",     tier:"Tier 8 – Unicorn Startups", link:"https://orca.security/company/careers/",                                notes:"$1.8B — cloud security platform"},
-  {id:"u_lacework",   name:"Lacework",            sector:"Cloud Security",     tier:"Tier 8 – Unicorn Startups", link:"https://www.lacework.com/company/careers/",                             notes:"$8.3B — cloud security & compliance"},
-  {id:"u_armis",      name:"Armis",               sector:"IoT Security",       tier:"Tier 8 – Unicorn Startups", link:"https://www.armis.com/careers/",                                        notes:"$4.5B — IoT & OT security"},
-  {id:"u_wiz",        name:"Wiz",                 sector:"Cloud Security",     tier:"Tier 8 – Unicorn Startups", link:"https://www.wiz.io/careers",                                            notes:"$12B — fastest growing cloud security"},
-  {id:"u_rubrik",     name:"Rubrik",              sector:"Data Security",      tier:"Tier 8 – Unicorn Startups", link:"https://www.rubrik.com/company/careers",                                notes:"$6B — data security & backup"},
-
+  {id:"netflix",    name:"Netflix",       tier:"tier1", link:"https://jobs.netflix.com/search?q=intern"},
+  {id:"anthropic",  name:"Anthropic",     tier:"tier1", link:"https://www.anthropic.com/careers"},
+  {id:"databricks", name:"Databricks",    tier:"tier1", link:"https://www.databricks.com/company/careers"},
+  {id:"snowflake",  name:"Snowflake",     tier:"tier1", link:"https://careers.snowflake.com/us/en/search-results?keywords=intern"},
+  {id:"openai",     name:"OpenAI",        tier:"tier1", link:"https://openai.com/careers"},
+  {id:"deepmind",   name:"DeepMind",      tier:"tier1", link:"https://www.deepmind.com/careers"},
+  {id:"xai",        name:"xAI",           tier:"tier1", link:"https://x.ai/careers"},
+  {id:"janestreet", name:"Jane Street",   tier:"tier1", link:"https://www.janestreet.com/join-jane-street/internships/"},
+  {id:"citadel",    name:"Citadel",       tier:"tier1", link:"https://www.citadel.com/careers/open-positions/"},
+  {id:"deshaw",     name:"D.E. Shaw",     tier:"tier1", link:"https://www.deshaw.com/careers/internships"},
+  {id:"twosigma",   name:"Two Sigma",     tier:"tier1", link:"https://www.twosigma.com/careers/"},
+  {id:"imc",        name:"IMC Trading",   tier:"tier1", link:"https://www.imc.com/us/careers/"},
+  {id:"jumptrading", name:"Jump Trading", tier:"tier1", link:"https://www.jumptrading.com/careers/"},
+  {id:"hrt",        name:"Hudson River Trading", tier:"tier1", link:"https://www.hudsonrivertrading.com/careers/"},
+  {id:"akuna",      name:"Akuna Capital", tier:"tier1", link:"https://akunacapital.com/careers"},
+  {id:"optiver",    name:"Optiver",       tier:"tier1", link:"https://optiver.com/working-at-optiver/career-opportunities/"},
+  {id:"susquehanna",name:"Susquehanna (SIG)", tier:"tier1", link:"https://careers.sig.com/"},
+  {id:"mistral",    name:"Mistral AI",    tier:"tier1", link:"https://mistral.ai/careers/"},
+  {id:"cohere",     name:"Cohere",        tier:"tier1", link:"https://cohere.com/careers"},
+  {id:"perplexity", name:"Perplexity AI", tier:"tier1", link:"https://www.perplexity.ai/hub/careers"},
+  {id:"scaleai",    name:"Scale AI",      tier:"tier1", link:"https://scale.com/careers"},
+  {id:"huggingface",name:"Hugging Face",  tier:"tier1", link:"https://apply.workable.com/huggingface/"},
+  {id:"wandb",      name:"Weights & Biases", tier:"tier1", link:"https://wandb.ai/site/careers"},
+  {id:"coreweave",  name:"CoreWeave",     tier:"tier1", link:"https://www.coreweave.com/careers"},
+  {id:"groq",       name:"Groq",          tier:"tier1", link:"https://groq.com/careers/"},
+  {id:"anyscale",   name:"Anyscale",      tier:"tier1", link:"https://www.anyscale.com/careers"},
+  {id:"waymo",      name:"Waymo",         tier:"tier1", link:"https://waymo.com/careers/"},
+  {id:"figure",     name:"Figure AI",     tier:"tier1", link:"https://www.figure.ai/careers"},
+  {id:"boston",     name:"Boston Dynamics",tier:"tier1", link:"https://bostondynamics.com/careers/"},
+  {id:"meta",       name:"Meta",          tier:"tier2", link:"https://www.metacareers.com/students-and-grads/"},
+  {id:"google",     name:"Google",        tier:"tier2", link:"https://careers.google.com/students/"},
+  {id:"nvidia",     name:"NVIDIA",        tier:"tier2", link:"https://nvidia.wd5.myworkdayjobs.com/UniversityJobs"},
+  {id:"apple",      name:"Apple",         tier:"tier2", link:"https://jobs.apple.com/en-us/search?team=internships-STDNT-INTRN"},
+  {id:"microsoft",  name:"Microsoft",     tier:"tier2", link:"https://careers.microsoft.com/students/us/en/usuniversityinternship"},
+  {id:"amazon",     name:"Amazon",        tier:"tier2", link:"https://www.amazon.jobs/en/business_units/internships-and-student-programs"},
+  {id:"bytedance",  name:"ByteDance",     tier:"tier2", link:"https://jobs.bytedance.com/en/campus"},
+  {id:"twitter",    name:"X (Twitter)",   tier:"tier2", link:"https://careers.x.com/en"},
+  {id:"twitch",     name:"Twitch",        tier:"tier2", link:"https://www.twitch.tv/p/en/jobs/"},
+  {id:"goldmansachs",name:"Goldman Sachs",tier:"tier3", link:"https://www.goldmansachs.com/careers/students/"},
+  {id:"jpmorgan",   name:"JPMorgan Chase",tier:"tier3", link:"https://careers.jpmorgan.com/us/en/students/programs"},
+  {id:"morganst",   name:"Morgan Stanley",tier:"tier3", link:"https://www.morganstanley.com/people/students-graduates"},
+  {id:"blackrock",  name:"BlackRock",     tier:"tier3", link:"https://careers.blackrock.com/early-careers/"},
+  {id:"bloomberg",  name:"Bloomberg",     tier:"tier3", link:"https://www.bloomberg.com/careers/technology/"},
+  {id:"visa",       name:"Visa",          tier:"tier3", link:"https://usa.visa.com/careers/students-graduates.html"},
+  {id:"mastercard", name:"Mastercard",    tier:"tier3", link:"https://careers.mastercard.com/us/en/students"},
+  {id:"roblox",     name:"Roblox",        tier:"tier3", link:"https://corp.roblox.com/careers/"},
+  {id:"figma",      name:"Figma",         tier:"tier3", link:"https://www.figma.com/careers/"},
+  {id:"airbnb",     name:"Airbnb",        tier:"tier3", link:"https://careers.airbnb.com/university/"},
+  {id:"uber",       name:"Uber",          tier:"tier3", link:"https://university-uber.icims.com/"},
+  {id:"palantir",   name:"Palantir",      tier:"tier3", link:"https://www.palantir.com/careers/"},
+  {id:"stripe",     name:"Stripe",        tier:"tier3", link:"https://stripe.com/jobs/university"},
+  {id:"doordash",   name:"DoorDash",      tier:"tier3", link:"https://careers.doordash.com/university"},
+  {id:"reddit",     name:"Reddit",        tier:"tier3", link:"https://www.redditinc.com/careers"},
+  {id:"tiktok",     name:"TikTok",        tier:"tier3", link:"https://careers.tiktok.com/"},
+  {id:"duolingo",   name:"Duolingo",      tier:"tier3", link:"https://careers.duolingo.com/"},
+  {id:"mckinsey",   name:"McKinsey QuantumBlack", tier:"tier3", link:"https://www.mckinsey.com/careers/students"},
+  {id:"bcg",        name:"BCG Gamma",     tier:"tier3", link:"https://www.bcg.com/careers/paths/internship"},
+  {id:"plaid",      name:"Plaid",         tier:"tier3", link:"https://plaid.com/careers/"},
+  {id:"affirm",     name:"Affirm",        tier:"tier3", link:"https://www.affirm.com/careers"},
+  {id:"klarna",     name:"Klarna",        tier:"tier3", link:"https://www.klarna.com/careers/"},
+  {id:"chime",      name:"Chime",         tier:"tier3", link:"https://www.chime.com/careers/"},
+  {id:"ramp",       name:"Ramp",          tier:"tier3", link:"https://ramp.com/careers"},
+  {id:"rippling",   name:"Rippling",      tier:"tier3", link:"https://www.rippling.com/careers"},
+  {id:"salesforce", name:"Salesforce",    tier:"tier4", link:"https://www.salesforce.com/company/careers/university-recruiting/"},
+  {id:"atlassian",  name:"Atlassian",     tier:"tier4", link:"https://www.atlassian.com/company/careers/interns"},
+  {id:"discord",    name:"Discord",       tier:"tier4", link:"https://discord.com/jobs"},
+  {id:"amd",        name:"AMD",           tier:"tier4", link:"https://jobs.amd.com/go/Students-&-New-Graduates/2567701/"},
+  {id:"elastic",    name:"Elastic",       tier:"tier4", link:"https://www.elastic.co/about/careers"},
+  {id:"confluent",  name:"Confluent",     tier:"tier4", link:"https://www.confluent.io/careers/"},
+  {id:"adobe",      name:"Adobe",         tier:"tier4", link:"https://www.adobe.com/careers/university.html"},
+  {id:"spotify",    name:"Spotify",       tier:"tier4", link:"https://www.lifeatspotify.com/students"},
+  {id:"hubspot",    name:"HubSpot",       tier:"tier4", link:"https://www.hubspot.com/careers/students"},
+  {id:"zendesk",    name:"Zendesk",       tier:"tier4", link:"https://www.zendesk.com/jobs/"},
+  {id:"gusto",      name:"Gusto",         tier:"tier4", link:"https://gusto.com/about/careers"},
+  {id:"deel",       name:"Deel",          tier:"tier4", link:"https://www.letsdeel.com/careers"},
+  {id:"epichealth", name:"Epic Systems",  tier:"tier4", link:"https://www.epic.com/careers/"},
+  {id:"microsoft2", name:"Twilio",        tier:"tier4", link:"https://www.twilio.com/en-us/company/jobs"},
+  {id:"cloudflare", name:"Cloudflare",    tier:"tier4", link:"https://www.cloudflare.com/careers/jobs/"},
+  {id:"gitlab",     name:"GitLab",        tier:"tier4", link:"https://about.gitlab.com/jobs/"},
+  {id:"paloalto",   name:"Palo Alto Networks", tier:"tier5", link:"https://jobs.paloaltonetworks.com/en/jobs/"},
+  {id:"crowdstrike",name:"CrowdStrike",   tier:"tier5", link:"https://www.crowdstrike.com/careers/"},
+  {id:"sentinelone",name:"SentinelOne",   tier:"tier5", link:"https://www.sentinelone.com/careers/"},
+  {id:"zscaler",    name:"Zscaler",       tier:"tier5", link:"https://www.zscaler.com/careers"},
+  {id:"okta",       name:"Okta",          tier:"tier5", link:"https://www.okta.com/company/careers/"},
+  {id:"datadog",    name:"Datadog",       tier:"tier5", link:"https://www.datadoghq.com/careers/"},
+  {id:"servicenow", name:"ServiceNow",    tier:"tier5", link:"https://careers.servicenow.com/en/internships/"},
+  {id:"zoom",       name:"Zoom",          tier:"tier5", link:"https://careers.zoom.us/"},
+  {id:"paypal",     name:"PayPal",        tier:"tier5", link:"https://careers.pypl.com/students.html"},
+  {id:"lyft",       name:"Lyft",          tier:"tier5", link:"https://www.lyft.com/careers"},
+  {id:"intuit",     name:"Intuit",        tier:"tier5", link:"https://jobs.intuit.com/category/students-and-interns/"},
+  {id:"walmart",    name:"Walmart Global Tech", tier:"tier5", link:"https://careers.walmart.com/technology"},
+  {id:"deloitte",   name:"Deloitte",      tier:"tier5", link:"https://www2.deloitte.com/us/en/pages/careers/articles/join-deloitte-internship-programs.html"},
+  {id:"nasa",       name:"NASA",          tier:"tier5", link:"https://intern.nasa.gov/"},
+  {id:"tesla",      name:"Tesla",         tier:"tier6", link:"https://www.tesla.com/careers/search/?type=3"},
+  {id:"ibm",        name:"IBM",           tier:"tier6", link:"https://www.ibm.com/employment/internships/"},
+  {id:"cisco",      name:"Cisco",         tier:"tier6", link:"https://jobs.cisco.com/jobs/SearchJobs/intern"},
+  {id:"intel",      name:"Intel",         tier:"tier6", link:"https://jobs.intel.com/en/search-jobs/Intern/"},
+  {id:"cognizant",  name:"Cognizant",     tier:"tier7", link:"https://careers.cognizant.com/global/en/internship"},
+  {id:"infosys",    name:"Infosys",       tier:"tier7", link:"https://www.infosys.com/careers/interns.html"},
+  {id:"wipro",      name:"Wipro",         tier:"tier7", link:"https://careers.wipro.com/en-US"},
+  {id:"tcs",        name:"Tata (TCS)",    tier:"tier7", link:"https://ibegin.tcs.com/iBegin/"},
+  // Tier 8 Unicorns
+  {id:"u_openai",   name:"OpenAI",        tier:"tier8", link:"https://openai.com/careers"},
+  {id:"u_anthropic",name:"Anthropic",     tier:"tier8", link:"https://www.anthropic.com/careers"},
+  {id:"u_stripe",   name:"Stripe",        tier:"tier8", link:"https://stripe.com/jobs/university"},
+  {id:"u_waymo",    name:"Waymo",         tier:"tier8", link:"https://waymo.com/careers/"},
+  {id:"u_anduril",  name:"Anduril",       tier:"tier8", link:"https://www.anduril.com/open-roles/"},
+  {id:"u_chime",    name:"Chime",         tier:"tier8", link:"https://www.chime.com/careers/"},
+  {id:"u_rippling", name:"Rippling",      tier:"tier8", link:"https://www.rippling.com/careers"},
+  {id:"u_scaleai",  name:"Scale AI",      tier:"tier8", link:"https://scale.com/careers"},
+  {id:"u_glean",    name:"Glean",         tier:"tier8", link:"https://www.glean.com/careers"},
+  {id:"u_cursor",   name:"Cursor",        tier:"tier8", link:"https://www.cursor.com/careers"},
+  {id:"u_wiz",      name:"Wiz",           tier:"tier8", link:"https://www.wiz.io/careers"},
+  {id:"u_figma",    name:"Figma",         tier:"tier8", link:"https://www.figma.com/careers/"},
+  {id:"u_canva",    name:"Canva",         tier:"tier8", link:"https://www.canva.com/careers/"},
+  {id:"u_notion",   name:"Notion",        tier:"tier8", link:"https://www.notion.so/careers"},
+  {id:"u_miro",     name:"Miro",          tier:"tier8", link:"https://miro.com/careers/"},
+  {id:"u_vercel",   name:"Vercel",        tier:"tier8", link:"https://vercel.com/careers"},
+  {id:"u_ramp",     name:"Ramp",          tier:"tier8", link:"https://ramp.com/careers"},
+  {id:"u_harvey",   name:"Harvey AI",     tier:"tier8", link:"https://www.harvey.ai/careers"},
+  {id:"u_groq",     name:"Groq",          tier:"tier8", link:"https://groq.com/careers/"},
+  {id:"u_elevenlab",name:"ElevenLabs",    tier:"tier8", link:"https://elevenlabs.io/careers"},
 ];
 
-const TIER_CONFIG = {
-  "Tier 1": { color: "#6C63FF", key: "tier1" },
-  "Tier 2": { color: "#43E97B", key: "tier2" },
-  "Tier 3": { color: "#FF9F43", key: "tier3" },
-  "Tier 4": { color: "#54A0FF", key: "tier4" },
-  "Tier 5": { color: "#FF6B6B", key: "tier5" },
-  "Tier 6": { color: "#A29BFE", key: "tier6" },
-  "Tier 7": { color: "#00CEC9", key: "tier7" },
-  "Tier 8": { color: "#FF2D78", key: "tier8" },
+const TIER_LABELS = {
+  tier1:"Tier 1 — AI & High-Growth", tier2:"Tier 2 — Big Tech",
+  tier3:"Tier 3 — Consumer/Fintech", tier4:"Tier 4 — Enterprise SaaS",
+  tier5:"Tier 5 — Cloud/Infra",      tier6:"Tier 6 — Legacy/Hardware",
+  tier7:"Tier 7 — Global IT",        tier8:"Tier 8 — Unicorns"
 };
 
-const STATUS_LABELS = {
-  "not-applied": "Not Applied",
-  "applied":     "Applied ✓",
-  "interviewing":"Interviewing 📞",
-  "offered":     "Offered 🎉",
-  "rejected":    "Rejected ✗",
-};
+let currentFilter = 'all';
+let lastResults = [];
 
-// ── State ───────────────────────────────────────────────────
-let netId = localStorage.getItem("internTrackerNetId") || "";
-let allStatuses = {}; // { companyId: { netid: status } }
-let allCompanies = [...COMPANIES];
-let activeFilter = "all";
-let searchQ = "";
-
-function updateStats() {
-  document.getElementById("stat-total").textContent = allCompanies.length;
-  if (!netId) return;
-  const myStatuses = Object.entries(allStatuses)
-    .map(([id, d]) => d[netId])
-    .filter(Boolean);
-  document.getElementById("stat-applied").textContent      = myStatuses.filter(s => s === "applied").length;
-  document.getElementById("stat-interviewing").textContent = myStatuses.filter(s => s === "interviewing").length;
-  document.getElementById("stat-offered").textContent      = myStatuses.filter(s => s === "offered").length;
+function setFilter(tier, btn) {
+  currentFilter = tier;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderResults(lastResults);
 }
-function renderAll() {
-  updateStats();
-  const main = document.getElementById("main-content");
 
-  let filtered = allCompanies.filter(c => {
-    const q = searchQ;
-    const matchSearch = !q || c.name.toLowerCase().includes(q) || (c.sector||"").toLowerCase().includes(q) || (c.notes||"").toLowerCase().includes(q);
-    const tierKey = (c.tier || "").split("–")[0].trim().replace(" ","").toLowerCase();
-    const matchFilter =
-      activeFilter === "all" ? true :
-      activeFilter === "applied" ? ((allStatuses[c.id]||{})[netId] === "applied") :
-      tierKey === activeFilter;
-    return matchSearch && matchFilter;
-  });
+async function fetchAlerts() {
+  const btn = document.getElementById('refresh-btn');
+  const icon = document.getElementById('refresh-icon');
+  const results = document.getElementById('results');
+
+  btn.disabled = true;
+  icon.classList.add('spin');
+  icon.textContent = '⟳';
+
+  results.innerHTML = `
+    <div class="state-box">
+      <div class="terminal-loader">$ scanning SimplifyJobs/Summer2026-Internships<span class="cursor">_</span></div>
+      <div style="font-size:11px;color:var(--muted);">Fetching latest commits from GitHub API...</div>
+    </div>`;
+
+  try {
+    const res = await fetch('https://api.github.com/repos/SimplifyJobs/Summer2026-Internships/commits?per_page=10');
+    if (!res.ok) throw new Error('GitHub API rate limit — try again in a minute');
+    const commits = await res.json();
+
+    const cutoff = new Date(Date.now() - 48 * 3600000); // last 48h
+    const recent = commits.filter(c => new Date(c.commit.author.date) > cutoff);
+
+    document.getElementById('count-commits').textContent = recent.length;
+    document.getElementById('last-updated').textContent = 'Last checked: ' + new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+
+    if (!recent.length) {
+      results.innerHTML = `<div class="state-box">
+        <span class="state-icon">💤</span>
+        <div class="state-title">No updates in last 48 hours</div>
+        <div>The repo hasn't been updated recently. Check back tomorrow or <a href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank" style="color:var(--green)">view GitHub directly ↗</a></div>
+      </div>`;
+      btn.disabled = false; icon.classList.remove('spin'); icon.textContent = '⟳';
+      return;
+    }
+
+    // Fetch diffs for recent commits
+    const found = new Map(); // id -> {company, roles, commitDate}
+
+    for (const commit of recent.slice(0, 5)) {
+      try {
+        const dr = await fetch(commit.url);
+        const dd = await dr.json();
+        if (!dd.files) continue;
+        for (const file of dd.files) {
+          if (!file.patch) continue;
+          const addedLines = file.patch.split('\n').filter(l => l.startsWith('+') && !l.startsWith('+++'));
+          for (const line of addedLines) {
+            const low = line.toLowerCase();
+            for (const co of COMPANIES) {
+              if (co.name.length > 3 && low.includes(co.name.toLowerCase())) {
+                if (!found.has(co.id)) {
+                  found.set(co.id, {
+                    company: co,
+                    commitDate: new Date(commit.commit.author.date),
+                    commitMsg: commit.commit.message.split('\n')[0].slice(0, 80),
+                    line: line.replace(/^\+/, '').trim().slice(0, 120)
+                  });
+                }
+              }
+            }
+          }
+        }
+      } catch(e) {}
+    }
+
+    document.getElementById('count-new').textContent = found.size;
+    lastResults = [...found.values()];
+    renderResults(lastResults);
+
+  } catch(err) {
+    results.innerHTML = `<div class="state-box">
+      <span class="state-icon">⚠️</span>
+      <div class="state-title">Could not fetch</div>
+      <div>${err.message || 'GitHub API error'}</div>
+      <br><a href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank" style="color:var(--green)">Check GitHub directly ↗</a>
+    </div>`;
+  }
+
+  btn.disabled = false;
+  icon.classList.remove('spin');
+  icon.textContent = '⟳';
+}
+
+function renderResults(items) {
+  const results = document.getElementById('results');
+  const filtered = currentFilter === 'all' ? items : items.filter(i => i.company.tier === currentFilter);
+
+  if (!items.length) {
+    results.innerHTML = `<div class="state-box">
+      <span class="state-icon">🔍</span>
+      <div class="state-title">No tracked companies found in recent commits</div>
+      <div style="margin-top:12px">
+        <a href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank" class="job-btn">View all new postings on GitHub ↗</a>
+      </div>
+    </div>`;
+    return;
+  }
 
   if (!filtered.length) {
-    main.innerHTML = `<div class="empty"><span class="empty-icon">🔍</span>No companies match your filter.</div>`;
+    results.innerHTML = `<div class="state-box">
+      <span class="state-icon">🔍</span>
+      <div class="state-title">No matches for this tier filter</div>
+      <div>Try "All tiers" to see all ${items.length} results</div>
+    </div>`;
     return;
   }
 
   // Group by tier
   const grouped = {};
-  for (const c of filtered) {
-    const t = c.tier || "Other";
+  for (const item of filtered) {
+    const t = item.company.tier;
     if (!grouped[t]) grouped[t] = [];
-    grouped[t].push(c);
+    grouped[t].push(item);
   }
 
-  const tierOrder = [
-    "Tier 1 – AI & High-Growth",
-    "Tier 2 – Big Tech",
-    "Tier 3 – Consumer/Fintech",
-    "Tier 4 – Enterprise SaaS",
-    "Tier 5 – Cloud/Infra",
-    "Tier 6 – Legacy/Hardware",
-    "Tier 7 – Global IT Services",
-    "Tier 8 – Unicorn Startups",
-  ];
-
-  let html = "";
-  const orderedTiers = [...tierOrder.filter(t => grouped[t]), ...Object.keys(grouped).filter(t => !tierOrder.includes(t))];
-
-  for (const tier of orderedTiers) {
-    const companies = grouped[tier] || [];
-    const tierNum = tier.match(/Tier (\d)/)?.[1];
-    const cfg = TIER_CONFIG["Tier " + tierNum] || { color: "#888" };
-
-    html += `<div class="tier-section">
-      <div class="tier-header">
-        <div class="tier-dot" style="background:${cfg.color}"></div>
-        <span class="tier-label" style="color:${cfg.color}">${tier}</span>
-        <span class="tier-count">${companies.length} companies</span>
-      </div>
-      <div class="cards-grid">`;
-
-    for (const c of companies) {
-      const statuses = allStatuses[c.id] || {};
-      const myStatus = statuses[netId] || "not-applied";
-
-      // Show who's applied (other netids)
-      const others = Object.entries(statuses)
-        .filter(([n, s]) => n !== netId && s !== "not-applied")
-        .map(([n, s]) => `<span style="color:var(--muted);font-size:10px;font-family:var(--font-mono)">${n}:${s.slice(0,3)}</span>`);
-      const othersHtml = others.length ? `<div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">${others.join("")}</div>` : "";
-
-      html += `
-        <div class="card s-${myStatus}" style="--tier-color:${cfg.color}" data-id="${c.id}">
-          <div class="card-top">
-            <div class="company-name">${c.name}</div>
-            <div class="sector-badge">${c.sector || ""}</div>
-          </div>
-          <p class="card-notes">${c.notes || ""}</p>
-          ${othersHtml}
-          <div class="card-footer">
-            <a class="apply-btn" href="${c.link || "#"}" target="_blank" rel="noopener">
-              Apply ↗
-            </a>
-            <div class="status-group">
-              <div class="status-dot"></div>
-              <select class="status-select" onchange="updateStatus('${c.id}', this.value)">
-                ${Object.entries(STATUS_LABELS).map(([v,l]) =>
-                  `<option value="${v}" ${myStatus===v?"selected":""}>${l}</option>`
-                ).join("")}
-              </select>
-            </div>
-          </div>
-        </div>`;
+  let html = '';
+  const tierOrder = ['tier8','tier1','tier2','tier3','tier4','tier5','tier6','tier7'];
+  for (const tier of tierOrder) {
+    if (!grouped[tier]) continue;
+    html += `<div class="section-label">${TIER_LABELS[tier]} &nbsp;— ${grouped[tier].length} new</div>`;
+    html += '<div class="jobs-grid">';
+    for (const item of grouped[tier]) {
+      const timeAgo = getTimeAgo(item.commitDate);
+      html += `<div class="job-card">
+        <div class="job-top">
+          <div class="job-company">${item.company.name}</div>
+          <span class="job-new">NEW</span>
+        </div>
+        <div class="job-role">${item.line || 'New internship posting detected'}</div>
+        <div class="job-meta">
+          <span class="meta-tag">${TIER_LABELS[item.company.tier]}</span>
+          <span class="meta-tag">🕐 ${timeAgo}</span>
+        </div>
+        <div class="job-actions">
+          <a class="job-btn" href="${item.company.link}" target="_blank">Apply ↗</a>
+          <a class="job-btn secondary" href="https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(item.company.name + ' intern')}&f_JT=I" target="_blank">LinkedIn ↗</a>
+          <a class="job-btn secondary" href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank">GitHub ↗</a>
+        </div>
+      </div>`;
     }
-
-    html += `</div></div>`;
+    html += '</div>';
   }
 
-  main.innerHTML = html;
+  results.innerHTML = html;
 }
 
-renderAll(); // initial render from JS array
-
-
-renderAll(); // runs immediately
-
-// ── NetID setup ─────────────────────────────────────────────
-const netidInput = document.getElementById("netid-input");
-const netidDisplay = document.getElementById("netid-display");
-
-if (netId) {
-  netidInput.value = netId;
-  netidDisplay.textContent = netId;
-  netidDisplay.style.display = "";
+function getTimeAgo(date) {
+  const diff = Date.now() - date;
+  const h = Math.floor(diff / 3600000);
+  if (h < 1) return 'just now';
+  if (h < 24) return h + 'h ago';
+  return Math.floor(h / 24) + 'd ago';
 }
 
-netidInput.addEventListener("change", () => {
-  netId = netidInput.value.trim().toLowerCase().replace(/[^a-z0-9]/g, "");
-  netidInput.value = netId;
-  if (netId) {
-    localStorage.setItem("internTrackerNetId", netId);
-    netidDisplay.textContent = netId;
-    netidDisplay.style.display = "";
-    toast("NetID set to " + netId);
-    renderAll();
-  }
-});
-
-// ── Firebase listener ────────────────────────────────────────
-const statusRef = collection(db, "internStatuses");
-
-// Seed companies if not already in Firestore (one-time)
-// Load companies instantly from JS — no Firestore seeding
-allCompanies = [...COMPANIES];
-
-// Listen only for user-added companies
-// Companies loaded from JS array only — no Firestore needed
-// (Firestore only used for statuses and user-added companies via modal)
-const companiesRef = collection(db, "internCompanies");
-
-// Listen to all status updates in real-time
-onSnapshot(statusRef, snap => {
-  allStatuses = {};
-  snap.forEach(d => {
-    allStatuses[d.id] = d.data(); // { netid: "applied", ... }
-  });
-  renderAll();
-  updateStats();
-});
-
-// ── Status update ────────────────────────────────────────────
-window.updateStatus = async (companyId, status) => {
-  if (!netId) { toast("⚠ Set your NetID first!"); return; }
-  const ref = doc(db, "internStatuses", companyId);
-  await setDoc(ref, { [netId]: status }, { merge: true });
-  toast("Updated " + companyId + " → " + STATUS_LABELS[status]);
-};
-
-// ── Add company ──────────────────────────────────────────────
-window.openAddModal  = () => document.getElementById("add-modal").classList.add("open");
-window.closeAddModal = () => document.getElementById("add-modal").classList.remove("open");
-
-window.saveNewCompany = async () => {
-  const name  = document.getElementById("m-company").value.trim();
-  const sector= document.getElementById("m-sector").value.trim();
-  const tier  = document.getElementById("m-tier").value;
-  const link  = document.getElementById("m-link").value.trim();
-  const notes = document.getElementById("m-notes").value.trim();
-  if (!name) { toast("⚠ Company name is required"); return; }
-  const id = name.toLowerCase().replace(/[^a-z0-9]/g, "_");
-  await setDoc(doc(db, "internCompanies", id), { id, name, sector, tier, link, notes, addedBy: netId });
-  toast("Added " + name + " 🎉");
-  closeAddModal();
-};
-
-// ── Filters ──────────────────────────────────────────────────
-document.querySelectorAll(".pill").forEach(pill => {
-  pill.addEventListener("click", () => {
-    document.querySelectorAll(".pill").forEach(p => p.classList.remove("active"));
-    pill.classList.add("active");
-    activeFilter = pill.dataset.filter;
-    renderAll();
-  });
-});
-
-document.getElementById("search").addEventListener("input", e => {
-  searchQ = e.target.value.toLowerCase();
-  renderAll();
-});
-
-// ── Stats ────────────────────────────────────────────────────
-
-// ── Render ───────────────────────────────────────────────────
-// ── Toast helper ─────────────────────────────────────────────
-function toast(msg) {
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 2800);
-}
-
-window.toast = toast;
-
-// ── Close modal on overlay click ─────────────────────────────
-document.getElementById("add-modal").addEventListener("click", e => {
-  if (e.target === e.currentTarget) closeAddModal();
-});
+// Auto-fetch on load
+fetchAlerts();
 </script>
 </body>
 </html>
