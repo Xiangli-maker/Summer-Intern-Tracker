@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intern Openings — Live Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Clash+Display:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #050508; --surface: #0c0c12; --card: #111118;
+  --border: #1e1e2a; --green: #00FF87; --green-dim: rgba(0,255,135,.1);
+  --green-border: rgba(0,255,135,.25); --amber: #FFB800;
+  --text: #E8E8F0; --muted: #5a5a6e;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-head: 'Clash Display', sans-serif;
+}
+body { background: var(--bg); color: var(--text); font-family: var(--font-mono); min-height: 100vh; overflow-x: hidden; }
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background-image: linear-gradient(rgba(0,255,135,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,135,.03) 1px, transparent 1px);
+  background-size: 32px 32px; pointer-events: none; z-index: 0;
+}
+
+/* Header */
+header { position: relative; z-index: 10; padding: 32px 48px 24px; border-bottom: 1px solid var(--border); }
+.header-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px var(--green); animation: blink 1.2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+.logo-text { font-family: var(--font-head); font-size: 20px; font-weight: 700; }
+.logo-sub { font-size: 10px; color: var(--muted); letter-spacing: .1em; }
+.nav-links { display: flex; gap: 10px; }
+.nav-link { font-size: 11px; color: var(--muted); text-decoration: none; border: 1px solid var(--border); padding: 5px 12px; border-radius: 4px; transition: all .15s; }
+.nav-link:hover, .nav-link.active { color: var(--green); border-color: var(--green-border); }
+.stats-row { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
+.stat { display: flex; align-items: baseline; gap: 6px; }
+.stat-num { font-family: var(--font-head); font-size: 22px; font-weight: 700; color: var(--green); }
+.stat-label { font-size: 11px; color: var(--muted); }
+.last-check { font-size: 10px; color: var(--muted); margin-left: auto; }
+
+/* Controls */
+.controls { position: sticky; top: 0; z-index: 20; background: rgba(5,5,8,.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 12px 48px; }
+.controls-inner { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.search-box { flex: 1; min-width: 200px; position: relative; }
+.search-box::before { content: '⌕'; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+.search-box input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: var(--font-mono); font-size: 12px; padding: 8px 10px 8px 30px; border-radius: 4px; outline: none; transition: border-color .2s; }
+.search-box input:focus { border-color: var(--green-border); }
+.pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.pill { font-size: 10px; padding: 5px 10px; border-radius: 3px; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--muted); transition: all .15s; white-space: nowrap; }
+.pill.active, .pill:hover { border-color: var(--green-border); color: var(--green); background: var(--green-dim); }
+.refresh-btn { font-family: var(--font-mono); font-size: 11px; padding: 7px 14px; border-radius: 4px; background: var(--green-dim); border: 1px solid var(--green-border); color: var(--green); cursor: pointer; transition: all .15s; white-space: nowrap; }
+.refresh-btn:hover { background: var(--green); color: #000; }
+.refresh-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+/* Main */
+main { position: relative; z-index: 1; max-width: 1000px; margin: 0 auto; padding: 24px 48px 80px; }
+
+/* Job rows */
+.job-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px; }
+.job-row {
+  background: var(--card); border: 1px solid var(--border); border-radius: 6px;
+  padding: 14px 18px; display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px; align-items: center;
+  transition: border-color .15s;
+  animation: fadeIn .25s ease both;
+}
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+.job-row:hover { border-color: var(--green-border); }
+.job-left { min-width: 0; }
+.job-company { font-family: var(--font-head); font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+.job-role { font-size: 12px; color: var(--muted); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.job-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.tag { font-size: 10px; padding: 2px 7px; border-radius: 3px; background: rgba(255,255,255,.04); border: 1px solid var(--border); color: var(--muted); }
+.tag.new { background: var(--green-dim); border-color: var(--green-border); color: var(--green); }
+.tag.sponsored { background: rgba(255,184,0,.1); border-color: rgba(255,184,0,.3); color: var(--amber); }
+.job-right { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; flex-shrink: 0; }
+.apply-btn { font-family: var(--font-mono); font-size: 11px; padding: 6px 14px; border-radius: 3px; text-decoration: none; background: var(--green-dim); border: 1px solid var(--green-border); color: var(--green); transition: all .15s; white-space: nowrap; }
+.apply-btn:hover { background: var(--green); color: #000; }
+.apply-btn.secondary { background: transparent; border-color: var(--border); color: var(--muted); }
+.apply-btn.secondary:hover { border-color: var(--green-border); color: var(--green); }
+.job-date { font-size: 10px; color: var(--muted); }
+
+/* Section */
+.section-head { font-size: 10px; color: var(--muted); letter-spacing: .15em; text-transform: uppercase; padding: 8px 0 10px; border-bottom: 1px solid var(--border); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.section-head::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+
+/* State */
+.state { text-align: center; padding: 60px 20px; color: var(--muted); }
+.state-icon { font-size: 36px; display: block; margin-bottom: 12px; opacity: .4; }
+.state-title { font-family: var(--font-head); font-size: 18px; color: var(--text); margin-bottom: 8px; }
+.spinner { width: 24px; height: 24px; border: 2px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto 12px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Disclaimer */
+.disclaimer { background: rgba(255,184,0,.06); border: 1px solid rgba(255,184,0,.2); border-radius: 6px; padding: 12px 16px; font-size: 11px; color: #a08040; margin-bottom: 20px; line-height: 1.6; }
+
+@media (max-width: 600px) {
+  header, .controls, main { padding-left: 20px; padding-right: 20px; }
+  .job-row { grid-template-columns: 1fr; }
+  .job-right { flex-direction: row; align-items: center; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      <div>
+        <div class="logo-text">Intern Openings</div>
+        <div class="logo-sub">LIVE BOARD // SIMPLIFYJOBS + GITHUB</div>
+      </div>
+    </div>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">← Tracker</a>
+      <a class="nav-link" href="alerts.html">Daily Alerts</a>
+      <a class="nav-link active" href="intern-openings.html">Openings</a>
+    </div>
+  </div>
+  <div class="stats-row">
+    <div class="stat"><span class="stat-num" id="stat-count">—</span><span class="stat-label">openings found</span></div>
+    <div class="stat"><span class="stat-num" id="stat-companies">—</span><span class="stat-label">companies</span></div>
+    <div class="stat"><span class="stat-num" id="stat-new">—</span><span class="stat-label">added this week</span></div>
+    <span class="last-check" id="last-check"></span>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="controls-inner">
+    <div class="search-box">
+      <input type="text" id="search" placeholder="Search company, role, location...">
+    </div>
+    <div class="pills">
+      <div class="pill active" data-filter="all">All</div>
+      <div class="pill" data-filter="new">This week</div>
+      <div class="pill" data-filter="sponsored">Simplify apply</div>
+      <div class="pill" data-filter="remote">Remote</div>
+    </div>
+    <button class="refresh-btn" id="refresh-btn" onclick="loadOpenings()">⟳ Refresh</button>
+  </div>
+</div>
+
+<main>
+  <div class="disclaimer">
+    ⚠ Openings are pulled from the <a href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank" style="color:var(--amber)">SimplifyJobs Summer 2026 GitHub repo</a> — a community-maintained list updated daily. Always verify on the company's careers page before applying. Closed roles may take 24–48h to be removed.
+  </div>
+  <div id="results">
+    <div class="state"><div class="spinner"></div><div class="state-title">Loading openings...</div></div>
+  </div>
+</main>
+
+<script>
+let allJobs = [];
+let activeFilter = 'all';
+let searchQ = '';
+
+// Parse the SimplifyJobs README markdown table into job objects
+function parseReadme(text) {
+  const jobs = [];
+  const lines = text.split('\n');
+  let inTable = false;
+
+  for (const line of lines) {
+    // Detect table rows (start with | and contain links)
+    if (!line.startsWith('|')) { inTable = false; continue; }
+    if (line.includes('---')) continue;
+    if (line.toLowerCase().includes('company') && line.toLowerCase().includes('role')) { inTable = true; continue; }
+    if (!inTable) continue;
+
+    const cols = line.split('|').map(c => c.trim()).filter(Boolean);
+    if (cols.length < 4) continue;
+
+    // Extract company name (may have markdown link)
+    const companyRaw = cols[0];
+    const companyMatch = companyRaw.match(/\[([^\]]+)\]/);
+    const company = companyMatch ? companyMatch[1] : companyRaw.replace(/[*_]/g, '').trim();
+    if (!company || company === '↳') continue;
+
+    // Role
+    const role = cols[1] ? cols[1].replace(/[*_`]/g, '').trim() : '';
+
+    // Location
+    const location = cols[2] ? cols[2].replace(/[*_`<>]/g, '').replace(/\[([^\]]+)\].*/, '$1').trim() : '';
+
+    // Application link - look for Simplify link
+    const appCol = cols[3] || '';
+    const simplifyMatch = appCol.match(/href="(https:\/\/simplify\.jobs[^"]+)"/);
+    const genericMatch = appCol.match(/href="([^"]+)"/);
+    const appLink = simplifyMatch ? simplifyMatch[1] : (genericMatch ? genericMatch[1] : '');
+    const hasSimplify = !!simplifyMatch;
+
+    // Date added (last column if exists)
+    const dateCol = cols[cols.length - 1] || '';
+    const dateMatch = dateCol.match(/(\w{3}\s+\d+)/);
+    const dateAdded = dateMatch ? dateMatch[1] : '';
+
+    // Determine if new (added this week)
+    const isNew = dateAdded ? isThisWeek(dateAdded) : false;
+    const isRemote = location.toLowerCase().includes('remote');
+
+    if (company && role) {
+      jobs.push({ company, role, location, appLink, hasSimplify, dateAdded, isNew, isRemote });
+    }
+  }
+  return jobs;
+}
+
+function isThisWeek(dateStr) {
+  try {
+    const now = new Date();
+    const year = now.getFullYear();
+    const d = new Date(dateStr + ' ' + year);
+    const diff = now - d;
+    return diff >= 0 && diff < 7 * 86400000;
+  } catch { return false; }
+}
+
+function getTimeLabel(dateStr) {
+  if (!dateStr) return '';
+  try {
+    const now = new Date();
+    const d = new Date(dateStr + ' ' + now.getFullYear());
+    const diff = now - d;
+    if (diff < 0) return dateStr;
+    const days = Math.floor(diff / 86400000);
+    if (days === 0) return 'today';
+    if (days === 1) return 'yesterday';
+    if (days < 7) return days + 'd ago';
+    return dateStr;
+  } catch { return dateStr; }
+}
+
+async function loadOpenings() {
+  const btn = document.getElementById('refresh-btn');
+  const results = document.getElementById('results');
+  btn.disabled = true;
+  results.innerHTML = '<div class="state"><div class="spinner"></div><div class="state-title">Fetching from SimplifyJobs GitHub...</div><div style="font-size:11px;color:var(--muted);margin-top:8px;">Parsing internship table...</div></div>';
+
+  try {
+    // Fetch the raw README from SimplifyJobs repo
+    const res = await fetch('https://raw.githubusercontent.com/SimplifyJobs/Summer2026-Internships/dev/README.md');
+    if (!res.ok) throw new Error('Could not fetch README — try again');
+    const text = await res.text();
+
+    allJobs = parseReadme(text);
+
+    // Stats
+    const newCount = allJobs.filter(j => j.isNew).length;
+    const companies = new Set(allJobs.map(j => j.company)).size;
+    document.getElementById('stat-count').textContent = allJobs.length;
+    document.getElementById('stat-companies').textContent = companies;
+    document.getElementById('stat-new').textContent = newCount;
+    document.getElementById('last-check').textContent = 'Updated: ' + new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+
+    renderJobs();
+  } catch(err) {
+    results.innerHTML = `<div class="state">
+      <span class="state-icon">⚠</span>
+      <div class="state-title">Could not load openings</div>
+      <div style="margin-bottom:16px">${err.message}</div>
+      <a href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank" class="apply-btn">View on GitHub directly ↗</a>
+    </div>`;
+  }
+  btn.disabled = false;
+}
+
+function renderJobs() {
+  const results = document.getElementById('results');
+  const q = searchQ.toLowerCase();
+
+  let filtered = allJobs.filter(j => {
+    const matchSearch = !q || j.company.toLowerCase().includes(q) || j.role.toLowerCase().includes(q) || j.location.toLowerCase().includes(q);
+    const matchFilter =
+      activeFilter === 'all' ? true :
+      activeFilter === 'new' ? j.isNew :
+      activeFilter === 'sponsored' ? j.hasSimplify :
+      activeFilter === 'remote' ? j.isRemote : true;
+    return matchSearch && matchFilter;
+  });
+
+  if (!filtered.length) {
+    results.innerHTML = '<div class="state"><span class="state-icon">🔍</span><div class="state-title">No results</div><div>Try a different filter or search term</div></div>';
+    return;
+  }
+
+  // Group: new this week first, then rest
+  const newJobs = filtered.filter(j => j.isNew);
+  const otherJobs = filtered.filter(j => !j.isNew);
+
+  let html = '';
+
+  if (newJobs.length) {
+    html += `<div class="section-head">Added this week — ${newJobs.length} openings</div>`;
+    html += '<div class="job-list">';
+    for (const j of newJobs) html += jobRowHTML(j);
+    html += '</div>';
+  }
+
+  if (otherJobs.length) {
+    html += `<div class="section-head" style="margin-top:${newJobs.length ? 24 : 0}px">All open internships — ${otherJobs.length} openings</div>`;
+    html += '<div class="job-list">';
+    for (const j of otherJobs) html += jobRowHTML(j);
+    html += '</div>';
+  }
+
+  results.innerHTML = html;
+}
+
+function jobRowHTML(j) {
+  const liLink = 'https://www.linkedin.com/jobs/search/?keywords=' + encodeURIComponent(j.company + ' ' + j.role) + '&f_JT=I';
+  const timeLabel = getTimeLabel(j.dateAdded);
+
+  let tagsHTML = '';
+  if (j.isNew) tagsHTML += '<span class="tag new">✦ new this week</span>';
+  if (j.hasSimplify) tagsHTML += '<span class="tag sponsored">⚡ Simplify apply</span>';
+  if (j.isRemote) tagsHTML += '<span class="tag">🌐 remote</span>';
+  if (j.location && !j.isRemote) tagsHTML += '<span class="tag">📍 ' + j.location.slice(0, 30) + '</span>';
+
+  return `<div class="job-row">
+    <div class="job-left">
+      <div class="job-company">${j.company}</div>
+      <div class="job-role">${j.role}</div>
+      <div class="job-tags">${tagsHTML}</div>
+    </div>
+    <div class="job-right">
+      <div style="display:flex;gap:6px;">
+        ${j.appLink ? `<a class="apply-btn" href="${j.appLink}" target="_blank">Apply ↗</a>` : ''}
+        <a class="apply-btn secondary" href="${liLink}" target="_blank">LinkedIn ↗</a>
+      </div>
+      ${timeLabel ? `<div class="job-date">${timeLabel}</div>` : ''}
+    </div>
+  </div>`;
+}
+
+// Filters
+document.querySelectorAll('.pill').forEach(p => {
+  p.addEventListener('click', () => {
+    document.querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
+    p.classList.add('active');
+    activeFilter = p.dataset.filter;
+    renderJobs();
+  });
+});
+
+document.getElementById('search').addEventListener('input', e => {
+  searchQ = e.target.value;
+  renderJobs();
+});
+
+// Load on start
+loadOpenings();
+</script>
+</body>
+</html>
