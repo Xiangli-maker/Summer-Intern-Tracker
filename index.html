@@ -908,13 +908,9 @@ const statusRef = collection(db, "internStatuses");
 allCompanies = [...COMPANIES];
 
 // Listen only for user-added companies
+// Companies loaded from JS array only — no Firestore needed
+// (Firestore only used for statuses and user-added companies via modal)
 const companiesRef = collection(db, "internCompanies");
-const seedIds = new Set(COMPANIES.map(c => c.id));
-onSnapshot(companiesRef, snap => {
-  const additions = snap.docs.map(d => ({id: d.id, ...d.data()})).filter(c => !seedIds.has(c.id));
-  allCompanies = [...COMPANIES, ...additions];
-  renderAll();
-});
 
 // Listen to all status updates in real-time
 onSnapshot(statusRef, snap => {
@@ -968,11 +964,11 @@ document.getElementById("search").addEventListener("input", e => {
 
 // ── Stats ────────────────────────────────────────────────────
 function updateStats() {
+  document.getElementById("stat-total").textContent = allCompanies.length;
   if (!netId) return;
   const myStatuses = Object.entries(allStatuses)
     .map(([id, d]) => d[netId])
     .filter(Boolean);
-  document.getElementById("stat-total").textContent = allCompanies.length;
   document.getElementById("stat-applied").textContent      = myStatuses.filter(s => s === "applied").length;
   document.getElementById("stat-interviewing").textContent = myStatuses.filter(s => s === "interviewing").length;
   document.getElementById("stat-offered").textContent      = myStatuses.filter(s => s === "offered").length;
