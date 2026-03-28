@@ -264,38 +264,6 @@ main {
 
 .apply-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
 
-/* ── Daily Alert Panel ───────────────────────────────────── */
-.alert-panel {
-  background: var(--card); border: 1px solid rgba(67,233,123,.3);
-  border-radius: var(--radius); padding: 16px 20px; margin-bottom: 20px;
-  position: relative; z-index: 1; max-width: 1400px; margin: 20px auto;
-}
-.alert-header {
-  display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
-}
-.alert-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent3); animation: pulse 2s infinite; }
-@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
-.alert-title { font-family: var(--font-head); font-weight: 700; font-size: 14px; color: var(--accent3); }
-.alert-date { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-left: auto; }
-.alert-companies { display: flex; flex-wrap: wrap; gap: 8px; }
-.alert-chip {
-  font-family: var(--font-mono); font-size: 11px;
-  padding: 4px 10px; border-radius: 20px;
-  background: rgba(67,233,123,.1); border: 1px solid rgba(67,233,123,.3);
-  color: var(--accent3); cursor: pointer; transition: all .15s;
-}
-.alert-chip:hover { background: var(--accent3); color: #000; }
-.alert-loading { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
-.new-badge {
-  display: inline-block; font-family: var(--font-mono); font-size: 9px;
-  padding: 2px 6px; border-radius: 10px;
-  background: rgba(67,233,123,.2); border: 1px solid rgba(67,233,123,.4);
-  color: var(--accent3); margin-left: 6px; vertical-align: middle;
-  animation: pulse 2s infinite;
-}
-.card.has-new { border-color: rgba(67,233,123,.4); }
-.card.has-new::before { opacity: 1 !important; background: var(--accent3); }
-
 /* ── Status controls ─────────────────────────── */
 .status-group { display: flex; gap: 6px; align-items: center; }
 
@@ -993,8 +961,6 @@ function renderAll() {
             <a class="apply-btn" href="${c.link || "#"}" target="_blank" rel="noopener">
               Apply ↗
             </a>
-            <a class="apply-btn" href="https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(c.name + ' intern')}&f_JT=I" target="_blank" rel="noopener" style="background:rgba(10,102,194,.15);border-color:rgba(10,102,194,.4);color:#4A9FD4;">Jobs ↗</a>
-            <a class="apply-btn" href="https://www.linkedin.com/company/${encodeURIComponent(c.name)}" target="_blank" rel="noopener" style="background:rgba(10,102,194,.25);border-color:rgba(10,102,194,.5);color:#4A9FD4;">Co. ↗</a>
             <div class="status-group">
               <div class="status-dot"></div>
               <select class="status-select" onchange="updateStatus('${c.id}', this.value)">
@@ -1114,69 +1080,6 @@ function toast(msg) {
 }
 
 window.toast = toast;
-
-// ── Daily Alerts from SimplifyJobs GitHub ────────────────────
-async function fetchDailyAlerts() {
-  const container = document.getElementById('alert-companies');
-  const dateEl = document.getElementById('alert-date');
-  if (!container) return;
-  container.innerHTML = '<span class="alert-loading">Fetching latest postings...</span>';
-  const now = new Date();
-  dateEl.textContent = 'Checked: ' + now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-  try {
-    const res = await fetch('https://api.github.com/repos/SimplifyJobs/Summer2026-Internships/commits?per_page=5');
-    const commits = await res.json();
-    if (!commits || !commits.length) throw new Error('no commits');
-    const cutoff = new Date(now - 86400000);
-    const recent = commits.filter(c => new Date(c.commit.author.date) > cutoff);
-    if (!recent.length) {
-      container.innerHTML = '<span class="alert-loading">No repo updates in last 24h. <a href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank" style="color:var(--accent3)">View on GitHub ↗</a></span>';
-      return;
-    }
-    const found = new Set();
-    for (const commit of recent.slice(0,3)) {
-      try {
-        const dr = await fetch(commit.url);
-        const dd = await dr.json();
-        if (!dd.files) continue;
-        for (const file of dd.files) {
-          if (!file.patch) continue;
-          const added = file.patch.split('\n').filter(l => l.startsWith('+') && !l.startsWith('+++'));
-          for (const line of added) {
-            const low = line.toLowerCase();
-            for (const co of COMPANIES) {
-              if (co.name.length > 3 && low.includes(co.name.toLowerCase())) found.add(co.id);
-            }
-          }
-        }
-      } catch(e) {}
-    }
-    document.querySelectorAll('.card.has-new').forEach(el => el.classList.remove('has-new'));
-    if (!found.size) {
-      container.innerHTML = '<span class="alert-loading">No tracked companies in today's updates. <a href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank" style="color:var(--accent3)">View all ↗</a></span>';
-      return;
-    }
-    let chips = '';
-    found.forEach(id => {
-      const co = COMPANIES.find(c => c.id === id);
-      if (!co) return;
-      const card = document.querySelector('.card[data-id="' + id + '"]');
-      if (card) card.classList.add('has-new');
-      chips += '<span class="alert-chip" onclick="scrollToCard('' + id + '')">' + co.name + ' <span style="opacity:.6;font-size:9px;">new</span></span>';
-    });
-    container.innerHTML = chips;
-  } catch(e) {
-    container.innerHTML = '<span class="alert-loading">Could not fetch. <a href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank" style="color:var(--accent3)">Check GitHub ↗</a></span>';
-  }
-}
-
-window.scrollToCard = function(id) {
-  const card = document.querySelector('.card[data-id="' + id + '"]');
-  if (card) card.scrollIntoView({behavior:'smooth', block:'center'});
-};
-
-setTimeout(fetchDailyAlerts, 1500);
-
 
 // ── Close modal on overlay click ─────────────────────────────
 document.getElementById("add-modal").addEventListener("click", e => {
