@@ -769,7 +769,7 @@ function renderAll() {
     const matchFilter =
       activeFilter === "all" ? true :
       activeFilter === "applied" ? ((allStatuses[c.id]||{})[netId] === "applied") :
-      tierKey === activeFilter.replace("tier","tier ");
+      tierKey === activeFilter;
     return matchSearch && matchFilter;
   });
 
