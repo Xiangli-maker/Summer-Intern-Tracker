@@ -162,9 +162,10 @@ main {
 }
 
 .jobs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 12px; margin-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 40px;
 }
 
 .job-card {
@@ -618,22 +619,19 @@ function renderResults(items) {
     html += '<div class="jobs-grid">';
     for (const item of grouped[tier]) {
       const timeAgo = getTimeAgo(item.commitDate);
-      html += `<div class="job-card">
-        <div class="job-top">
-          <div class="job-company">${item.company.name}</div>
-          <span class="job-new">NEW</span>
-        </div>
-        <div class="job-role">${item.line || 'New internship posting detected'}</div>
-        <div class="job-meta">
-          <span class="meta-tag">${TIER_LABELS[item.company.tier]}</span>
-          <span class="meta-tag">🕐 ${timeAgo}</span>
-        </div>
-        <div class="job-actions">
-          <a class="job-btn" href="${item.company.link}" target="_blank">Apply ↗</a>
-          <a class="job-btn secondary" href="https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(item.company.name + ' intern')}&f_JT=I" target="_blank">LinkedIn ↗</a>
-          <a class="job-btn secondary" href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank">GitHub ↗</a>
-        </div>
-      </div>`;
+      const name = item.company.name;
+      const link = item.company.link;
+      const tierLabel = TIER_LABELS[item.company.tier];
+      const liLink = 'https://www.linkedin.com/jobs/search/?keywords=' + encodeURIComponent(name + ' intern') + '&f_JT=I';
+      html += '<div class="job-card">';
+      html += '<div class="job-top"><div class="job-company">' + name + '</div><span class="job-new">NEW</span></div>';
+      html += '<div class="job-role"><a href="' + link + '" target="_blank" style="color:var(--green);text-decoration:none;">🔥 ' + name + '</a></div>';
+      html += '<div class="job-meta"><span class="meta-tag">' + tierLabel + '</span><span class="meta-tag">🕐 ' + timeAgo + '</span></div>';
+      html += '<div class="job-actions">';
+      html += '<a class="job-btn" href="' + link + '" target="_blank">Apply ↗</a>';
+      html += '<a class="job-btn secondary" href="' + liLink + '" target="_blank">LinkedIn ↗</a>';
+      html += '<a class="job-btn secondary" href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank">GitHub ↗</a>';
+      html += '</div></div>';
     }
     html += '</div>';
   }
