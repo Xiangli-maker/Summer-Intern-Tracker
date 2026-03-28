@@ -853,91 +853,6 @@ let allCompanies = [...COMPANIES];
 let activeFilter = "all";
 let searchQ = "";
 
-// ── NetID setup ─────────────────────────────────────────────
-const netidInput = document.getElementById("netid-input");
-const netidDisplay = document.getElementById("netid-display");
-
-if (netId) {
-  netidInput.value = netId;
-  netidDisplay.textContent = netId;
-  netidDisplay.style.display = "";
-}
-
-netidInput.addEventListener("change", () => {
-  netId = netidInput.value.trim().toLowerCase().replace(/[^a-z0-9]/g, "");
-  netidInput.value = netId;
-  if (netId) {
-    localStorage.setItem("internTrackerNetId", netId);
-    netidDisplay.textContent = netId;
-    netidDisplay.style.display = "";
-    toast("NetID set to " + netId);
-    renderAll();
-  }
-});
-
-// ── Firebase listener ────────────────────────────────────────
-const statusRef = collection(db, "internStatuses");
-
-// Seed companies if not already in Firestore (one-time)
-// Companies load from JS array — Firestore only used for statuses
-const companiesRef = collection(db, "internCompanies");
-const seedIds = new Set(COMPANIES.map(c => c.id));
-onSnapshot(companiesRef, snap => {
-  const additions = snap.docs.map(d => ({id: d.id, ...d.data()})).filter(c => !seedIds.has(c.id));
-  allCompanies = [...COMPANIES, ...additions];
-});
-
-// Listen to all status updates in real-time
-onSnapshot(statusRef, snap => {
-  allStatuses = {};
-  snap.forEach(d => {
-    allStatuses[d.id] = d.data(); // { netid: "applied", ... }
-  });
-  renderAll();
-  updateStats();
-});
-
-// ── Status update ────────────────────────────────────────────
-window.updateStatus = async (companyId, status) => {
-  if (!netId) { toast("⚠ Set your NetID first!"); return; }
-  const ref = doc(db, "internStatuses", companyId);
-  await setDoc(ref, { [netId]: status }, { merge: true });
-  toast("Updated " + companyId + " → " + STATUS_LABELS[status]);
-};
-
-// ── Add company ──────────────────────────────────────────────
-window.openAddModal  = () => document.getElementById("add-modal").classList.add("open");
-window.closeAddModal = () => document.getElementById("add-modal").classList.remove("open");
-
-window.saveNewCompany = async () => {
-  const name  = document.getElementById("m-company").value.trim();
-  const sector= document.getElementById("m-sector").value.trim();
-  const tier  = document.getElementById("m-tier").value;
-  const link  = document.getElementById("m-link").value.trim();
-  const notes = document.getElementById("m-notes").value.trim();
-  if (!name) { toast("⚠ Company name is required"); return; }
-  const id = name.toLowerCase().replace(/[^a-z0-9]/g, "_");
-  await setDoc(doc(db, "internCompanies", id), { id, name, sector, tier, link, notes, addedBy: netId });
-  toast("Added " + name + " 🎉");
-  closeAddModal();
-};
-
-// ── Filters ──────────────────────────────────────────────────
-document.querySelectorAll(".pill").forEach(pill => {
-  pill.addEventListener("click", () => {
-    document.querySelectorAll(".pill").forEach(p => p.classList.remove("active"));
-    pill.classList.add("active");
-    activeFilter = pill.dataset.filter;
-    renderAll();
-  });
-});
-
-document.getElementById("search").addEventListener("input", e => {
-  searchQ = e.target.value.toLowerCase();
-  renderAll();
-});
-
-// ── Stats ────────────────────────────────────────────────────
 function updateStats() {
   document.getElementById("stat-total").textContent = allCompanies.length;
   if (!netId) return;
@@ -949,8 +864,6 @@ function updateStats() {
   document.getElementById("stat-interviewing").textContent = myStatuses.filter(s => s === "interviewing").length;
   document.getElementById("stat-offered").textContent      = myStatuses.filter(s => s === "offered").length;
 }
-
-// ── Render ───────────────────────────────────────────────────
 function renderAll() {
   updateStats();
   const main = document.getElementById("main-content");
@@ -1048,6 +961,96 @@ function renderAll() {
   main.innerHTML = html;
 }
 
+
+renderAll(); // initial render
+
+// ── NetID setup ─────────────────────────────────────────────
+const netidInput = document.getElementById("netid-input");
+const netidDisplay = document.getElementById("netid-display");
+
+if (netId) {
+  netidInput.value = netId;
+  netidDisplay.textContent = netId;
+  netidDisplay.style.display = "";
+}
+
+netidInput.addEventListener("change", () => {
+  netId = netidInput.value.trim().toLowerCase().replace(/[^a-z0-9]/g, "");
+  netidInput.value = netId;
+  if (netId) {
+    localStorage.setItem("internTrackerNetId", netId);
+    netidDisplay.textContent = netId;
+    netidDisplay.style.display = "";
+    toast("NetID set to " + netId);
+    renderAll();
+  }
+});
+
+// ── Firebase listener ────────────────────────────────────────
+const statusRef = collection(db, "internStatuses");
+
+// Seed companies if not already in Firestore (one-time)
+// Companies load from JS array — Firestore only used for statuses
+const companiesRef = collection(db, "internCompanies");
+const seedIds = new Set(COMPANIES.map(c => c.id));
+onSnapshot(companiesRef, snap => {
+  const additions = snap.docs.map(d => ({id: d.id, ...d.data()})).filter(c => !seedIds.has(c.id));
+  allCompanies = [...COMPANIES, ...additions];
+});
+
+// Listen to all status updates in real-time
+onSnapshot(statusRef, snap => {
+  allStatuses = {};
+  snap.forEach(d => {
+    allStatuses[d.id] = d.data(); // { netid: "applied", ... }
+  });
+  renderAll();
+  updateStats();
+});
+
+// ── Status update ────────────────────────────────────────────
+window.updateStatus = async (companyId, status) => {
+  if (!netId) { toast("⚠ Set your NetID first!"); return; }
+  const ref = doc(db, "internStatuses", companyId);
+  await setDoc(ref, { [netId]: status }, { merge: true });
+  toast("Updated " + companyId + " → " + STATUS_LABELS[status]);
+};
+
+// ── Add company ──────────────────────────────────────────────
+window.openAddModal  = () => document.getElementById("add-modal").classList.add("open");
+window.closeAddModal = () => document.getElementById("add-modal").classList.remove("open");
+
+window.saveNewCompany = async () => {
+  const name  = document.getElementById("m-company").value.trim();
+  const sector= document.getElementById("m-sector").value.trim();
+  const tier  = document.getElementById("m-tier").value;
+  const link  = document.getElementById("m-link").value.trim();
+  const notes = document.getElementById("m-notes").value.trim();
+  if (!name) { toast("⚠ Company name is required"); return; }
+  const id = name.toLowerCase().replace(/[^a-z0-9]/g, "_");
+  await setDoc(doc(db, "internCompanies", id), { id, name, sector, tier, link, notes, addedBy: netId });
+  toast("Added " + name + " 🎉");
+  closeAddModal();
+};
+
+// ── Filters ──────────────────────────────────────────────────
+document.querySelectorAll(".pill").forEach(pill => {
+  pill.addEventListener("click", () => {
+    document.querySelectorAll(".pill").forEach(p => p.classList.remove("active"));
+    pill.classList.add("active");
+    activeFilter = pill.dataset.filter;
+    renderAll();
+  });
+});
+
+document.getElementById("search").addEventListener("input", e => {
+  searchQ = e.target.value.toLowerCase();
+  renderAll();
+});
+
+// ── Stats ────────────────────────────────────────────────────
+
+// ── Render ───────────────────────────────────────────────────
 // ── Toast helper ─────────────────────────────────────────────
 function toast(msg) {
   const t = document.getElementById("toast");
