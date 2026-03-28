@@ -929,10 +929,6 @@ const statusRef = collection(db, "internStatuses");
 // Seed companies if not already in Firestore (one-time)
 const companiesRef = collection(db, "internCompanies");
 
-// Load companies instantly from JS array — no waiting for Firestore seed
-allCompanies = [...COMPANIES];
-renderAll();
-
 // Listen only for user-added companies (not in the seed list)
 const seedIds = new Set(COMPANIES.map(c => c.id));
 onSnapshot(companiesRef, snap => {
@@ -1103,6 +1099,9 @@ function renderAll() {
 
   main.innerHTML = html;
 }
+
+// Render immediately from JS array — no Firebase needed
+renderAll();
 
 // ── Toast helper ─────────────────────────────────────────────
 function toast(msg) {
