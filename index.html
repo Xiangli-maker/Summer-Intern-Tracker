@@ -1,1 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Princeton CS — Intern Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
+<style>
+/* ── Reset & Variables ──────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0A0C14;
+  --surface:   #111420;
+  --card:      #161928;
+  --border:    #252A3E;
+  --accent:    #6C63FF;
+  --accent2:   #FF6B6B;
+  --accent3:   #43E97B;
+  --text:      #E8EAF6;
+  --muted:     #6B7299;
+  --t1: #6C63FF; --t1bg: #1A1830;
+  --t2: #43E97B; --t2bg: #0E1F16;
+  --t3: #FF9F43; --t3bg: #201608;
+  --t4: #54A0FF; --t4bg: #0D1A2A;
+  --t5: #FF6B6B; --t5bg: #200E0E;
+  --t6: #A29BFE; --t6bg: #141230;
+  --t7: #00CEC9; --t7bg: #0A1E1E;
+  --radius: 10px;
+  --font-head: 'Syne', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Grid noise background ──────────────────── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(108,99,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(108,99,255,.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none; z-index: 0;
+}
+
+/* ── Header ─────────────────────────────────── */
+header {
+  position: relative; z-index: 10;
+  padding: 48px 40px 32px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(108,99,255,.08) 0%, transparent 100%);
+}
+
+.header-inner { max-width: 1400px; margin: 0 auto; }
+
+.tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono); font-size: 11px;
+  color: var(--accent); background: rgba(108,99,255,.12);
+  border: 1px solid rgba(108,99,255,.3);
+  padding: 4px 10px; border-radius: 20px; margin-bottom: 16px;
+  letter-spacing: .05em;
+}
+
+.tag::before { content: '◈'; }
+
+h1 {
+  font-family: var(--font-head);
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 800;
+  line-height: 1.1;
+  background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-family: var(--font-mono); font-size: 13px;
+  color: var(--muted); margin-bottom: 28px;
+}
+
+/* ── Stats bar ───────────────────────────────── */
+.stats {
+  display: flex; gap: 24px; flex-wrap: wrap; margin-top: 16px;
+}
+
+.stat {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono); font-size: 12px; color: var(--muted);
+}
+
+.stat-num {
+  font-size: 20px; font-weight: 700;
+  font-family: var(--font-head); color: var(--text);
+}
+
+/* ── Controls ────────────────────────────────── */
+.controls {
+  position: sticky; top: 0; z-index: 20;
+  background: rgba(10,12,20,.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 40px;
+}
+
+.controls-inner {
+  max-width: 1400px; margin: 0 auto;
+  display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+}
+
+.search-wrap {
+  position: relative; flex: 1; min-width: 220px;
+}
+
+.search-wrap::before {
+  content: '⌕';
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  color: var(--muted); font-size: 16px; pointer-events: none;
+}
+
+input[type="search"] {
+  width: 100%;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); font-family: var(--font-mono); font-size: 13px;
+  padding: 9px 12px 9px 34px;
+  border-radius: var(--radius); outline: none;
+  transition: border-color .2s;
+}
+
+input[type="search"]:focus { border-color: var(--accent); }
+
+.filter-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.pill {
+  font-family: var(--font-mono); font-size: 11px;
+  padding: 6px 12px; border-radius: 20px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--surface);
+  color: var(--muted); transition: all .15s; white-space: nowrap;
+}
+
+.pill:hover { border-color: var(--accent); color: var(--text); }
+.pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.btn-add {
+  font-family: var(--font-mono); font-size: 12px;
+  padding: 8px 16px; border-radius: var(--radius);
+  background: var(--accent); border: none; color: #fff;
+  cursor: pointer; transition: opacity .15s; white-space: nowrap;
+}
+
+.btn-add:hover { opacity: .85; }
+
+/* ── Main grid ───────────────────────────────── */
+main {
+  position: relative; z-index: 1;
+  max-width: 1400px; margin: 0 auto;
+  padding: 32px 40px 80px;
+}
+
+/* ── Section headers ─────────────────────────── */
+.tier-section { margin-bottom: 40px; }
+
+.tier-header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 16px; padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tier-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+
+.tier-label {
+  font-family: var(--font-head); font-weight: 700; font-size: 15px;
+}
+
+.tier-count {
+  font-family: var(--font-mono); font-size: 11px;
+  color: var(--muted); margin-left: auto;
+}
+
+/* ── Company cards ───────────────────────────── */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  transition: transform .15s, border-color .15s, box-shadow .15s;
+  position: relative; overflow: hidden;
+  animation: fadeUp .35s ease both;
+}
+
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--tier-color, var(--accent));
+  opacity: 0; transition: opacity .2s;
+}
+
+.card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,.4); }
+.card:hover::before { opacity: 1; }
+.card:hover { border-color: rgba(108,99,255,.35); }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.card-top {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 8px; margin-bottom: 10px;
+}
+
+.company-name {
+  font-family: var(--font-head); font-weight: 700; font-size: 16px;
+  color: var(--text); line-height: 1.2;
+}
+
+.sector-badge {
+  font-family: var(--font-mono); font-size: 10px;
+  padding: 3px 8px; border-radius: 4px;
+  background: rgba(255,255,255,.05); color: var(--muted);
+  white-space: nowrap; flex-shrink: 0;
+}
+
+.card-notes {
+  font-size: 12px; color: var(--muted); line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.card-footer {
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 8px;
+}
+
+.apply-btn {
+  font-family: var(--font-mono); font-size: 11px;
+  padding: 6px 12px; border-radius: 6px;
+  background: rgba(108,99,255,.15);
+  border: 1px solid rgba(108,99,255,.3);
+  color: var(--accent); cursor: pointer;
+  text-decoration: none; transition: all .15s;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+
+.apply-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* ── Status controls ─────────────────────────── */
+.status-group { display: flex; gap: 6px; align-items: center; }
+
+.status-select {
+  font-family: var(--font-mono); font-size: 10px;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); padding: 5px 8px; border-radius: 6px;
+  cursor: pointer; outline: none;
+}
+
+.status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--muted); flex-shrink: 0;
+  transition: background .2s;
+}
+
+/* ── Status badge colors ─────────────────────── */
+.s-not-applied .status-dot  { background: #444; }
+.s-applied     .status-dot  { background: var(--accent); }
+.s-interviewing .status-dot { background: var(--accent3); }
+.s-offered     .status-dot  { background: #FFD700; }
+.s-rejected    .status-dot  { background: var(--accent2); }
+
+/* ── Empty state ─────────────────────────────── */
+.empty {
+  text-align: center; padding: 80px 20px;
+  color: var(--muted); font-family: var(--font-mono);
+}
+
+.empty-icon { font-size: 48px; display: block; margin-bottom: 16px; }
+
+/* ── Toast ───────────────────────────────────── */
+.toast {
+  position: fixed; bottom: 30px; right: 30px; z-index: 999;
+  font-family: var(--font-mono); font-size: 12px;
+  background: var(--card); border: 1px solid var(--accent);
+  color: var(--text); padding: 12px 20px; border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+  transform: translateY(80px); opacity: 0;
+  transition: all .3s; pointer-events: none;
+}
+
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* ── Modal ───────────────────────────────────── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 100;
+  background: rgba(0,0,0,.7); backdrop-filter: blur(6px);
+  align-items: center; justify-content: center; padding: 20px;
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 32px; width: 100%; max-width: 500px;
+  animation: fadeUp .25s ease;
+}
+
+.modal h2 {
+  font-family: var(--font-head); font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.form-group { margin-bottom: 16px; }
+
+.form-group label {
+  display: block; font-family: var(--font-mono); font-size: 11px;
+  color: var(--muted); margin-bottom: 6px; letter-spacing: .05em;
+}
+
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); font-family: var(--font-mono); font-size: 13px;
+  padding: 10px 12px; border-radius: var(--radius); outline: none;
+  transition: border-color .2s;
+}
+
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  border-color: var(--accent);
+}
+
+.form-group textarea { resize: vertical; min-height: 80px; }
+
+.form-group select option { background: var(--card); }
+
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+
+.btn-cancel {
+  font-family: var(--font-mono); font-size: 12px;
+  padding: 9px 18px; border-radius: var(--radius);
+  background: transparent; border: 1px solid var(--border);
+  color: var(--muted); cursor: pointer;
+}
+
+.btn-save {
+  font-family: var(--font-mono); font-size: 12px;
+  padding: 9px 18px; border-radius: var(--radius);
+  background: var(--accent); border: none; color: #fff; cursor: pointer;
+}
+
+/* ── User badge ───────────────────────────────── */
+.user-input-bar {
+  display: flex; gap: 10px; align-items: center;
+  padding: 12px 40px;
+  background: rgba(108,99,255,.05);
+  border-bottom: 1px solid var(--border);
+}
+
+.user-input-bar input {
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); font-family: var(--font-mono); font-size: 12px;
+  padding: 7px 12px; border-radius: 20px; outline: none; width: 200px;
+  transition: border-color .2s;
+}
+
+.user-input-bar input:focus { border-color: var(--accent); }
+
+.user-label {
+  font-family: var(--font-mono); font-size: 11px; color: var(--muted);
+}
+
+.netid-badge {
+  font-family: var(--font-mono); font-size: 11px;
+  color: var(--accent3); background: rgba(67,233,123,.1);
+  border: 1px solid rgba(67,233,123,.3);
+  padding: 4px 10px; border-radius: 20px;
+}
+
+/* ── Loading ──────────────────────────────────── */
+.loading {
+  text-align: center; padding: 60px;
+  font-family: var(--font-mono); color: var(--muted);
+}
+
+.spinner {
+  width: 32px; height: 32px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Responsive ───────────────────────────────── */
+@media (max-width: 600px) {
+  header, .controls, main, .user-input-bar { padding-left: 20px; padding-right: 20px; }
+  .cards-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ── Header ──────────────────────────────── -->
+<header>
+  <div class="header-inner">
+    <div class="tag">Princeton CS · Class of 2028</div>
+    <h1>Summer Internship Tracker</h1>
+    <p class="subtitle">// track applications · share progress · land the offer</p>
+    <div class="stats">
+      <div class="stat"><span class="stat-num" id="stat-total">—</span>&nbsp;companies</div>
+      <div class="stat"><span class="stat-num" id="stat-applied">—</span>&nbsp;applied</div>
+      <div class="stat"><span class="stat-num" id="stat-interviewing">—</span>&nbsp;interviewing</div>
+      <div class="stat"><span class="stat-num" id="stat-offered">—</span>&nbsp;offered 🎉</div>
+    </div>
+  </div>
+</header>
+
+<!-- ── NetID bar ────────────────────────────── -->
+<div class="user-input-bar">
+  <span class="user-label">Your NetID:</span>
+  <input type="text" id="netid-input" placeholder="e.g. jsmith3" maxlength="20">
+  <span class="netid-badge" id="netid-display" style="display:none"></span>
+  <span class="user-label" style="margin-left:auto; font-size:10px;">Your updates are saved under your NetID and visible to the group</span>
+</div>
+
+<!-- ── Controls ─────────────────────────────── -->
+<div class="controls">
+  <div class="controls-inner">
+    <div class="search-wrap">
+      <input type="search" id="search" placeholder="Search companies, sectors...">
+    </div>
+    <div class="filter-pills">
+      <div class="pill active" data-filter="all">All</div>
+      <div class="pill" data-filter="tier1">Tier 1 — AI</div>
+      <div class="pill" data-filter="tier2">Tier 2 — Big Tech</div>
+      <div class="pill" data-filter="tier3">Tier 3 — Consumer</div>
+      <div class="pill" data-filter="tier4">Tier 4 — SaaS</div>
+      <div class="pill" data-filter="tier5">Tier 5 — Cloud</div>
+      <div class="pill" data-filter="tier6">Tier 6 — Legacy</div>
+      <div class="pill" data-filter="applied">My Applied</div>
+    </div>
+    <button class="btn-add" onclick="openAddModal()">+ Add Company</button>
+  </div>
+</div>
+
+<!-- ── Main ──────────────────────────────────── -->
+<main id="main-content">
+  <div class="loading"><div class="spinner"></div>Loading tracker...</div>
+</main>
+
+<!-- ── Add Company Modal ─────────────────────── -->
+<div class="modal-overlay" id="add-modal">
+  <div class="modal">
+    <h2>Add Company</h2>
+    <div class="form-group">
+      <label>COMPANY NAME</label>
+      <input type="text" id="m-company" placeholder="e.g. Jane Street">
+    </div>
+    <div class="form-group">
+      <label>SECTOR</label>
+      <input type="text" id="m-sector" placeholder="e.g. Quant Finance">
+    </div>
+    <div class="form-group">
+      <label>TIER</label>
+      <select id="m-tier">
+        <option value="Tier 1 – AI & High-Growth">Tier 1 – AI & High-Growth</option>
+        <option value="Tier 2 – Big Tech">Tier 2 – Big Tech</option>
+        <option value="Tier 3 – Consumer/Fintech">Tier 3 – Consumer/Fintech</option>
+        <option value="Tier 4 – Enterprise SaaS">Tier 4 – Enterprise SaaS</option>
+        <option value="Tier 5 – Cloud/Infra">Tier 5 – Cloud/Infra</option>
+        <option value="Tier 6 – Legacy/Hardware">Tier 6 – Legacy/Hardware</option>
+        <option value="Tier 7 – Global IT Services">Tier 7 – Global IT Services</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>INTERN PORTAL LINK</label>
+      <input type="url" id="m-link" placeholder="https://careers.example.com">
+    </div>
+    <div class="form-group">
+      <label>NOTES / TIPS</label>
+      <textarea id="m-notes" placeholder="Any tips for this company..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeAddModal()">Cancel</button>
+      <button class="btn-save" onclick="saveNewCompany()">Add Company</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Toast ──────────────────────────────────── -->
+<div class="toast" id="toast"></div>
+
+<!-- ── Firebase ─────────────────────────────── -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, doc, setDoc, onSnapshot, updateDoc, addDoc, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// ── CONFIGURE YOUR FIREBASE PROJECT HERE ────────────────
+// Replace with your own Firebase project config
+// (same project as the birthday page works fine)
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBSSugZ3SSzGrksPys-dhPvKnXtLt5qoM0",
+  authDomain: "summer-intern-tracker.firebaseapp.com",
+  projectId: "summer-intern-tracker",
+  storageBucket: "summer-intern-tracker.firebasestorage.app",
+  messagingSenderId: "1087245440757",
+  appId: "1:1087245440757:web:35b90cc78789b3311fd7bc",
+  measurementId: "G-R72NFJKFB4"
+};
+// ────────────────────────────────────────────────────────
+
+const app  = initializeApp(firebaseConfig);
+const db   = getFirestore(app);
+
+// ── Seed data ────────────────────────────────────────────
+const COMPANIES = [
+  // Tier 1
+  {id:"netflix",    name:"Netflix",       sector:"AI/Streaming",    tier:"Tier 1 – AI & High-Growth", link:"https://jobs.netflix.com/search?q=intern",                           notes:"SWE & data science tracks; extremely competitive"},
+  {id:"anthropic",  name:"Anthropic",     sector:"AI Safety",       tier:"Tier 1 – AI & High-Growth", link:"https://www.anthropic.com/careers",                                  notes:"Research & SWE; safety-focused AI company"},
+  {id:"databricks", name:"Databricks",    sector:"Data/AI Platform",tier:"Tier 1 – AI & High-Growth", link:"https://www.databricks.com/company/careers",                         notes:"Strong ML & data engineering roles"},
+  {id:"snowflake",  name:"Snowflake",     sector:"Cloud Data",      tier:"Tier 1 – AI & High-Growth", link:"https://careers.snowflake.com/us/en/search-results?keywords=intern",  notes:"SWE & data platform intern roles"},
+  {id:"openai",     name:"OpenAI",        sector:"AI Research",     tier:"Tier 1 – AI & High-Growth", link:"https://openai.com/careers",                                          notes:"Extremely competitive; research & SWE tracks"},
+  {id:"deepmind",   name:"DeepMind",      sector:"AI Research",     tier:"Tier 1 – AI & High-Growth", link:"https://www.deepmind.com/careers",                                   notes:"London HQ; stellar research intern program"},
+  {id:"xai",        name:"xAI",           sector:"AI",              tier:"Tier 1 – AI & High-Growth", link:"https://x.ai/careers",                                                notes:"Elon Musk's AI company; very new program"},
+  {id:"hft",        name:"HFT Firms",     sector:"Quant Finance",   tier:"Tier 1 – AI & High-Growth", link:"https://www.imc.com/us/careers/",                                    notes:"Jane Street, IMC, Citadel — top quant internships"},
+  // Tier 2
+  {id:"meta",       name:"Meta",          sector:"Social/AI",       tier:"Tier 2 – Big Tech",         link:"https://www.metacareers.com/students-and-grads/",                    notes:"Large intern class; SWE, ML, infra tracks"},
+  {id:"google",     name:"Google",        sector:"Search/Cloud/AI", tier:"Tier 2 – Big Tech",         link:"https://careers.google.com/students/",                               notes:"STEP (freshman) & SWE intern — apply early Sep"},
+  {id:"nvidia",     name:"NVIDIA",        sector:"Semiconductors",  tier:"Tier 2 – Big Tech",         link:"https://nvidia.wd5.myworkdayjobs.com/UniversityJobs",                notes:"GPU, CUDA, AI infra; hardware focus"},
+  {id:"apple",      name:"Apple",         sector:"Consumer Tech",   tier:"Tier 2 – Big Tech",         link:"https://jobs.apple.com/en-us/search?team=internships-STDNT-INTRN",   notes:"Broad SWE & hardware tracks"},
+  {id:"microsoft",  name:"Microsoft",     sector:"Cloud/AI/OS",     tier:"Tier 2 – Big Tech",         link:"https://careers.microsoft.com/students/us/en/usuniversityinternship", notes:"Explore (freshman) & SWE intern — opens Aug"},
+  {id:"amazon",     name:"Amazon",        sector:"E-commerce/Cloud",tier:"Tier 2 – Big Tech",         link:"https://www.amazon.jobs/en/business_units/internships-and-student-programs", notes:"SDE intern program; opens Aug–Sep"},
+  // Tier 3
+  {id:"roblox",     name:"Roblox",        sector:"Gaming Platform", tier:"Tier 3 – Consumer/Fintech", link:"https://corp.roblox.com/careers/",                                   notes:"Game platform & engine engineering roles"},
+  {id:"figma",      name:"Figma",         sector:"Design Tools",    tier:"Tier 3 – Consumer/Fintech", link:"https://www.figma.com/careers/",                                     notes:"SWE & product design interns"},
+  {id:"airbnb",     name:"Airbnb",        sector:"Travel Platform", tier:"Tier 3 – Consumer/Fintech", link:"https://careers.airbnb.com/university/",                             notes:"SWE intern program"},
+  {id:"pinterest",  name:"Pinterest",     sector:"Visual Discovery",tier:"Tier 3 – Consumer/Fintech", link:"https://www.pinterestcareers.com/university-recruiting/",             notes:"SWE intern program"},
+  {id:"uber",       name:"Uber",          sector:"Ride-share",      tier:"Tier 3 – Consumer/Fintech", link:"https://university-uber.icims.com/",                                 notes:"SWE & data science internships"},
+  {id:"palantir",   name:"Palantir",      sector:"Data Analytics",  tier:"Tier 3 – Consumer/Fintech", link:"https://www.palantir.com/careers/",                                  notes:"SWE & Forward Deployed Engineer internships"},
+  {id:"anduril",    name:"Anduril",       sector:"Defense Tech",    tier:"Tier 3 – Consumer/Fintech", link:"https://www.anduril.com/open-roles/",                                notes:"US citizenship often required for clearance"},
+  {id:"coinbase",   name:"Coinbase",      sector:"Crypto",          tier:"Tier 3 – Consumer/Fintech", link:"https://www.coinbase.com/careers",                                   notes:"SWE intern roles in crypto infrastructure"},
+  {id:"doordash",   name:"DoorDash",      sector:"Food Delivery",   tier:"Tier 3 – Consumer/Fintech", link:"https://careers.doordash.com/university",                            notes:"SWE intern program; solid mentorship"},
+  {id:"reddit",     name:"Reddit",        sector:"Social Media",    tier:"Tier 3 – Consumer/Fintech", link:"https://www.redditinc.com/careers",                                  notes:"SWE internships"},
+  {id:"snapchat",   name:"Snap",          sector:"Social/Camera",   tier:"Tier 3 – Consumer/Fintech", link:"https://snap.com/en-US/jobs",                                        notes:"SWE intern program; camera & AR tech"},
+  {id:"tiktok",     name:"TikTok",        sector:"Social Media",    tier:"Tier 3 – Consumer/Fintech", link:"https://careers.tiktok.com/",                                        notes:"US & global intern tracks available"},
+  {id:"stripe",     name:"Stripe",        sector:"Payments",        tier:"Tier 3 – Consumer/Fintech", link:"https://stripe.com/jobs/university",                                 notes:"Highly competitive SWE intern — top-tier pay"},
+  {id:"robinhood",  name:"Robinhood",     sector:"Fintech",         tier:"Tier 3 – Consumer/Fintech", link:"https://careers.robinhood.com/",                                     notes:"SWE & data internships"},
+  {id:"shopify",    name:"Shopify",       sector:"E-commerce",      tier:"Tier 3 – Consumer/Fintech", link:"https://www.shopify.com/careers/interns",                            notes:"Dev degree & intern programs"},
+  {id:"block",      name:"Block",         sector:"Fintech",         tier:"Tier 3 – Consumer/Fintech", link:"https://careers.block.xyz/",                                         notes:"Square/Cash App parent company"},
+  {id:"notion",     name:"Notion",        sector:"Productivity",    tier:"Tier 3 – Consumer/Fintech", link:"https://www.notion.so/careers",                                      notes:"Small but fast-growing intern program"},
+  {id:"brex",       name:"Brex",          sector:"Fintech/Banking", tier:"Tier 3 – Consumer/Fintech", link:"https://www.brex.com/careers",                                       notes:"SWE internships in fintech infra"},
+  {id:"datadog",    name:"Datadog",       sector:"Observability",   tier:"Tier 3 – Consumer/Fintech", link:"https://www.datadoghq.com/careers/",                                 notes:"SWE & infrastructure roles"},
+  {id:"linkedin",   name:"LinkedIn",      sector:"Professional Net",tier:"Tier 3 – Consumer/Fintech", link:"https://careers.linkedin.com/students",                              notes:"REACH & SWE intern program"},
+  // Tier 4
+  {id:"salesforce", name:"Salesforce",    sector:"CRM/Cloud",       tier:"Tier 4 – Enterprise SaaS",  link:"https://www.salesforce.com/company/careers/university-recruiting/",  notes:"Futureforce intern program — great mentorship"},
+  {id:"twilio",     name:"Twilio",        sector:"Comm APIs",       tier:"Tier 4 – Enterprise SaaS",  link:"https://www.twilio.com/en-us/company/jobs",                           notes:"SWE internships in API infrastructure"},
+  {id:"discord",    name:"Discord",       sector:"Gaming Comms",    tier:"Tier 4 – Enterprise SaaS",  link:"https://discord.com/jobs",                                            notes:"SWE intern program"},
+  {id:"spacex",     name:"SpaceX",        sector:"Aerospace",       tier:"Tier 4 – Enterprise SaaS",  link:"https://www.spacex.com/careers/university",                           notes:"US citizenship required; avionics & SWE"},
+  {id:"atlassian",  name:"Atlassian",     sector:"Dev Tools",       tier:"Tier 4 – Enterprise SaaS",  link:"https://www.atlassian.com/company/careers/interns",                  notes:"Jira/Confluence — SWE intern program"},
+  {id:"broadcom",   name:"Broadcom",      sector:"Semiconductors",  tier:"Tier 4 – Enterprise SaaS",  link:"https://careers.broadcom.com/",                                      notes:"HW & SW engineering roles"},
+  {id:"dropbox",    name:"Dropbox",       sector:"Cloud Storage",   tier:"Tier 4 – Enterprise SaaS",  link:"https://jobs.dropbox.com/teams/university",                           notes:"SWE intern program"},
+  {id:"cloudflare", name:"Cloudflare",    sector:"Networking/CDN",  tier:"Tier 4 – Enterprise SaaS",  link:"https://www.cloudflare.com/careers/jobs/",                            notes:"SWE & network engineering roles"},
+  {id:"gitlab",     name:"GitLab",        sector:"DevOps",          tier:"Tier 4 – Enterprise SaaS",  link:"https://about.gitlab.com/jobs/",                                     notes:"Remote-first; strong DevOps culture"},
+  {id:"adobe",      name:"Adobe",         sector:"Creative Software",tier:"Tier 4 – Enterprise SaaS", link:"https://www.adobe.com/careers/university.html",                       notes:"SWE & research intern tracks"},
+  {id:"mongodb",    name:"MongoDB",       sector:"Database",        tier:"Tier 4 – Enterprise SaaS",  link:"https://www.mongodb.com/careers/university-recruiting",               notes:"SWE internships"},
+  {id:"workday",    name:"Workday",       sector:"HCM SaaS",        tier:"Tier 4 – Enterprise SaaS",  link:"https://www.workday.com/en-us/company/careers/early-career.html",     notes:"SWE intern program"},
+  {id:"canva",      name:"Canva",         sector:"Design Tools",    tier:"Tier 4 – Enterprise SaaS",  link:"https://www.canva.com/careers/",                                      notes:"Australia-based; growing US presence"},
+  {id:"spotify",    name:"Spotify",       sector:"Music Streaming", tier:"Tier 4 – Enterprise SaaS",  link:"https://www.lifeatspotify.com/students",                              notes:"HATCH internship program — competitive"},
+  {id:"asana",      name:"Asana",         sector:"Project Mgmt",    tier:"Tier 4 – Enterprise SaaS",  link:"https://asana.com/jobs",                                              notes:"SWE internships"},
+  {id:"epicgames",  name:"Epic Games",    sector:"Gaming/Unreal",   tier:"Tier 4 – Enterprise SaaS",  link:"https://www.epicgames.com/site/en-US/careers",                        notes:"Game engine & SWE roles"},
+  {id:"qualcomm",   name:"Qualcomm",      sector:"Semiconductors",  tier:"Tier 4 – Enterprise SaaS",  link:"https://www.qualcomm.com/company/careers/interns-and-students",       notes:"SWE & hardware intern tracks"},
+  // Tier 5
+  {id:"sap",        name:"SAP",           sector:"ERP/Cloud",       tier:"Tier 5 – Cloud/Infra",      link:"https://jobs.sap.com/",                                               notes:"Global intern program; SWE & data roles"},
+  {id:"servicenow", name:"ServiceNow",    sector:"IT Workflow",     tier:"Tier 5 – Cloud/Infra",      link:"https://careers.servicenow.com/en/internships/",                      notes:"SWE intern program"},
+  {id:"zoom",       name:"Zoom",          sector:"Video Comms",     tier:"Tier 5 – Cloud/Infra",      link:"https://careers.zoom.us/",                                            notes:"SWE internships; infra & product tracks"},
+  {id:"oracle",     name:"Oracle",        sector:"Database/Cloud",  tier:"Tier 5 – Cloud/Infra",      link:"https://www.oracle.com/corporate/careers/students-grads/internships/", notes:"Large program; cloud & DB engineering"},
+  {id:"paloalto",   name:"Palo Alto Networks",sector:"Cybersecurity",tier:"Tier 5 – Cloud/Infra",    link:"https://jobs.paloaltonetworks.com/en/jobs/",                           notes:"Security-focused SWE roles"},
+  {id:"crowdstrike",name:"CrowdStrike",   sector:"Cybersecurity",   tier:"Tier 5 – Cloud/Infra",      link:"https://www.crowdstrike.com/careers/",                                notes:"SWE & threat intelligence roles"},
+  {id:"okta",       name:"Okta",          sector:"Identity/Auth",   tier:"Tier 5 – Cloud/Infra",      link:"https://www.okta.com/company/careers/",                               notes:"SWE intern program"},
+  {id:"docusign",   name:"DocuSign",      sector:"e-Signature",     tier:"Tier 5 – Cloud/Infra",      link:"https://www.docusign.com/company/careers",                            notes:"SWE internships"},
+  {id:"unity",      name:"Unity",         sector:"Game Engine",     tier:"Tier 5 – Cloud/Infra",      link:"https://careers.unity.com/",                                          notes:"SWE & graphics engineering roles"},
+  {id:"expedia",    name:"Expedia",       sector:"Travel Tech",     tier:"Tier 5 – Cloud/Infra",      link:"https://lifeatexpediagroup.com/",                                      notes:"SWE intern program"},
+  {id:"paypal",     name:"PayPal",        sector:"Payments",        tier:"Tier 5 – Cloud/Infra",      link:"https://careers.pypl.com/students.html",                              notes:"STEP intern program"},
+  {id:"lyft",       name:"Lyft",          sector:"Ride-share",      tier:"Tier 5 – Cloud/Infra",      link:"https://www.lyft.com/careers",                                        notes:"SWE intern program"},
+  {id:"ebay",       name:"eBay",          sector:"E-commerce",      tier:"Tier 5 – Cloud/Infra",      link:"https://careers.ebayinc.com/students/",                               notes:"SWE internships"},
+  {id:"intuit",     name:"Intuit",        sector:"Fintech/Tax",     tier:"Tier 5 – Cloud/Infra",      link:"https://jobs.intuit.com/category/students-and-interns/",              notes:"TurboTax/QuickBooks; solid intern program"},
+  {id:"rubrik",     name:"Rubrik",        sector:"Data Security",   tier:"Tier 5 – Cloud/Infra",      link:"https://www.rubrik.com/company/careers",                              notes:"SWE & security engineering"},
+  // Tier 6
+  {id:"tesla",      name:"Tesla",         sector:"EV/Autonomy",     tier:"Tier 6 – Legacy/Hardware",  link:"https://www.tesla.com/careers/search/?type=3",                        notes:"SWE, autonomy & embedded systems"},
+  {id:"ibm",        name:"IBM",           sector:"Enterprise IT",   tier:"Tier 6 – Legacy/Hardware",  link:"https://www.ibm.com/employment/internships/",                         notes:"Quantum, AI, cloud intern tracks"},
+  {id:"cisco",      name:"Cisco",         sector:"Networking",      tier:"Tier 6 – Legacy/Hardware",  link:"https://jobs.cisco.com/jobs/SearchJobs/intern",                       notes:"SWE & network engineering roles"},
+  {id:"intel",      name:"Intel",         sector:"Semiconductors",  tier:"Tier 6 – Legacy/Hardware",  link:"https://jobs.intel.com/en/search-jobs/Intern/",                       notes:"HW/SW intern program"},
+  {id:"dell",       name:"Dell",          sector:"PC/Enterprise HW",tier:"Tier 6 – Legacy/Hardware",  link:"https://jobs.dell.com/",                                              notes:"SWE & HW intern tracks"},
+  {id:"hp",         name:"HP",            sector:"PC/Printing",     tier:"Tier 6 – Legacy/Hardware",  link:"https://careers.hpe.com/us/en/students-and-grads",                   notes:"SWE intern program"},
+  {id:"ea",         name:"Electronic Arts",sector:"Gaming",         tier:"Tier 6 – Legacy/Hardware",  link:"https://www.ea.com/careers/university",                               notes:"Game dev & SWE intern program"},
+  {id:"supermicro", name:"Supermicro",    sector:"Server Hardware", tier:"Tier 6 – Legacy/Hardware",  link:"https://www.supermicro.com/en/about/careers",                         notes:"HW & firmware engineering"},
+  // Tier 7
+  {id:"cognizant",  name:"Cognizant",     sector:"IT Services",     tier:"Tier 7 – Global IT Services",link:"https://careers.cognizant.com/global/en/internship",                notes:"IT consulting & SWE roles"},
+  {id:"infosys",    name:"Infosys",       sector:"IT Services",     tier:"Tier 7 – Global IT Services",link:"https://www.infosys.com/careers/interns.html",                      notes:"InStep global intern program"},
+  {id:"wipro",      name:"Wipro",         sector:"IT Services",     tier:"Tier 7 – Global IT Services",link:"https://careers.wipro.com/en-US",                                   notes:"Global IT services intern program"},
+  {id:"tcs",        name:"Tata (TCS)",    sector:"IT Services",     tier:"Tier 7 – Global IT Services",link:"https://ibegin.tcs.com/iBegin/",                                    notes:"TCS iBegin campus program"},
+];
+
+const TIER_CONFIG = {
+  "Tier 1": { color: "#6C63FF", key: "tier1" },
+  "Tier 2": { color: "#43E97B", key: "tier2" },
+  "Tier 3": { color: "#FF9F43", key: "tier3" },
+  "Tier 4": { color: "#54A0FF", key: "tier4" },
+  "Tier 5": { color: "#FF6B6B", key: "tier5" },
+  "Tier 6": { color: "#A29BFE", key: "tier6" },
+  "Tier 7": { color: "#00CEC9", key: "tier7" },
+};
+
+const STATUS_LABELS = {
+  "not-applied": "Not Applied",
+  "applied":     "Applied ✓",
+  "interviewing":"Interviewing 📞",
+  "offered":     "Offered 🎉",
+  "rejected":    "Rejected ✗",
+};
+
+// ── State ───────────────────────────────────────────────────
+let netId = localStorage.getItem("internTrackerNetId") || "";
+let allStatuses = {}; // { companyId: { netid: status } }
+let allCompanies = [...COMPANIES];
+let activeFilter = "all";
+let searchQ = "";
+
+// ── NetID setup ─────────────────────────────────────────────
+const netidInput = document.getElementById("netid-input");
+const netidDisplay = document.getElementById("netid-display");
+
+if (netId) {
+  netidInput.value = netId;
+  netidDisplay.textContent = netId;
+  netidDisplay.style.display = "";
+}
+
+netidInput.addEventListener("change", () => {
+  netId = netidInput.value.trim().toLowerCase().replace(/[^a-z0-9]/g, "");
+  netidInput.value = netId;
+  if (netId) {
+    localStorage.setItem("internTrackerNetId", netId);
+    netidDisplay.textContent = netId;
+    netidDisplay.style.display = "";
+    toast("NetID set to " + netId);
+    renderAll();
+  }
+});
+
+// ── Firebase listener ────────────────────────────────────────
+const statusRef = collection(db, "internStatuses");
+
+// Seed companies if not already in Firestore (one-time)
+const companiesRef = collection(db, "internCompanies");
+onSnapshot(companiesRef, snap => {
+  if (!snap.empty) {
+    const firestoreCompanies = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    // Merge: keep seed + Firestore additions
+    const seedIds = new Set(COMPANIES.map(c => c.id));
+    const additions = firestoreCompanies.filter(c => !seedIds.has(c.id));
+    allCompanies = [...COMPANIES, ...additions];
+  }
+  renderAll();
+});
+
+// Seed if empty
+import { getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+(async () => {
+  const snap = await getDocs(companiesRef);
+  if (snap.empty) {
+    for (const c of COMPANIES) {
+      await setDoc(doc(db, "internCompanies", c.id), c);
+    }
+  }
+})();
+
+// Listen to all status updates in real-time
+onSnapshot(statusRef, snap => {
+  allStatuses = {};
+  snap.forEach(d => {
+    allStatuses[d.id] = d.data(); // { netid: "applied", ... }
+  });
+  renderAll();
+  updateStats();
+});
+
+// ── Status update ────────────────────────────────────────────
+window.updateStatus = async (companyId, status) => {
+  if (!netId) { toast("⚠ Set your NetID first!"); return; }
+  const ref = doc(db, "internStatuses", companyId);
+  await setDoc(ref, { [netId]: status }, { merge: true });
+  toast("Updated " + companyId + " → " + STATUS_LABELS[status]);
+};
+
+// ── Add company ──────────────────────────────────────────────
+window.openAddModal  = () => document.getElementById("add-modal").classList.add("open");
+window.closeAddModal = () => document.getElementById("add-modal").classList.remove("open");
+
+window.saveNewCompany = async () => {
+  const name  = document.getElementById("m-company").value.trim();
+  const sector= document.getElementById("m-sector").value.trim();
+  const tier  = document.getElementById("m-tier").value;
+  const link  = document.getElementById("m-link").value.trim();
+  const notes = document.getElementById("m-notes").value.trim();
+  if (!name) { toast("⚠ Company name is required"); return; }
+  const id = name.toLowerCase().replace(/[^a-z0-9]/g, "_");
+  await setDoc(doc(db, "internCompanies", id), { id, name, sector, tier, link, notes, addedBy: netId });
+  toast("Added " + name + " 🎉");
+  closeAddModal();
+};
+
+// ── Filters ──────────────────────────────────────────────────
+document.querySelectorAll(".pill").forEach(pill => {
+  pill.addEventListener("click", () => {
+    document.querySelectorAll(".pill").forEach(p => p.classList.remove("active"));
+    pill.classList.add("active");
+    activeFilter = pill.dataset.filter;
+    renderAll();
+  });
+});
+
+document.getElementById("search").addEventListener("input", e => {
+  searchQ = e.target.value.toLowerCase();
+  renderAll();
+});
+
+// ── Stats ────────────────────────────────────────────────────
+function updateStats() {
+  if (!netId) return;
+  const myStatuses = Object.entries(allStatuses)
+    .map(([id, d]) => d[netId])
+    .filter(Boolean);
+  document.getElementById("stat-total").textContent = allCompanies.length;
+  document.getElementById("stat-applied").textContent      = myStatuses.filter(s => s === "applied").length;
+  document.getElementById("stat-interviewing").textContent = myStatuses.filter(s => s === "interviewing").length;
+  document.getElementById("stat-offered").textContent      = myStatuses.filter(s => s === "offered").length;
+}
+
+// ── Render ───────────────────────────────────────────────────
+function renderAll() {
+  updateStats();
+  const main = document.getElementById("main-content");
+
+  let filtered = allCompanies.filter(c => {
+    const q = searchQ;
+    const matchSearch = !q || c.name.toLowerCase().includes(q) || (c.sector||"").toLowerCase().includes(q) || (c.notes||"").toLowerCase().includes(q);
+    const tierKey = (c.tier || "").split("–")[0].trim().replace(" ","").toLowerCase();
+    const matchFilter =
+      activeFilter === "all" ? true :
+      activeFilter === "applied" ? ((allStatuses[c.id]||{})[netId] === "applied") :
+      tierKey === activeFilter.replace("tier","tier ");
+    return matchSearch && matchFilter;
+  });
+
+  if (!filtered.length) {
+    main.innerHTML = `<div class="empty"><span class="empty-icon">🔍</span>No companies match your filter.</div>`;
+    return;
+  }
+
+  // Group by tier
+  const grouped = {};
+  for (const c of filtered) {
+    const t = c.tier || "Other";
+    if (!grouped[t]) grouped[t] = [];
+    grouped[t].push(c);
+  }
+
+  const tierOrder = [
+    "Tier 1 – AI & High-Growth",
+    "Tier 2 – Big Tech",
+    "Tier 3 – Consumer/Fintech",
+    "Tier 4 – Enterprise SaaS",
+    "Tier 5 – Cloud/Infra",
+    "Tier 6 – Legacy/Hardware",
+    "Tier 7 – Global IT Services",
+  ];
+
+  let html = "";
+  const orderedTiers = [...tierOrder.filter(t => grouped[t]), ...Object.keys(grouped).filter(t => !tierOrder.includes(t))];
+
+  for (const tier of orderedTiers) {
+    const companies = grouped[tier] || [];
+    const tierNum = tier.match(/Tier (\d)/)?.[1];
+    const cfg = TIER_CONFIG["Tier " + tierNum] || { color: "#888" };
+
+    html += `<div class="tier-section">
+      <div class="tier-header">
+        <div class="tier-dot" style="background:${cfg.color}"></div>
+        <span class="tier-label" style="color:${cfg.color}">${tier}</span>
+        <span class="tier-count">${companies.length} companies</span>
+      </div>
+      <div class="cards-grid">`;
+
+    for (const c of companies) {
+      const statuses = allStatuses[c.id] || {};
+      const myStatus = statuses[netId] || "not-applied";
+
+      // Show who's applied (other netids)
+      const others = Object.entries(statuses)
+        .filter(([n, s]) => n !== netId && s !== "not-applied")
+        .map(([n, s]) => `<span style="color:var(--muted);font-size:10px;font-family:var(--font-mono)">${n}:${s.slice(0,3)}</span>`);
+      const othersHtml = others.length ? `<div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">${others.join("")}</div>` : "";
+
+      html += `
+        <div class="card s-${myStatus}" style="--tier-color:${cfg.color}" data-id="${c.id}">
+          <div class="card-top">
+            <div class="company-name">${c.name}</div>
+            <div class="sector-badge">${c.sector || ""}</div>
+          </div>
+          <p class="card-notes">${c.notes || ""}</p>
+          ${othersHtml}
+          <div class="card-footer">
+            <a class="apply-btn" href="${c.link || "#"}" target="_blank" rel="noopener">
+              Apply ↗
+            </a>
+            <div class="status-group">
+              <div class="status-dot"></div>
+              <select class="status-select" onchange="updateStatus('${c.id}', this.value)">
+                ${Object.entries(STATUS_LABELS).map(([v,l]) =>
+                  `<option value="${v}" ${myStatus===v?"selected":""}>${l}</option>`
+                ).join("")}
+              </select>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    html += `</div></div>`;
+  }
+
+  main.innerHTML = html;
+}
+
+// ── Toast helper ─────────────────────────────────────────────
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2800);
+}
+
+window.toast = toast;
+
+// ── Close modal on overlay click ─────────────────────────────
+document.getElementById("add-modal").addEventListener("click", e => {
+  if (e.target === e.currentTarget) closeAddModal();
+});
+</script>
+</body>
+</html>
