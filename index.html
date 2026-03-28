@@ -624,6 +624,141 @@ const COMPANIES = [
   {id:"infosys",    name:"Infosys",       sector:"IT Services",     tier:"Tier 7 – Global IT Services",link:"https://www.infosys.com/careers/interns.html",                      notes:"InStep global intern program"},
   {id:"wipro",      name:"Wipro",         sector:"IT Services",     tier:"Tier 7 – Global IT Services",link:"https://careers.wipro.com/en-US",                                   notes:"Global IT services intern program"},
   {id:"tcs",        name:"Tata (TCS)",    sector:"IT Services",     tier:"Tier 7 – Global IT Services",link:"https://ibegin.tcs.com/iBegin/",                                    notes:"TCS iBegin campus program"},
+  // ── Quant / HFT ──────────────────────────────────────────────
+  {id:"janestreet",  name:"Jane Street",         sector:"Quant Finance",      tier:"Tier 1 – AI & High-Growth", link:"https://www.janestreet.com/join-jane-street/internships/",              notes:"Top quant; SWE & quant researcher tracks"},
+  {id:"citadel",     name:"Citadel",              sector:"Quant Finance",      tier:"Tier 1 – AI & High-Growth", link:"https://www.citadel.com/careers/open-positions/",                       notes:"Citadel & Citadel Securities; top quant internships"},
+  {id:"deshaw",      name:"D.E. Shaw",            sector:"Quant Finance",      tier:"Tier 1 – AI & High-Growth", link:"https://www.deshaw.com/careers/internships",                            notes:"Highly selective; SWE & quant research"},
+  {id:"twosigma",    name:"Two Sigma",            sector:"Quant Finance",      tier:"Tier 1 – AI & High-Growth", link:"https://www.twosigma.com/careers/",                                     notes:"Top quant firm; SWE & data science intern"},
+  {id:"imc",         name:"IMC Trading",          sector:"Quant Finance",      tier:"Tier 1 – AI & High-Growth", link:"https://www.imc.com/us/careers/",                                       notes:"HFT; great SWE intern program"},
+  {id:"jumptrading",  name:"Jump Trading",        sector:"Quant Finance",      tier:"Tier 1 – AI & High-Growth", link:"https://www.jumptrading.com/careers/",                                  notes:"Quant trading; SWE internships"},
+  {id:"hrt",         name:"Hudson River Trading", sector:"Quant Finance",      tier:"Tier 1 – AI & High-Growth", link:"https://www.hudsonrivertrading.com/careers/",                           notes:"Top HFT; SWE internships"},
+  {id:"virtu",       name:"Virtu Financial",      sector:"Quant Finance",      tier:"Tier 1 – AI & High-Growth", link:"https://www.virtu.com/careers/",                                        notes:"HFT firm; SWE & quant roles"},
+  {id:"akuna",       name:"Akuna Capital",        sector:"Quant Finance",      tier:"Tier 1 – AI & High-Growth", link:"https://akunacapital.com/careers",                                      notes:"Options trading; SWE & quant intern"},
+  {id:"optiver",     name:"Optiver",              sector:"Quant Finance",      tier:"Tier 1 – AI & High-Growth", link:"https://optiver.com/working-at-optiver/career-opportunities/",          notes:"Global HFT; SWE & trading intern"},
+  {id:"susquehanna", name:"Susquehanna (SIG)",    sector:"Quant Finance",      tier:"Tier 1 – AI & High-Growth", link:"https://careers.sig.com/",                                              notes:"Quant trading; SWE & quant researcher"},
+  // ── AI Startups ───────────────────────────────────────────────
+  {id:"mistral",     name:"Mistral AI",           sector:"AI/LLM",             tier:"Tier 1 – AI & High-Growth", link:"https://mistral.ai/careers/",                                           notes:"$6B; Europe's top LLM startup"},
+  {id:"cohere",      name:"Cohere",               sector:"AI/LLM",             tier:"Tier 1 – AI & High-Growth", link:"https://cohere.com/careers",                                            notes:"$5B; enterprise LLM platform"},
+  {id:"perplexity",  name:"Perplexity AI",        sector:"AI Search",          tier:"Tier 1 – AI & High-Growth", link:"https://www.perplexity.ai/hub/careers",                                 notes:"$9B; AI answer engine"},
+  {id:"scaleai",     name:"Scale AI",             sector:"AI Data",            tier:"Tier 1 – AI & High-Growth", link:"https://scale.com/careers",                                             notes:"$13.8B; AI training data leader"},
+  {id:"huggingface", name:"Hugging Face",         sector:"AI Platform",        tier:"Tier 1 – AI & High-Growth", link:"https://apply.workable.com/huggingface/",                               notes:"$4.5B; open source AI hub"},
+  {id:"wandb",       name:"Weights & Biases",     sector:"MLOps",              tier:"Tier 1 – AI & High-Growth", link:"https://wandb.ai/site/careers",                                         notes:"$1.25B; ML experiment tracking"},
+  {id:"together",    name:"Together AI",          sector:"AI Infrastructure",  tier:"Tier 1 – AI & High-Growth", link:"https://www.together.ai/careers",                                       notes:"$3B; open source AI cloud"},
+  {id:"coreweave",   name:"CoreWeave",            sector:"AI Cloud",           tier:"Tier 1 – AI & High-Growth", link:"https://www.coreweave.com/careers",                                     notes:"$19B; GPU cloud for AI workloads"},
+  {id:"groq",        name:"Groq",                 sector:"AI Hardware",        tier:"Tier 1 – AI & High-Growth", link:"https://groq.com/careers/",                                             notes:"$2.8B; fastest AI inference chips"},
+  {id:"cerebras",    name:"Cerebras Systems",     sector:"AI Hardware",        tier:"Tier 1 – AI & High-Growth", link:"https://www.cerebras.net/careers/",                                     notes:"Wafer-scale AI chips; SWE & HW internships"},
+  {id:"anyscale",    name:"Anyscale",             sector:"AI Infrastructure",  tier:"Tier 1 – AI & High-Growth", link:"https://www.anyscale.com/careers",                                      notes:"Ray framework; distributed AI computing"},
+  {id:"runway",      name:"Runway ML",            sector:"Generative AI",      tier:"Tier 1 – AI & High-Growth", link:"https://runwayml.com/careers/",                                         notes:"AI video generation; SWE & ML internships"},
+  {id:"elevenlab",   name:"ElevenLabs",           sector:"AI Audio",           tier:"Tier 1 – AI & High-Growth", link:"https://elevenlabs.io/careers",                                         notes:"$3.3B; AI voice synthesis leader"},
+  {id:"cursor",      name:"Cursor (Anysphere)",   sector:"AI Dev Tools",       tier:"Tier 1 – AI & High-Growth", link:"https://www.cursor.com/careers",                                        notes:"$9B; AI code editor; tiny elite team"},
+  {id:"glean",       name:"Glean",                sector:"Enterprise AI",      tier:"Tier 1 – AI & High-Growth", link:"https://www.glean.com/careers",                                         notes:"$4.6B; AI enterprise search"},
+  {id:"harvey",      name:"Harvey AI",            sector:"Legal AI",           tier:"Tier 1 – AI & High-Growth", link:"https://www.harvey.ai/careers",                                         notes:"$3B; AI for law firms"},
+  {id:"tempus",      name:"Tempus AI",            sector:"Healthcare AI",      tier:"Tier 1 – AI & High-Growth", link:"https://www.tempus.com/careers/",                                       notes:"$8B; AI precision medicine"},
+  {id:"waymo",       name:"Waymo",                sector:"Autonomous Vehicles",tier:"Tier 1 – AI & High-Growth", link:"https://waymo.com/careers/",                                            notes:"$45B; Alphabet self-driving unit"},
+  {id:"figure",      name:"Figure AI",            sector:"Robotics",           tier:"Tier 1 – AI & High-Growth", link:"https://www.figure.ai/careers",                                         notes:"$2.6B; humanoid robot startup"},
+  {id:"boston",      name:"Boston Dynamics",      sector:"Robotics",           tier:"Tier 1 – AI & High-Growth", link:"https://bostondynamics.com/careers/",                                   notes:"Spot & Atlas robots; SWE & robotics"},
+  {id:"cruise",      name:"Cruise",               sector:"Autonomous Vehicles",tier:"Tier 1 – AI & High-Growth", link:"https://getcruise.com/careers/",                                        notes:"GM AV subsidiary; SWE & robotics"},
+  {id:"aurora",      name:"Aurora Innovation",    sector:"Autonomous Vehicles",tier:"Tier 1 – AI & High-Growth", link:"https://aurora.tech/careers",                                           notes:"Self-driving trucks; SWE & ML"},
+  // ── Big Tech additions ────────────────────────────────────────
+  {id:"bytedance",   name:"ByteDance",            sector:"Social/AI",          tier:"Tier 2 – Big Tech",         link:"https://jobs.bytedance.com/en/campus",                                   notes:"$268B; TikTok parent; strong ML roles"},
+  {id:"twitter",     name:"X (Twitter)",          sector:"Social Media",       tier:"Tier 2 – Big Tech",         link:"https://careers.x.com/en",                                              notes:"SWE internships"},
+  {id:"twitch",      name:"Twitch",               sector:"Gaming/Streaming",   tier:"Tier 2 – Big Tech",         link:"https://www.twitch.tv/p/en/jobs/",                                      notes:"Amazon subsidiary; live streaming"},
+  // ── Consumer/Fintech additions ────────────────────────────────
+  {id:"goldmansachs",name:"Goldman Sachs",        sector:"Investment Banking", tier:"Tier 3 – Consumer/Fintech", link:"https://www.goldmansachs.com/careers/students/",                        notes:"Engineering division; SWE & quant"},
+  {id:"jpmorgan",    name:"JPMorgan Chase",       sector:"Banking/Fintech",    tier:"Tier 3 – Consumer/Fintech", link:"https://careers.jpmorgan.com/us/en/students/programs",                   notes:"Tech & data science; Code for Good"},
+  {id:"morganst",    name:"Morgan Stanley",       sector:"Investment Banking", tier:"Tier 3 – Consumer/Fintech", link:"https://www.morganstanley.com/people/students-graduates",                notes:"Technology analyst program"},
+  {id:"blackrock",   name:"BlackRock",            sector:"Asset Management",   tier:"Tier 3 – Consumer/Fintech", link:"https://careers.blackrock.com/early-careers/",                          notes:"Aladdin platform; SWE & data science"},
+  {id:"bloomberg",   name:"Bloomberg",            sector:"Financial Data",     tier:"Tier 3 – Consumer/Fintech", link:"https://www.bloomberg.com/careers/technology/",                         notes:"Bloomberg terminal; SWE internships"},
+  {id:"visa",        name:"Visa",                 sector:"Payments",           tier:"Tier 3 – Consumer/Fintech", link:"https://usa.visa.com/careers/students-graduates.html",                   notes:"Global payments; SWE & data science"},
+  {id:"mastercard",  name:"Mastercard",           sector:"Payments",           tier:"Tier 3 – Consumer/Fintech", link:"https://careers.mastercard.com/us/en/students",                         notes:"Tech & data internships"},
+  {id:"plaid",       name:"Plaid",                sector:"Fintech API",        tier:"Tier 3 – Consumer/Fintech", link:"https://plaid.com/careers/",                                            notes:"$13B; banking infrastructure API"},
+  {id:"affirm",      name:"Affirm",               sector:"BNPL/Fintech",       tier:"Tier 3 – Consumer/Fintech", link:"https://www.affirm.com/careers",                                        notes:"Buy now pay later; SWE intern"},
+  {id:"klarna",      name:"Klarna",               sector:"BNPL/Fintech",       tier:"Tier 3 – Consumer/Fintech", link:"https://www.klarna.com/careers/",                                       notes:"$14B; BNPL leader going public"},
+  {id:"chime",       name:"Chime",                sector:"Neobank",            tier:"Tier 3 – Consumer/Fintech", link:"https://www.chime.com/careers/",                                        notes:"$25B; largest US neobank"},
+  {id:"ramp",        name:"Ramp",                 sector:"Fintech/Spend",      tier:"Tier 3 – Consumer/Fintech", link:"https://ramp.com/careers",                                              notes:"$7.65B; fastest growing fintech"},
+  {id:"rippling",    name:"Rippling",             sector:"HR/IT Platform",     tier:"Tier 3 – Consumer/Fintech", link:"https://www.rippling.com/careers",                                      notes:"$13.5B; workforce management"},
+  {id:"duolingo",    name:"Duolingo",             sector:"EdTech",             tier:"Tier 3 – Consumer/Fintech", link:"https://careers.duolingo.com/",                                         notes:"Language learning; SWE intern"},
+  {id:"mckinsey",    name:"McKinsey QuantumBlack",sector:"Consulting/AI",      tier:"Tier 3 – Consumer/Fintech", link:"https://www.mckinsey.com/careers/students",                             notes:"AI division; data science intern"},
+  {id:"bcg",         name:"BCG Gamma",            sector:"Consulting/AI",      tier:"Tier 3 – Consumer/Fintech", link:"https://www.bcg.com/careers/paths/internship",                          notes:"BCG AI division; data & AI consulting"},
+  // ── Enterprise SaaS additions ─────────────────────────────────
+  {id:"amd",         name:"AMD",                  sector:"Semiconductors",     tier:"Tier 4 – Enterprise SaaS",  link:"https://jobs.amd.com/go/Students-&-New-Graduates/2567701/",             notes:"GPU & CPU chip design; SWE & HW intern"},
+  {id:"arm",         name:"Arm",                  sector:"Semiconductors",     tier:"Tier 4 – Enterprise SaaS",  link:"https://careers.arm.com/internships",                                   notes:"CPU architecture; SWE internships"},
+  {id:"mobileye",    name:"Mobileye",             sector:"Autonomous Vehicles",tier:"Tier 4 – Enterprise SaaS",  link:"https://www.mobileye.com/careers/",                                     notes:"Intel subsidiary; ADAS & computer vision"},
+  {id:"elastic",     name:"Elastic",              sector:"Search/Analytics",   tier:"Tier 4 – Enterprise SaaS",  link:"https://www.elastic.co/about/careers",                                  notes:"Elasticsearch; SWE intern roles"},
+  {id:"confluent",   name:"Confluent",            sector:"Data Streaming",     tier:"Tier 4 – Enterprise SaaS",  link:"https://www.confluent.io/careers/",                                     notes:"Kafka-based; SWE internships"},
+  {id:"hashicorp",   name:"HashiCorp",            sector:"DevOps/Cloud",       tier:"Tier 4 – Enterprise SaaS",  link:"https://www.hashicorp.com/jobs",                                        notes:"Terraform, Vault; now part of IBM"},
+  {id:"miro",        name:"Miro",                 sector:"Collaboration",      tier:"Tier 4 – Enterprise SaaS",  link:"https://miro.com/careers/",                                             notes:"$17.5B; online whiteboard"},
+  {id:"airtable",    name:"Airtable",             sector:"No-code/Database",   tier:"Tier 4 – Enterprise SaaS",  link:"https://airtable.com/careers",                                         notes:"$11B; no-code database"},
+  {id:"notion2",     name:"Notion",               sector:"Productivity",       tier:"Tier 4 – Enterprise SaaS",  link:"https://www.notion.so/careers",                                         notes:"$10B; all-in-one workspace"},
+  {id:"retool",      name:"Retool",               sector:"Low-code",           tier:"Tier 4 – Enterprise SaaS",  link:"https://retool.com/careers/",                                           notes:"$3.2B; internal tool builder"},
+  {id:"webflow",     name:"Webflow",              sector:"No-code/Web",        tier:"Tier 4 – Enterprise SaaS",  link:"https://webflow.com/careers",                                           notes:"$4B; visual web development"},
+  {id:"vercel",      name:"Vercel",               sector:"Dev Tools/Cloud",    tier:"Tier 4 – Enterprise SaaS",  link:"https://vercel.com/careers",                                            notes:"$3.25B; Next.js deployment"},
+  {id:"supabase",    name:"Supabase",             sector:"Backend/Database",   tier:"Tier 4 – Enterprise SaaS",  link:"https://supabase.com/careers",                                         notes:"$2B; open source Firebase alt"},
+  {id:"linear",      name:"Linear",               sector:"Dev Tools",          tier:"Tier 4 – Enterprise SaaS",  link:"https://linear.app/careers",                                            notes:"$1.7B; issue tracking for eng teams"},
+  {id:"sentry",      name:"Sentry",               sector:"Error Monitoring",   tier:"Tier 4 – Enterprise SaaS",  link:"https://sentry.io/careers/",                                            notes:"Error tracking; SWE internships"},
+  {id:"amplitude",   name:"Amplitude",            sector:"Product Analytics",  tier:"Tier 4 – Enterprise SaaS",  link:"https://amplitude.com/careers",                                         notes:"Product analytics; SWE internships"},
+  {id:"posthog",     name:"PostHog",              sector:"Product Analytics",  tier:"Tier 4 – Enterprise SaaS",  link:"https://posthog.com/careers",                                           notes:"Open source analytics"},
+  {id:"hubspot",     name:"HubSpot",              sector:"CRM/Marketing",      tier:"Tier 4 – Enterprise SaaS",  link:"https://www.hubspot.com/careers/students",                              notes:"Marketing & CRM SaaS; good intern"},
+  {id:"zendesk",     name:"Zendesk",              sector:"Customer Support",   tier:"Tier 4 – Enterprise SaaS",  link:"https://www.zendesk.com/jobs/",                                         notes:"CX/support platform; SWE internships"},
+  {id:"gusto",       name:"Gusto",                sector:"HR/Payroll",         tier:"Tier 4 – Enterprise SaaS",  link:"https://gusto.com/about/careers",                                       notes:"$9.5B; payroll for small business"},
+  {id:"deel",        name:"Deel",                 sector:"HR/Payroll Global",  tier:"Tier 4 – Enterprise SaaS",  link:"https://www.letsdeel.com/careers",                                      notes:"$12B; global payroll platform"},
+  {id:"veeva",       name:"Veeva Systems",        sector:"Life Sciences SaaS", tier:"Tier 4 – Enterprise SaaS",  link:"https://careers.veeva.com/",                                            notes:"Life sciences cloud; strong SWE intern"},
+  {id:"epichealth",  name:"Epic Systems",         sector:"Healthcare IT",      tier:"Tier 4 – Enterprise SaaS",  link:"https://www.epic.com/careers/",                                         notes:"Healthcare EHR; large SW intern class"},
+  {id:"navan",       name:"Navan (TripActions)",  sector:"Travel/Expense",     tier:"Tier 4 – Enterprise SaaS",  link:"https://navan.com/careers",                                             notes:"$9.2B; corporate travel & expense"},
+  {id:"ironclad",    name:"Ironclad",             sector:"Legal Tech",         tier:"Tier 4 – Enterprise SaaS",  link:"https://ironcladapp.com/careers/",                                      notes:"$3.2B; contract management AI"},
+  {id:"rocketlab",   name:"Rocket Lab",           sector:"Aerospace",          tier:"Tier 4 – Enterprise SaaS",  link:"https://www.rocketlabusa.com/careers/",                                 notes:"Small launch vehicles; SWE & avionics"},
+  // ── Cloud/Infra additions ─────────────────────────────────────
+  {id:"sentinelone", name:"SentinelOne",          sector:"Cybersecurity",      tier:"Tier 5 – Cloud/Infra",      link:"https://www.sentinelone.com/careers/",                                  notes:"AI-powered security; SWE internships"},
+  {id:"fortinet",    name:"Fortinet",             sector:"Cybersecurity",      tier:"Tier 5 – Cloud/Infra",      link:"https://www.fortinet.com/corporate/about-us/careers",                   notes:"Network security; SWE & security eng"},
+  {id:"zscaler",     name:"Zscaler",              sector:"Cybersecurity",      tier:"Tier 5 – Cloud/Infra",      link:"https://www.zscaler.com/careers",                                       notes:"Cloud security; zero trust"},
+  {id:"rapid7",      name:"Rapid7",               sector:"Cybersecurity",      tier:"Tier 5 – Cloud/Infra",      link:"https://www.rapid7.com/careers/",                                       notes:"Vulnerability management"},
+  {id:"tenable",     name:"Tenable",              sector:"Cybersecurity",      tier:"Tier 5 – Cloud/Infra",      link:"https://www.tenable.com/careers",                                       notes:"Cybersecurity exposure management"},
+  {id:"newrelic",    name:"New Relic",            sector:"Observability",      tier:"Tier 5 – Cloud/Infra",      link:"https://newrelic.com/about/careers",                                    notes:"App performance monitoring"},
+  {id:"dynatrace",   name:"Dynatrace",            sector:"Observability",      tier:"Tier 5 – Cloud/Infra",      link:"https://www.dynatrace.com/company/careers/",                            notes:"AI-powered observability"},
+  {id:"splunk",      name:"Splunk (Cisco)",       sector:"Data Analytics",     tier:"Tier 5 – Cloud/Infra",      link:"https://www.splunk.com/en_us/careers.html",                             notes:"Now part of Cisco; data & security"},
+  {id:"fidelity",    name:"Fidelity",             sector:"Asset Management",   tier:"Tier 5 – Cloud/Infra",      link:"https://jobs.fidelity.com/",                                            notes:"Technology track internships"},
+  {id:"schwab",      name:"Charles Schwab",       sector:"Brokerage/Fintech",  tier:"Tier 5 – Cloud/Infra",      link:"https://www.schwab.com/careers",                                        notes:"SWE & data science internships"},
+  {id:"walmart",     name:"Walmart Global Tech",  sector:"Retail Tech",        tier:"Tier 5 – Cloud/Infra",      link:"https://careers.walmart.com/technology",                                notes:"Massive tech org; SWE & data intern"},
+  {id:"target",      name:"Target",               sector:"Retail Tech",        tier:"Tier 5 – Cloud/Infra",      link:"https://corporate.target.com/careers/campus",                           notes:"Target Tech; data & SWE intern"},
+  {id:"wayfair",     name:"Wayfair",              sector:"E-commerce",         tier:"Tier 5 – Cloud/Infra",      link:"https://www.wayfair.com/careers/",                                      notes:"Furniture e-commerce; SWE intern"},
+  {id:"etsy",        name:"Etsy",                 sector:"E-commerce",         tier:"Tier 5 – Cloud/Infra",      link:"https://careers.etsy.com/",                                             notes:"Marketplace platform; SWE intern"},
+  {id:"warner",      name:"Warner Bros Discovery",sector:"Media/Streaming",    tier:"Tier 5 – Cloud/Infra",      link:"https://careers.wbd.com/global/en/students",                            notes:"HBO Max, CNN tech; SWE intern"},
+  {id:"disney",      name:"Disney (Tech)",        sector:"Media/Streaming",    tier:"Tier 5 – Cloud/Infra",      link:"https://jobs.disneycareers.com/technology",                             notes:"Disney+, ESPN+ tech; SWE internships"},
+  {id:"nbc",         name:"NBCUniversal",         sector:"Media Tech",         tier:"Tier 5 – Cloud/Infra",      link:"https://www.nbcunicareers.com/early-career",                            notes:"Peacock streaming; SWE & data intern"},
+  {id:"deloitte",    name:"Deloitte",             sector:"Consulting/Tech",    tier:"Tier 5 – Cloud/Infra",      link:"https://www2.deloitte.com/us/en/pages/careers/articles/join-deloitte-internship-programs.html", notes:"Technology consulting; large intern class"},
+  {id:"accenture",   name:"Accenture",            sector:"IT Consulting",      tier:"Tier 5 – Cloud/Infra",      link:"https://www.accenture.com/us-en/careers/explore-careers/students",      notes:"Large tech consulting; SWE roles"},
+  {id:"booz",        name:"Booz Allen Hamilton",  sector:"Defense/Tech",       tier:"Tier 5 – Cloud/Infra",      link:"https://www.boozallen.com/careers/university-recruiting.html",          notes:"Defense & government tech"},
+  {id:"nasa",        name:"NASA",                 sector:"Aerospace/Gov",      tier:"Tier 5 – Cloud/Infra",      link:"https://intern.nasa.gov/",                                              notes:"OSSI portal; SW & systems eng intern"},
+  {id:"pagerduty",   name:"PagerDuty",            sector:"IT Operations",      tier:"Tier 5 – Cloud/Infra",      link:"https://www.pagerduty.com/careers/",                                    notes:"Incident management SaaS"},
+  {id:"box",         name:"Box",                  sector:"Cloud Storage",      tier:"Tier 5 – Cloud/Infra",      link:"https://www.box.com/en-us/careers",                                     notes:"Enterprise cloud storage"},
+  {id:"freshworks",  name:"Freshworks",           sector:"CRM/Support",        tier:"Tier 5 – Cloud/Infra",      link:"https://www.freshworks.com/company/careers/",                           notes:"CRM & helpdesk SaaS"},
+  {id:"mixpanel",    name:"Mixpanel",             sector:"Product Analytics",  tier:"Tier 5 – Cloud/Infra",      link:"https://mixpanel.com/careers/",                                         notes:"Product analytics platform"},
+  {id:"coursera",    name:"Coursera",             sector:"EdTech",             tier:"Tier 5 – Cloud/Infra",      link:"https://careers.coursera.org/",                                         notes:"Online learning; SWE internships"},
+  {id:"khan",        name:"Khan Academy",         sector:"EdTech/Nonprofit",   tier:"Tier 5 – Cloud/Infra",      link:"https://www.khanacademy.org/careers",                                   notes:"Free education nonprofit; SWE intern"},
+  {id:"planet",      name:"Planet Labs",          sector:"Space/Data",         tier:"Tier 5 – Cloud/Infra",      link:"https://www.planet.com/company/careers/",                               notes:"Earth imaging satellites; SWE intern"},
+  {id:"informatica", name:"Informatica",          sector:"Data Management",    tier:"Tier 5 – Cloud/Infra",      link:"https://www.informatica.com/company/careers.html",                      notes:"Data integration & governance"},
+  {id:"toast",       name:"Toast",                sector:"Restaurant Tech",    tier:"Tier 5 – Cloud/Infra",      link:"https://pos.toasttab.com/careers",                                      notes:"$13B; restaurant POS & fintech"},
+  {id:"oscar",       name:"Oscar Health",         sector:"Health Insurance",   tier:"Tier 5 – Cloud/Infra",      link:"https://www.hioscar.com/about/careers",                                 notes:"Tech-first health insurance"},
+  {id:"zapier",      name:"Zapier",               sector:"Automation",         tier:"Tier 5 – Cloud/Infra",      link:"https://zapier.com/jobs/",                                              notes:"Workflow automation; remote-first"},
+  {id:"lattice",     name:"Lattice",              sector:"HR Tech",            tier:"Tier 5 – Cloud/Infra",      link:"https://lattice.com/careers",                                           notes:"$3B; people management SaaS"},
+  {id:"mercury",     name:"Mercury",              sector:"Neobank/Fintech",    tier:"Tier 5 – Cloud/Infra",      link:"https://mercury.com/careers",                                           notes:"$1.6B; banking for startups"},
+  {id:"faire",       name:"Faire",                sector:"B2B Marketplace",    tier:"Tier 5 – Cloud/Infra",      link:"https://www.faire.com/careers",                                         notes:"$12.6B; wholesale marketplace"},
+  {id:"niantic",     name:"Niantic",              sector:"AR/Gaming",          tier:"Tier 5 – Cloud/Infra",      link:"https://nianticlabs.com/careers/",                                      notes:"Pokemon Go; AR & SWE internships"},
+  {id:"synthesia",   name:"Synthesia",            sector:"AI Video",           tier:"Tier 5 – Cloud/Infra",      link:"https://www.synthesia.io/careers",                                      notes:"$2.1B; AI avatar video generation"},
+  {id:"descript",    name:"Descript",             sector:"AI Media",           tier:"Tier 5 – Cloud/Infra",      link:"https://www.descript.com/careers",                                      notes:"AI video & podcast editing"},
+  {id:"replit",      name:"Replit",               sector:"AI Dev Tools",       tier:"Tier 5 – Cloud/Infra",      link:"https://replit.com/site/careers",                                       notes:"$1.16B; AI coding in the browser"},
+  {id:"windsurf",    name:"Windsurf (Codeium)",   sector:"AI Dev Tools",       tier:"Tier 5 – Cloud/Infra",      link:"https://codeium.com/careers",                                           notes:"$1.25B; AI coding assistant"},
+  // ── Legacy/Hardware additions ─────────────────────────────────
+  {id:"micron",      name:"Micron",               sector:"Semiconductors",     tier:"Tier 6 – Legacy/Hardware",  link:"https://www.micron.com/careers/university",                             notes:"Memory & storage chips; SWE & HW"},
+  {id:"ti",          name:"Texas Instruments",    sector:"Semiconductors",     tier:"Tier 6 – Legacy/Hardware",  link:"https://careers.ti.com/university-recruiting",                          notes:"Analog/embedded chips; HW & SWE intern"},
+  {id:"marvell",     name:"Marvell",              sector:"Semiconductors",     tier:"Tier 6 – Legacy/Hardware",  link:"https://www.marvell.com/careers/students.html",                         notes:"Data infrastructure chips"},
+  {id:"att",         name:"AT&T",                 sector:"Telecom/Tech",       tier:"Tier 6 – Legacy/Hardware",  link:"https://www.att.jobs/students-and-graduates",                           notes:"SWE & network engineering; large intern"},
+  {id:"verizon",     name:"Verizon",              sector:"Telecom/Tech",       tier:"Tier 6 – Legacy/Hardware",  link:"https://www.verizon.com/about/careers/students",                        notes:"SWE & data science internships"},
+  {id:"tmobile",     name:"T-Mobile",             sector:"Telecom/Tech",       tier:"Tier 6 – Legacy/Hardware",  link:"https://careers.t-mobile.com/early-careers",                            notes:"SWE intern program"},
+  {id:"pwc",         name:"PwC",                  sector:"Consulting/Tech",    tier:"Tier 6 – Legacy/Hardware",  link:"https://www.pwc.com/us/en/careers/campus.html",                         notes:"Technology consulting track"},
+  {id:"chegg",       name:"Chegg",                sector:"EdTech",             tier:"Tier 6 – Legacy/Hardware",  link:"https://jobs.chegg.com/",                                               notes:"Student platform; SWE intern roles"},
+  {id:"wayfair2",    name:"Chewy",                sector:"E-commerce",         tier:"Tier 6 – Legacy/Hardware",  link:"https://careers.chewy.com/us/en/",                                      notes:"Pet supplies; SWE internships"},
+
 ];
 
 const TIER_CONFIG = {
@@ -677,28 +812,17 @@ netidInput.addEventListener("change", () => {
 const statusRef = collection(db, "internStatuses");
 
 // Seed companies if not already in Firestore (one-time)
+// Load companies instantly from JS — no Firestore seeding
+allCompanies = [...COMPANIES];
+
+// Listen only for user-added companies
 const companiesRef = collection(db, "internCompanies");
+const seedIds = new Set(COMPANIES.map(c => c.id));
 onSnapshot(companiesRef, snap => {
-  if (!snap.empty) {
-    const firestoreCompanies = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    // Merge: keep seed + Firestore additions
-    const seedIds = new Set(COMPANIES.map(c => c.id));
-    const additions = firestoreCompanies.filter(c => !seedIds.has(c.id));
-    allCompanies = [...COMPANIES, ...additions];
-  }
+  const additions = snap.docs.map(d => ({id: d.id, ...d.data()})).filter(c => !seedIds.has(c.id));
+  allCompanies = [...COMPANIES, ...additions];
   renderAll();
 });
-
-// Seed if empty
-import { getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-(async () => {
-  const snap = await getDocs(companiesRef);
-  if (snap.empty) {
-    for (const c of COMPANIES) {
-      await setDoc(doc(db, "internCompanies", c.id), c);
-    }
-  }
-})();
 
 // Listen to all status updates in real-time
 onSnapshot(statusRef, snap => {
@@ -856,6 +980,8 @@ function renderAll() {
 
   main.innerHTML = html;
 }
+
+renderAll(); // initial render from JS array
 
 // ── Toast helper ─────────────────────────────────────────────
 function toast(msg) {
