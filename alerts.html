@@ -305,7 +305,7 @@ main {
   </div>
   <div class="status-bar">
     <div class="status-item"><span class="status-val" id="count-new">—</span>&nbsp;new today</div>
-    <div class="status-item"><span class="status-val" id="count-commits">—</span>&nbsp;repo commits</div>
+    <div class="status-item"><span class="status-val" id="count-commits">—</span>&nbsp;hrs scanned</div>
     <div class="status-item"><span class="status-val" id="count-companies">288</span>&nbsp;companies tracked</div>
     <span id="last-updated"></span>
   </div>
@@ -522,7 +522,7 @@ async function fetchAlerts() {
     const cutoff = new Date(Date.now() - 48 * 3600000); // last 48h
     const recent = commits.filter(c => new Date(c.commit.author.date) > cutoff);
 
-    document.getElementById('count-commits').textContent = recent.length;
+    document.getElementById('count-commits').textContent = 48;
     document.getElementById('last-updated').textContent = 'Last checked: ' + new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
 
     if (!recent.length) {
@@ -627,14 +627,23 @@ function renderResults(items) {
       const link = item.company.link;
       const tierLabel = TIER_LABELS[item.company.tier];
       const liLink = 'https://www.linkedin.com/jobs/search/?keywords=' + encodeURIComponent(name + ' intern') + '&f_JT=I';
+      const ghSearchLink = 'https://github.com/SimplifyJobs/Summer2026-Internships/commits/dev/?since=' + new Date(item.commitDate - 86400000).toISOString();
+      const rawLine = item.line ? item.line.replace(/[|]/g, '·') : '';
+      const showLine = rawLine.length > 10;
       html += '<div class="job-card">';
       html += '<div class="job-top"><div class="job-company">' + name + '</div><span class="job-new">NEW</span></div>';
-      html += '<div class="job-role"><a href="' + link + '" target="_blank" style="color:var(--green);text-decoration:none;">🔥 ' + name + '</a></div>';
-      html += '<div class="job-meta"><span class="meta-tag">' + tierLabel + '</span><span class="meta-tag">🕐 ' + timeAgo + '</span></div>';
+      html += '<div style="font-size:11px;color:#aaa;margin-bottom:6px;font-family:var(--font-mono);">Detected in SimplifyJobs repo · ' + timeAgo + '</div>';
+      if (showLine) {
+        html += '<div style="font-size:11px;background:rgba(0,255,135,.06);border:1px solid rgba(0,255,135,.15);border-radius:4px;padding:8px 10px;margin-bottom:10px;font-family:var(--font-mono);color:var(--green);word-break:break-word;">';
+        html += '+ ' + rawLine.slice(0, 140) + (rawLine.length > 140 ? '...' : '');
+        html += '</div>';
+      }
+      html += '<div style="font-size:11px;color:#777;margin-bottom:10px;">⚠ Verify on the careers page — this is based on repo activity, not a confirmed live posting.</div>';
+      html += '<div class="job-meta"><span class="meta-tag">' + tierLabel + '</span></div>';
       html += '<div class="job-actions">';
-      html += '<a class="job-btn" href="' + link + '" target="_blank">Apply ↗</a>';
+      html += '<a class="job-btn" href="' + link + '" target="_blank">Verify & Apply ↗</a>';
       html += '<a class="job-btn secondary" href="' + liLink + '" target="_blank">LinkedIn ↗</a>';
-      html += '<a class="job-btn secondary" href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank">GitHub ↗</a>';
+      html += '<a class="job-btn secondary" href="' + ghSearchLink + '" target="_blank">View on GitHub ↗</a>';
       html += '</div></div>';
     }
     html += '</div>';
