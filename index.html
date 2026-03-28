@@ -264,15 +264,6 @@ main {
 
 .apply-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
 
-/* ── Status controls ─────────────────────────── */
-.status-group { display: flex; gap: 6px; align-items: center; }
-
-.status-select {
-  font-family: var(--font-mono); font-size: 10px;
-  background: var(--surface); border: 1px solid var(--border);
-  color: var(--text); padding: 5px 8px; border-radius: 6px;
-  cursor: pointer; outline: none;
-}
 
 .status-dot {
   width: 8px; height: 8px; border-radius: 50%;
@@ -465,6 +456,7 @@ main {
     <a class="btn-add" href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank" rel="noopener" style="text-decoration:none;background:#24292f;">GitHub Live List ↗</a>
     <a class="btn-add" href="https://princeton.joinhandshake.com/" target="_blank" rel="noopener" style="text-decoration:none;background:#E8185C;">Handshake ↗</a>
     <a class="btn-add" href="https://careerdevelopment.princeton.edu/" target="_blank" rel="noopener" style="text-decoration:none;background:#F77F00;">Princeton Careers ↗</a>
+    <a class="btn-add" href="alerts.html" style="text-decoration:none;background:#43E97B;color:#000;">📡 Daily Alerts</a>
     <button class="btn-add" onclick="openAddModal()">+ Add Company</button>
   </div>
 </div>
@@ -961,6 +953,8 @@ function renderAll() {
             <a class="apply-btn" href="${c.link || "#"}" target="_blank" rel="noopener">
               Apply ↗
             </a>
+            <a class="apply-btn" href="https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(c.name + ' intern')}&f_JT=I" target="_blank" rel="noopener" style="background:rgba(10,102,194,.15);border-color:rgba(10,102,194,.4);color:#4A9FD4;">Jobs ↗</a>
+            <a class="apply-btn" href="https://www.linkedin.com/company/${encodeURIComponent(c.name)}" target="_blank" rel="noopener" style="background:rgba(10,102,194,.25);border-color:rgba(10,102,194,.5);color:#4A9FD4;">Co. ↗</a>
             <div class="status-group">
               <div class="status-dot"></div>
               <select class="status-select" onchange="updateStatus('${c.id}', this.value)">
@@ -979,10 +973,7 @@ function renderAll() {
   main.innerHTML = html;
 }
 
-renderAll(); // initial render from JS array
-
-
-renderAll(); // runs immediately
+renderAll(); // initial render
 
 // ── NetID setup ─────────────────────────────────────────────
 const netidInput = document.getElementById("netid-input");
@@ -1068,9 +1059,6 @@ document.getElementById("search").addEventListener("input", e => {
   renderAll();
 });
 
-// ── Stats ────────────────────────────────────────────────────
-
-// ── Render ───────────────────────────────────────────────────
 // ── Toast helper ─────────────────────────────────────────────
 function toast(msg) {
   const t = document.getElementById("toast");
