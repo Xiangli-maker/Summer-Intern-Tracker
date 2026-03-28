@@ -426,6 +426,14 @@ main {
     <div class="tag">Princeton CS · Class of 2028</div>
     <h1>Summer Internship Tracker</h1>
     <p class="subtitle">// track applications · share progress · land the offer</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+      <div style="font-family:var(--font-mono);font-size:10px;padding:4px 10px;border-radius:20px;background:rgba(255,107,53,.12);border:1px solid rgba(255,107,53,.3);color:#FF6B35;">Simplify — best for AI startups & auto-fill</div>
+      <div style="font-family:var(--font-mono);font-size:10px;padding:4px 10px;border-radius:20px;background:rgba(36,41,47,.4);border:1px solid rgba(255,255,255,.15);color:#aaa;">GitHub SimplifyJobs — live daily updates</div>
+      <div style="font-family:var(--font-mono);font-size:10px;padding:4px 10px;border-radius:20px;background:rgba(232,24,92,.12);border:1px solid rgba(232,24,92,.3);color:#E8185C;">Handshake — Princeton-exclusive recruiting</div>
+      <div style="font-family:var(--font-mono);font-size:10px;padding:4px 10px;border-radius:20px;background:rgba(247,127,0,.12);border:1px solid rgba(247,127,0,.3);color:#F77F00;">Princeton Careers — on-campus events & OCI</div>
+      <div style="font-family:var(--font-mono);font-size:10px;padding:4px 10px;border-radius:20px;background:rgba(84,160,255,.12);border:1px solid rgba(84,160,255,.3);color:#54A0FF;">LinkedIn — best for Tier 3+ companies</div>
+      <div style="font-family:var(--font-mono);font-size:10px;padding:4px 10px;border-radius:20px;background:rgba(108,99,255,.12);border:1px solid rgba(108,99,255,.3);color:#6C63FF;">Apply ↗ — goes directly to company careers page</div>
+    </div>
     <div class="stats">
       <div class="stat"><span class="stat-num" id="stat-total">—</span>&nbsp;companies</div>
       <div class="stat"><span class="stat-num" id="stat-applied">—</span>&nbsp;applied</div>
@@ -459,8 +467,11 @@ main {
       <div class="pill" data-filter="tier6">Tier 6 — Legacy</div>
       <div class="pill" data-filter="applied">My Applied</div>
     </div>
-    <a class="btn-add" href="https://simplify.jobs/l/Top-AI-Startup-Internships" target="_blank" rel="noopener" style="text-decoration:none;background:#FF6B35;">Live Listings ↗</a>
-    <a class="btn-add" href="https://simplify.jobs/l/Freshman-and-Sophomore-Internships" target="_blank" rel="noopener" style="text-decoration:none;background:#43a047;">Freshman List ↗</a>
+    <a class="btn-add" href="https://simplify.jobs/l/Top-AI-Startup-Internships" target="_blank" rel="noopener" style="text-decoration:none;background:#FF6B35;">Simplify: AI ↗</a>
+    <a class="btn-add" href="https://simplify.jobs/l/Freshman-and-Sophomore-Internships" target="_blank" rel="noopener" style="text-decoration:none;background:#43a047;">Simplify: Freshman ↗</a>
+    <a class="btn-add" href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank" rel="noopener" style="text-decoration:none;background:#24292f;">GitHub Live List ↗</a>
+    <a class="btn-add" href="https://princeton.joinhandshake.com/" target="_blank" rel="noopener" style="text-decoration:none;background:#E8185C;">Handshake ↗</a>
+    <a class="btn-add" href="https://careerdevelopment.princeton.edu/" target="_blank" rel="noopener" style="text-decoration:none;background:#F77F00;">Princeton Careers ↗</a>
     <button class="btn-add" onclick="openAddModal()">+ Add Company</button>
   </div>
 </div>
@@ -837,7 +848,7 @@ function renderAll() {
               Apply ↗
             </a>
             <a class="apply-btn" href="https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(c.name + ' software intern')}&f_JT=I" target="_blank" rel="noopener" style="background:rgba(10,102,194,.15);border-color:rgba(10,102,194,.4);color:#4A9FD4;">
-              LinkedIn ↗
+              LinkedIn Jobs ↗
             </a>
             <div class="status-group">
               <div class="status-dot"></div>
