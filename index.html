@@ -928,27 +928,20 @@ const statusRef = collection(db, "internStatuses");
 
 // Seed companies if not already in Firestore (one-time)
 const companiesRef = collection(db, "internCompanies");
+
+// Load companies instantly from JS array — no waiting for Firestore seed
+allCompanies = [...COMPANIES];
+renderAll();
+
+// Listen only for user-added companies (not in the seed list)
+const seedIds = new Set(COMPANIES.map(c => c.id));
 onSnapshot(companiesRef, snap => {
-  if (!snap.empty) {
-    const firestoreCompanies = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    // Merge: keep seed + Firestore additions
-    const seedIds = new Set(COMPANIES.map(c => c.id));
-    const additions = firestoreCompanies.filter(c => !seedIds.has(c.id));
-    allCompanies = [...COMPANIES, ...additions];
-  }
+  const additions = snap.docs
+    .map(d => ({ id: d.id, ...d.data() }))
+    .filter(c => !seedIds.has(c.id));
+  allCompanies = [...COMPANIES, ...additions];
   renderAll();
 });
-
-// Seed if empty
-import { getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-(async () => {
-  const snap = await getDocs(companiesRef);
-  if (snap.empty) {
-    for (const c of COMPANIES) {
-      await setDoc(doc(db, "internCompanies", c.id), c);
-    }
-  }
-})();
 
 // Listen to all status updates in real-time
 onSnapshot(statusRef, snap => {
