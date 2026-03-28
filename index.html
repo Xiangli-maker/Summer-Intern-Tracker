@@ -264,6 +264,38 @@ main {
 
 .apply-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
 
+/* ── Daily Alert Panel ───────────────────────────────────── */
+.alert-panel {
+  background: var(--card); border: 1px solid rgba(67,233,123,.3);
+  border-radius: var(--radius); padding: 16px 20px; margin-bottom: 20px;
+  position: relative; z-index: 1; max-width: 1400px; margin: 20px auto;
+}
+.alert-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+}
+.alert-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent3); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+.alert-title { font-family: var(--font-head); font-weight: 700; font-size: 14px; color: var(--accent3); }
+.alert-date { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-left: auto; }
+.alert-companies { display: flex; flex-wrap: wrap; gap: 8px; }
+.alert-chip {
+  font-family: var(--font-mono); font-size: 11px;
+  padding: 4px 10px; border-radius: 20px;
+  background: rgba(67,233,123,.1); border: 1px solid rgba(67,233,123,.3);
+  color: var(--accent3); cursor: pointer; transition: all .15s;
+}
+.alert-chip:hover { background: var(--accent3); color: #000; }
+.alert-loading { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.new-badge {
+  display: inline-block; font-family: var(--font-mono); font-size: 9px;
+  padding: 2px 6px; border-radius: 10px;
+  background: rgba(67,233,123,.2); border: 1px solid rgba(67,233,123,.4);
+  color: var(--accent3); margin-left: 6px; vertical-align: middle;
+  animation: pulse 2s infinite;
+}
+.card.has-new { border-color: rgba(67,233,123,.4); }
+.card.has-new::before { opacity: 1 !important; background: var(--accent3); }
+
 /* ── Status controls ─────────────────────────── */
 .status-group { display: flex; gap: 6px; align-items: center; }
 
@@ -1082,6 +1114,95 @@ function toast(msg) {
 }
 
 window.toast = toast;
+
+// ── Daily Alerts from SimplifyJobs GitHub ────────────────────
+const COMPANY_NAMES = COMPANIES.map(c => c.name.toLowerCase());
+
+async function fetchDailyAlerts() {
+  const container = document.getElementById('alert-companies');
+  const dateEl = document.getElementById('alert-date');
+  container.innerHTML = '<span class="alert-loading">Fetching latest postings...</span>';
+
+  try {
+    // Fetch the SimplifyJobs Summer 2026 README via GitHub API
+    const res = await fetch('https://api.github.com/repos/SimplifyJobs/Summer2026-Internships/commits?per_page=5');
+    const commits = await res.json();
+
+    if (!commits || !commits.length) throw new Error('No commits found');
+
+    // Get today and yesterday's date
+    const now = new Date();
+    const today = now.toDateString();
+    const yesterday = new Date(now - 86400000).toDateString();
+
+    // Filter commits from last 24 hours
+    const recentCommits = commits.filter(c => {
+      const commitDate = new Date(c.commit.author.date).toDateString();
+      return commitDate === today || commitDate === yesterday;
+    });
+
+    dateEl.textContent = 'Last checked: ' + now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+
+    if (!recentCommits.length) {
+      container.innerHTML = '<span class="alert-loading">No new postings in the last 24 hours — check back later!</span>';
+      return;
+    }
+
+    // Fetch the diff of recent commits to find added companies
+    const addedCompanies = new Set();
+    for (const commit of recentCommits.slice(0, 3)) {
+      try {
+        const diffRes = await fetch(commit.url, {headers: {'Accept':'application/vnd.github.v3+json'}});
+        const diffData = await diffRes.json();
+        if (diffData.files) {
+          for (const file of diffData.files) {
+            if (file.patch) {
+              // Find added lines (starting with +) that contain company names
+              const addedLines = file.patch.split('\n').filter(l => l.startsWith('+') && !l.startsWith('+++'));
+              for (const line of addedLines) {
+                // Check if any of our tracked companies appear in this line
+                for (const company of COMPANIES) {
+                  const name = company.name.toLowerCase();
+                  if (line.toLowerCase().includes(name) && name.length > 3) {
+                    addedCompanies.add(company.id);
+                  }
+                }
+              }
+            }
+          }
+        }
+      } catch(e) { /* skip individual commit errors */ }
+    }
+
+    // Also mark cards
+    document.querySelectorAll('.card').forEach(card => card.classList.remove('has-new'));
+
+    if (addedCompanies.size === 0) {
+      container.innerHTML = `<span class="alert-loading">No tracked companies posted new internships today. <a href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank" style="color:var(--accent3);">View full list ↗</a></span>`;
+      return;
+    }
+
+    // Show chips for companies with new postings
+    const chips = [...addedCompanies].map(id => {
+      const company = COMPANIES.find(c => c.id === id);
+      if (!company) return '';
+      // Mark the card
+      const card = document.querySelector(`.card[data-id="${id}"]`);
+      if (card) { card.classList.add('has-new'); card.scrollIntoView && null; }
+      return `<span class="alert-chip" onclick="document.querySelector('.card[data-id=\'${id}\']')?.scrollIntoView({behavior:'smooth',block:'center'})">
+        ${company.name} <span style="opacity:.6;font-size:9px;">new</span>
+      </span>`;
+    }).join('');
+
+    container.innerHTML = chips || '<span class="alert-loading">No tracked companies found in today's postings.</span>';
+
+  } catch(err) {
+    container.innerHTML = `<span class="alert-loading">Could not fetch — <a href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank" style="color:var(--accent3);">check GitHub directly ↗</a></span>`;
+  }
+}
+
+// Run on page load
+setTimeout(fetchDailyAlerts, 1500);
 
 // ── Close modal on overlay click ─────────────────────────────
 document.getElementById("add-modal").addEventListener("click", e => {
