@@ -459,7 +459,8 @@ main {
       <div class="pill" data-filter="tier6">Tier 6 — Legacy</div>
       <div class="pill" data-filter="applied">My Applied</div>
     </div>
-    <a class="btn-add" href="https://simplify.jobs/l/Top-AI-Startup-Internships" target="_blank" rel="noopener" style="text-decoration:none;background:#FF6B35;">🔴 Live Listings ↗</a>
+    <a class="btn-add" href="https://simplify.jobs/l/Top-AI-Startup-Internships" target="_blank" rel="noopener" style="text-decoration:none;background:#FF6B35;">Live Listings ↗</a>
+    <a class="btn-add" href="https://simplify.jobs/l/Freshman-and-Sophomore-Internships" target="_blank" rel="noopener" style="text-decoration:none;background:#43a047;">Freshman List ↗</a>
     <button class="btn-add" onclick="openAddModal()">+ Add Company</button>
   </div>
 </div>
@@ -835,7 +836,7 @@ function renderAll() {
             <a class="apply-btn" href="${c.link || "#"}" target="_blank" rel="noopener">
               Apply ↗
             </a>
-            <a class="apply-btn" href="https://simplify.jobs/search?query=${encodeURIComponent(c.name + ' internship')}" target="_blank" rel="noopener" style="background:rgba(255,107,53,.12);border-color:rgba(255,107,53,.4);color:#FF6B35;">
+            <a class="apply-btn" href="https://simplify.jobs/jobs?search=${encodeURIComponent(c.name)}" target="_blank" rel="noopener" style="background:rgba(255,107,53,.12);border-color:rgba(255,107,53,.4);color:#FF6B35;">
               Simplify ↗
             </a>
             <div class="status-group">
