@@ -931,7 +931,7 @@ function renderAll() {
             <a class="apply-btn" href="${c.link || "#"}" target="_blank" rel="noopener">
               Apply ↗
             </a>
-            <a class="apply-btn" href="https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(c.name + ' internship')}&f_JT=I&f_TPR=r604800" target="_blank" rel="noopener" style="background:rgba(10,102,194,.15);border-color:rgba(10,102,194,.4);color:#4A9FD4;">LinkedIn Jobs ↗</a>
+            <a class="apply-btn" href="https://www.linkedin.com/jobs/search/?keywords=%22${encodeURIComponent(c.name)}%22%20intern&f_JT=I&f_TPR=r2592000" target="_blank" rel="noopener" style="background:rgba(10,102,194,.15);border-color:rgba(10,102,194,.4);color:#4A9FD4;">LinkedIn Jobs ↗</a>
             <div class="status-group">
               <div class="status-dot"></div>
               <select class="status-select" onchange="updateStatus('${c.id}', this.value)">
