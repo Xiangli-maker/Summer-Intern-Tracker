@@ -1108,9 +1108,11 @@ function renderAll() {
   }
 
   main.innerHTML = html;
-  if (typeof observeCEOLines === "function") observeCEOLines();
+  try { if (typeof ceoObserver !== "undefined" && typeof observeCEOLines === "function") observeCEOLines(); } catch(e) {}
 }
 
+
+renderAll(); // initial render
 
 renderAll(); // initial render
 
@@ -1292,7 +1294,10 @@ const ceoObserver = new IntersectionObserver((entries) => {
 }, { rootMargin: "200px" });
 
 function observeCEOLines() {
-  document.querySelectorAll(".ceo-line[data-company]").forEach(el => ceoObserver.observe(el));
+  if (typeof ceoObserver === "undefined") return;
+  document.querySelectorAll(".ceo-line[data-company]").forEach(el => {
+    try { ceoObserver.observe(el); } catch(e) {}
+  });
 }
 
 
