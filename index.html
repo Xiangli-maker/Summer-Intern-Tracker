@@ -460,6 +460,7 @@ main {
       <div class="pill" data-filter="tier8">Tier 8 — Unicorns</div>
       <div class="pill" data-filter="tier9">Tier 9 — Quant Finance</div>
       <div class="pill" data-filter="tier10">Tier 10 — Consulting</div>
+      <div class="pill" data-filter="tier11">Tier 11 — ET30</div>
       <div class="pill" data-filter="applied">My Applied</div>
     </div>
     <a class="btn-add" href="https://simplify.jobs/l/Top-AI-Startup-Internships" target="_blank" rel="noopener" style="text-decoration:none;background:#FF6B35;">Simplify: AI ↗</a>
@@ -501,6 +502,7 @@ main {
                 <option value="Tier 8 – Unicorn Startups">Tier 8 – Unicorn Startups</option>
                 <option value="Tier 9 – Quant Finance">Tier 9 – Quant Finance</option>
                 <option value="Tier 10 – Consulting">Tier 10 – Consulting</option>
+                <option value="Tier 11 – ET30 2026">Tier 11 – ET30 2026</option>
       </select>
     </div>
     <div class="form-group">
@@ -920,51 +922,51 @@ const COMPANIES = [
   {id:"guidehouse",name:"Guidehouse",sector:"Gov Consulting",tier:"Tier 10 – Consulting",link:"https://guidehouse.com/careers/students",notes:"Gov & health consulting; analyst"},
 
   // ── ET30 2026 — Enterprise AI (Early Stage) ──────────────────
-  {id:"mintlify",    name:"Mintlify",           sector:"AI Infrastructure",   tier:"Tier 1 – AI & High-Growth", link:"https://mintlify.com/careers",                                          notes:"ET30 #1 Early; docs platform; $67M; 50 employees"},
-  {id:"dust",        name:"Dust",               sector:"AI Agents",           tier:"Tier 1 – AI & High-Growth", link:"https://dust.tt/careers",                                               notes:"ET30 #2 Early; enterprise AI agents; $22M"},
-  {id:"llamaindex",  name:"LlamaIndex",         sector:"AI Infrastructure",   tier:"Tier 1 – AI & High-Growth", link:"https://www.llamaindex.ai/careers",                                    notes:"ET30 #3 Early; data framework for LLMs; $28M"},
-  {id:"crewai",      name:"CrewAI",             sector:"AI Agents",           tier:"Tier 1 – AI & High-Growth", link:"https://www.crewai.com/careers",                                        notes:"ET30 #4 Early; multi-agent AI framework; $18M"},
-  {id:"e2b",         name:"E2B",                sector:"AI Infrastructure",   tier:"Tier 1 – AI & High-Growth", link:"https://e2b.dev/careers",                                              notes:"ET30 #5 Early; code sandboxes for AI; $37M"},
-  {id:"crosby",      name:"Crosby",             sector:"Vertical AI Agents",  tier:"Tier 1 – AI & High-Growth", link:"https://www.crosby.com/careers",                                       notes:"ET30 #6 Early; vertical AI agents; $85M"},
-  {id:"arcade",      name:"Arcade",             sector:"AI Infrastructure",   tier:"Tier 1 – AI & High-Growth", link:"https://www.arcade.dev/careers",                                       notes:"ET30 #7 Early; AI tool use platform; $12M"},
-  {id:"pace_ai",     name:"Pace",               sector:"Vertical AI Agents",  tier:"Tier 1 – AI & High-Growth", link:"https://www.usepace.com/careers",                                      notes:"ET30 #8 Early; vertical AI agents; $10M"},
-  {id:"resend",      name:"Resend",             sector:"AI Infrastructure",   tier:"Tier 1 – AI & High-Growth", link:"https://resend.com/careers",                                           notes:"ET30 #9 Early; email API platform; $22M"},
-  {id:"retell_ai",   name:"Retell AI",          sector:"AI Agents",           tier:"Tier 1 – AI & High-Growth", link:"https://www.retellai.com/careers",                                     notes:"ET30 #10 Early; voice AI agents; $5M"},
+  {id:"mintlify",    name:"Mintlify",           sector:"AI Infrastructure",   tier:"Tier 11 – ET30 2026", link:"https://mintlify.com/careers",                                          notes:"ET30 #1 Early; docs platform; $67M; 50 employees"},
+  {id:"dust",        name:"Dust",               sector:"AI Agents",           tier:"Tier 11 – ET30 2026", link:"https://dust.tt/careers",                                               notes:"ET30 #2 Early; enterprise AI agents; $22M"},
+  {id:"llamaindex",  name:"LlamaIndex",         sector:"AI Infrastructure",   tier:"Tier 11 – ET30 2026", link:"https://www.llamaindex.ai/careers",                                    notes:"ET30 #3 Early; data framework for LLMs; $28M"},
+  {id:"crewai",      name:"CrewAI",             sector:"AI Agents",           tier:"Tier 11 – ET30 2026", link:"https://www.crewai.com/careers",                                        notes:"ET30 #4 Early; multi-agent AI framework; $18M"},
+  {id:"e2b",         name:"E2B",                sector:"AI Infrastructure",   tier:"Tier 11 – ET30 2026", link:"https://e2b.dev/careers",                                              notes:"ET30 #5 Early; code sandboxes for AI; $37M"},
+  {id:"crosby",      name:"Crosby",             sector:"Vertical AI Agents",  tier:"Tier 11 – ET30 2026", link:"https://www.crosby.com/careers",                                       notes:"ET30 #6 Early; vertical AI agents; $85M"},
+  {id:"arcade",      name:"Arcade",             sector:"AI Infrastructure",   tier:"Tier 11 – ET30 2026", link:"https://www.arcade.dev/careers",                                       notes:"ET30 #7 Early; AI tool use platform; $12M"},
+  {id:"pace_ai",     name:"Pace",               sector:"Vertical AI Agents",  tier:"Tier 11 – ET30 2026", link:"https://www.usepace.com/careers",                                      notes:"ET30 #8 Early; vertical AI agents; $10M"},
+  {id:"resend",      name:"Resend",             sector:"AI Infrastructure",   tier:"Tier 11 – ET30 2026", link:"https://resend.com/careers",                                           notes:"ET30 #9 Early; email API platform; $22M"},
+  {id:"retell_ai",   name:"Retell AI",          sector:"AI Agents",           tier:"Tier 11 – ET30 2026", link:"https://www.retellai.com/careers",                                     notes:"ET30 #10 Early; voice AI agents; $5M"},
   // ── ET30 2026 — Enterprise AI (Mid Stage) ────────────────────
-  {id:"serval",      name:"Serval",             sector:"AI Agents",           tier:"Tier 1 – AI & High-Growth", link:"https://www.serval.ai/careers",                                        notes:"ET30 #1 Mid; AI agents; $127M; 60 employees"},
-  {id:"granola",     name:"Granola",            sector:"AI Agents",           tier:"Tier 1 – AI & High-Growth", link:"https://www.granola.so/careers",                                       notes:"ET30 #2 Mid; AI meeting notes; $192M"},
-  {id:"applied_compute",name:"Applied Compute", sector:"AI Infrastructure",   tier:"Tier 1 – AI & High-Growth", link:"https://www.appliedcompute.ai/careers",                                notes:"ET30 #4 Mid; AI compute; $80M"},
-  {id:"openrouter",  name:"OpenRouter",         sector:"AI Infrastructure",   tier:"Tier 1 – AI & High-Growth", link:"https://openrouter.ai/careers",                                        notes:"ET30 #7 Mid; LLM routing platform; $40M"},
-  {id:"wispr",       name:"Wispr Flow",         sector:"AI Agents",           tier:"Tier 1 – AI & High-Growth", link:"https://www.wispr.ai/careers",                                         notes:"ET30 #8 Mid; voice-to-text AI; $81M"},
-  {id:"turbopuffer",  name:"turbopuffer",       sector:"Enterprise Infra",    tier:"Tier 1 – AI & High-Growth", link:"https://turbopuffer.com/careers",                                      notes:"ET30 #9 Mid; vector database; early stage"},
-  {id:"browserbase", name:"Browserbase",        sector:"AI Infrastructure",   tier:"Tier 1 – AI & High-Growth", link:"https://www.browserbase.com/careers",                                  notes:"ET30 #10 Mid; browser infra for AI; $67M"},
-  {id:"david_ai",    name:"David AI",           sector:"AI Infrastructure",   tier:"Tier 1 – AI & High-Growth", link:"https://www.david.ai/careers",                                         notes:"ET30 #11 Mid; AI infrastructure; $81M"},
-  {id:"exa_labs",    name:"Exa Labs",           sector:"AI Infrastructure",   tier:"Tier 1 – AI & High-Growth", link:"https://exa.ai/careers",                                               notes:"ET30 #12 Mid; AI web search API; $110M"},
-  {id:"listen_labs", name:"Listen Labs",        sector:"AI Agents",           tier:"Tier 1 – AI & High-Growth", link:"https://www.listenlabs.ai/careers",                                    notes:"ET30 #13 Mid; AI research agents; $100M"},
-  {id:"rillet",      name:"Rillet",             sector:"AI Agents",           tier:"Tier 1 – AI & High-Growth", link:"https://www.rillet.com/careers",                                       notes:"ET30 #14 Mid; AI accounting; $109M; 130 employees"},
-  {id:"parallel_web", name:"Parallel Web Systems",sector:"AI Infrastructure", tier:"Tier 1 – AI & High-Growth", link:"https://www.parallelweb.com/careers",                                  notes:"ET30 #15 Mid; Parag Agrawal's startup; $130M"},
-  {id:"braintrust2", name:"Braintrust",         sector:"AI Infrastructure",   tier:"Tier 1 – AI & High-Growth", link:"https://www.braintrust.dev/careers",                                   notes:"ET30 #16 Mid; AI eval platform; $126M"},
-  {id:"xbow",        name:"XBOW",               sector:"Enterprise Security", tier:"Tier 1 – AI & High-Growth", link:"https://xbow.com/careers",                                             notes:"ET30 #17 Mid; AI pentesting; $237M"},
-  {id:"basis_ai",    name:"Basis",              sector:"Vertical AI Agents",  tier:"Tier 1 – AI & High-Growth", link:"https://www.basis.ai/careers",                                         notes:"ET30 #18 Mid; vertical AI agents; $138M"},
-  {id:"avoca",       name:"Avoca",              sector:"Vertical AI Agents",  tier:"Tier 1 – AI & High-Growth", link:"https://www.avoca.ai/careers",                                         notes:"ET30 #19 Mid; AI for home services; $48M"},
-  {id:"assort",      name:"Assort Health",      sector:"Healthcare AI",       tier:"Tier 1 – AI & High-Growth", link:"https://www.assorthealth.com/careers",                                  notes:"ET30 #20 Mid; healthcare AI agents; $102M"},
+  {id:"serval",      name:"Serval",             sector:"AI Agents",           tier:"Tier 11 – ET30 2026", link:"https://www.serval.ai/careers",                                        notes:"ET30 #1 Mid; AI agents; $127M; 60 employees"},
+  {id:"granola",     name:"Granola",            sector:"AI Agents",           tier:"Tier 11 – ET30 2026", link:"https://www.granola.so/careers",                                       notes:"ET30 #2 Mid; AI meeting notes; $192M"},
+  {id:"applied_compute",name:"Applied Compute", sector:"AI Infrastructure",   tier:"Tier 11 – ET30 2026", link:"https://www.appliedcompute.ai/careers",                                notes:"ET30 #4 Mid; AI compute; $80M"},
+  {id:"openrouter",  name:"OpenRouter",         sector:"AI Infrastructure",   tier:"Tier 11 – ET30 2026", link:"https://openrouter.ai/careers",                                        notes:"ET30 #7 Mid; LLM routing platform; $40M"},
+  {id:"wispr",       name:"Wispr Flow",         sector:"AI Agents",           tier:"Tier 11 – ET30 2026", link:"https://www.wispr.ai/careers",                                         notes:"ET30 #8 Mid; voice-to-text AI; $81M"},
+  {id:"turbopuffer",  name:"turbopuffer",       sector:"Enterprise Infra",    tier:"Tier 11 – ET30 2026", link:"https://turbopuffer.com/careers",                                      notes:"ET30 #9 Mid; vector database; early stage"},
+  {id:"browserbase", name:"Browserbase",        sector:"AI Infrastructure",   tier:"Tier 11 – ET30 2026", link:"https://www.browserbase.com/careers",                                  notes:"ET30 #10 Mid; browser infra for AI; $67M"},
+  {id:"david_ai",    name:"David AI",           sector:"AI Infrastructure",   tier:"Tier 11 – ET30 2026", link:"https://www.david.ai/careers",                                         notes:"ET30 #11 Mid; AI infrastructure; $81M"},
+  {id:"exa_labs",    name:"Exa Labs",           sector:"AI Infrastructure",   tier:"Tier 11 – ET30 2026", link:"https://exa.ai/careers",                                               notes:"ET30 #12 Mid; AI web search API; $110M"},
+  {id:"listen_labs", name:"Listen Labs",        sector:"AI Agents",           tier:"Tier 11 – ET30 2026", link:"https://www.listenlabs.ai/careers",                                    notes:"ET30 #13 Mid; AI research agents; $100M"},
+  {id:"rillet",      name:"Rillet",             sector:"AI Agents",           tier:"Tier 11 – ET30 2026", link:"https://www.rillet.com/careers",                                       notes:"ET30 #14 Mid; AI accounting; $109M; 130 employees"},
+  {id:"parallel_web", name:"Parallel Web Systems",sector:"AI Infrastructure", tier:"Tier 11 – ET30 2026", link:"https://www.parallelweb.com/careers",                                  notes:"ET30 #15 Mid; Parag Agrawal's startup; $130M"},
+  {id:"braintrust2", name:"Braintrust",         sector:"AI Infrastructure",   tier:"Tier 11 – ET30 2026", link:"https://www.braintrust.dev/careers",                                   notes:"ET30 #16 Mid; AI eval platform; $126M"},
+  {id:"xbow",        name:"XBOW",               sector:"Enterprise Security", tier:"Tier 11 – ET30 2026", link:"https://xbow.com/careers",                                             notes:"ET30 #17 Mid; AI pentesting; $237M"},
+  {id:"basis_ai",    name:"Basis",              sector:"Vertical AI Agents",  tier:"Tier 11 – ET30 2026", link:"https://www.basis.ai/careers",                                         notes:"ET30 #18 Mid; vertical AI agents; $138M"},
+  {id:"avoca",       name:"Avoca",              sector:"Vertical AI Agents",  tier:"Tier 11 – ET30 2026", link:"https://www.avoca.ai/careers",                                         notes:"ET30 #19 Mid; AI for home services; $48M"},
+  {id:"assort",      name:"Assort Health",      sector:"Healthcare AI",       tier:"Tier 11 – ET30 2026", link:"https://www.assorthealth.com/careers",                                  notes:"ET30 #20 Mid; healthcare AI agents; $102M"},
   // ── ET30 2026 — Enterprise AI (Late Stage) ───────────────────
-  {id:"openevidence",name:"OpenEvidence",       sector:"Healthcare AI",       tier:"Tier 1 – AI & High-Growth", link:"https://www.openevidence.com/careers",                                 notes:"ET30 #3 Late; AI for clinical evidence; $795M"},
-  {id:"decagon",     name:"Decagon",            sector:"AI Agents",           tier:"Tier 1 – AI & High-Growth", link:"https://decagon.ai/careers",                                           notes:"ET30 #4 Late; AI customer support; $481M"},
-  {id:"sierra_ai",   name:"Sierra",             sector:"AI Agents",           tier:"Tier 1 – AI & High-Growth", link:"https://sierra.ai/careers",                                            notes:"ET30 #6 Late; Bret Taylor's AI agents; $635M"},
-  {id:"lovable",     name:"Lovable",            sector:"AI Infrastructure",   tier:"Tier 1 – AI & High-Growth", link:"https://lovable.dev/careers",                                          notes:"ET30 #8 Late; AI app builder; $550M"},
-  {id:"fal_ai",      name:"fal",                sector:"AI Infrastructure",   tier:"Tier 1 – AI & High-Growth", link:"https://fal.ai/careers",                                               notes:"ET30 #9 Late; AI inference platform; $300M"},
-  {id:"baseten",     name:"Baseten",            sector:"AI Infrastructure",   tier:"Tier 1 – AI & High-Growth", link:"https://www.baseten.co/careers/",                                      notes:"ET30 #10 Late; ML model serving; $585M"},
-  {id:"clay_ai",     name:"Clay",               sector:"AI Agents",           tier:"Tier 1 – AI & High-Growth", link:"https://www.clay.com/careers",                                         notes:"ET30 #11 Late; AI GTM data platform; $202M"},
-  {id:"fireworks",   name:"Fireworks AI",       sector:"AI Infrastructure",   tier:"Tier 1 – AI & High-Growth", link:"https://fireworks.ai/careers",                                         notes:"ET30 #12 Late; fast AI inference; $327M"},
-  {id:"legora",      name:"Legora",             sector:"Legal AI",            tier:"Tier 1 – AI & High-Growth", link:"https://www.legora.com/careers",                                       notes:"ET30 #15 Late; AI for legal; $815M"},
-  {id:"abnormal",    name:"Abnormal AI",        sector:"Enterprise Security", tier:"Tier 1 – AI & High-Growth", link:"https://abnormalsecurity.com/careers",                                 notes:"ET30 #16 Late; AI email security; $546M; 1400+ employees"},
-  {id:"n8n",         name:"n8n",                sector:"AI Agents",           tier:"Tier 1 – AI & High-Growth", link:"https://n8n.io/careers/",                                              notes:"ET30 #17 Late; workflow automation AI; $254M"},
-  {id:"flock_safety",name:"Flock Safety",       sector:"Defense/Safety AI",   tier:"Tier 1 – AI & High-Growth", link:"https://www.flocksafety.com/careers",                                  notes:"ET30 #19 Late; public safety AI; $958M"},
-  {id:"gong",        name:"Gong",               sector:"AI Revenue Intel",    tier:"Tier 1 – AI & High-Growth", link:"https://www.gong.io/careers/",                                         notes:"ET30 #20 Late; AI revenue intelligence; $584M"},
+  {id:"openevidence",name:"OpenEvidence",       sector:"Healthcare AI",       tier:"Tier 11 – ET30 2026", link:"https://www.openevidence.com/careers",                                 notes:"ET30 #3 Late; AI for clinical evidence; $795M"},
+  {id:"decagon",     name:"Decagon",            sector:"AI Agents",           tier:"Tier 11 – ET30 2026", link:"https://decagon.ai/careers",                                           notes:"ET30 #4 Late; AI customer support; $481M"},
+  {id:"sierra_ai",   name:"Sierra",             sector:"AI Agents",           tier:"Tier 11 – ET30 2026", link:"https://sierra.ai/careers",                                            notes:"ET30 #6 Late; Bret Taylor's AI agents; $635M"},
+  {id:"lovable",     name:"Lovable",            sector:"AI Infrastructure",   tier:"Tier 11 – ET30 2026", link:"https://lovable.dev/careers",                                          notes:"ET30 #8 Late; AI app builder; $550M"},
+  {id:"fal_ai",      name:"fal",                sector:"AI Infrastructure",   tier:"Tier 11 – ET30 2026", link:"https://fal.ai/careers",                                               notes:"ET30 #9 Late; AI inference platform; $300M"},
+  {id:"baseten",     name:"Baseten",            sector:"AI Infrastructure",   tier:"Tier 11 – ET30 2026", link:"https://www.baseten.co/careers/",                                      notes:"ET30 #10 Late; ML model serving; $585M"},
+  {id:"clay_ai",     name:"Clay",               sector:"AI Agents",           tier:"Tier 11 – ET30 2026", link:"https://www.clay.com/careers",                                         notes:"ET30 #11 Late; AI GTM data platform; $202M"},
+  {id:"fireworks",   name:"Fireworks AI",       sector:"AI Infrastructure",   tier:"Tier 11 – ET30 2026", link:"https://fireworks.ai/careers",                                         notes:"ET30 #12 Late; fast AI inference; $327M"},
+  {id:"legora",      name:"Legora",             sector:"Legal AI",            tier:"Tier 11 – ET30 2026", link:"https://www.legora.com/careers",                                       notes:"ET30 #15 Late; AI for legal; $815M"},
+  {id:"abnormal",    name:"Abnormal AI",        sector:"Enterprise Security", tier:"Tier 11 – ET30 2026", link:"https://abnormalsecurity.com/careers",                                 notes:"ET30 #16 Late; AI email security; $546M; 1400+ employees"},
+  {id:"n8n",         name:"n8n",                sector:"AI Agents",           tier:"Tier 11 – ET30 2026", link:"https://n8n.io/careers/",                                              notes:"ET30 #17 Late; workflow automation AI; $254M"},
+  {id:"flock_safety",name:"Flock Safety",       sector:"Defense/Safety AI",   tier:"Tier 11 – ET30 2026", link:"https://www.flocksafety.com/careers",                                  notes:"ET30 #19 Late; public safety AI; $958M"},
+  {id:"gong",        name:"Gong",               sector:"AI Revenue Intel",    tier:"Tier 11 – ET30 2026", link:"https://www.gong.io/careers/",                                         notes:"ET30 #20 Late; AI revenue intelligence; $584M"},
   // ── ET30 2026 — Enterprise AI (Giga Stage) ───────────────────
-  {id:"clickhouse",  name:"ClickHouse",         sector:"Enterprise Infra",    tier:"Tier 1 – AI & High-Growth", link:"https://clickhouse.com/careers",                                       notes:"ET30 #8 Giga; real-time analytics DB; $1B"},
-  {id:"applied_intuition",name:"Applied Intuition",sector:"AI/AV",           tier:"Tier 1 – AI & High-Growth", link:"https://www.appliedintuition.com/careers",                             notes:"ET30 #10 Giga; AV simulation AI; $1.2B; 1300+ employees"},
+  {id:"clickhouse",  name:"ClickHouse",         sector:"Enterprise Infra",    tier:"Tier 11 – ET30 2026", link:"https://clickhouse.com/careers",                                       notes:"ET30 #8 Giga; real-time analytics DB; $1B"},
+  {id:"applied_intuition",name:"Applied Intuition",sector:"AI/AV",           tier:"Tier 11 – ET30 2026", link:"https://www.appliedintuition.com/careers",                             notes:"ET30 #10 Giga; AV simulation AI; $1.2B; 1300+ employees"},
 
 ];
 
@@ -979,6 +981,7 @@ const TIER_CONFIG = {
   "Tier 8":  { color: "#FF2D78", key: "tier8" },
   "Tier 9":  { color: "#F9CA24", key: "tier9" },
   "Tier 10": { color: "#6AB04C", key: "tier10" },
+  "Tier 11": { color: "#00D2D3", key: "tier11" },
 };
 
 const STATUS_LABELS = {
@@ -1046,6 +1049,7 @@ function renderAll() {
     "Tier 8 – Unicorn Startups",
     "Tier 9 – Quant Finance",
     "Tier 10 – Consulting",
+    "Tier 11 – ET30 2026",
   ];
 
   let html = "";
