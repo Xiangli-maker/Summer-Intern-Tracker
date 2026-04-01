@@ -3,287 +3,328 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Intern Alert — Daily Job Postings</title>
+<title>Finance Career Paths — Princeton Guide</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Clash+Display:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #050508;
-  --surface: #0c0c12;
-  --card: #111118;
-  --border: #1e1e2a;
-  --green: #00FF87;
-  --green-dim: rgba(0,255,135,.12);
-  --green-border: rgba(0,255,135,.25);
-  --amber: #FFB800;
-  --red: #FF4D6D;
-  --text: #E8E8F0;
-  --muted: #5a5a6e;
-  --font-mono: 'JetBrains Mono', monospace;
-  --font-head: 'Clash Display', sans-serif;
+  --bg: #F5F2EC;
+  --ink: #1A1A18;
+  --paper: #FDFAF4;
+  --rule: #D4CFC4;
+  --muted: #8A8478;
+  --accent: #C8401A;
+  --gold: #B8960C;
+  --green: #2A6B3C;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --font-body: 'DM Sans', sans-serif;
 }
+
+html { scroll-behavior: smooth; }
 
 body {
   background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-mono);
+  color: var(--ink);
+  font-family: var(--font-body);
   min-height: 100vh;
-  overflow-x: hidden;
 }
 
-/* Scanline effect */
-body::after {
-  content: '';
-  position: fixed; inset: 0;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,135,.008) 2px, rgba(0,255,135,.008) 4px);
-  pointer-events: none; z-index: 100;
-}
-
-/* Grid bg */
+/* ── Noise texture overlay ── */
 body::before {
   content: '';
   position: fixed; inset: 0;
-  background-image: linear-gradient(rgba(0,255,135,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,135,.04) 1px, transparent 1px);
-  background-size: 32px 32px;
-  pointer-events: none; z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: .4;
 }
 
-/* ── Header ─────────────────────────────────────────────── */
+/* ── Header ── */
 header {
   position: relative; z-index: 10;
-  padding: 40px 48px 32px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 2px solid var(--ink);
+  padding: 32px 48px 24px;
+  background: var(--paper);
 }
 
 .header-top {
   display: flex; align-items: flex-start; justify-content: space-between;
-  flex-wrap: wrap; gap: 16px; margin-bottom: 24px;
+  flex-wrap: wrap; gap: 16px; margin-bottom: 8px;
 }
 
-.logo {
-  display: flex; align-items: center; gap: 12px;
+.eyebrow {
+  font-family: var(--font-mono); font-size: 11px;
+  letter-spacing: .15em; color: var(--muted);
+  text-transform: uppercase; margin-bottom: 6px;
 }
 
-.logo-dot {
-  width: 12px; height: 12px; border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 12px var(--green);
-  animation: blink 1.2s ease-in-out infinite;
+h1 {
+  font-family: var(--font-display);
+  font-size: clamp(42px, 7vw, 80px);
+  line-height: .95; letter-spacing: .01em;
+  color: var(--ink);
 }
 
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+h1 span { color: var(--accent); }
 
-.logo-text {
-  font-family: var(--font-head);
-  font-size: 22px; font-weight: 700;
-  color: var(--text);
-  letter-spacing: -.02em;
+.nav-links { display: flex; gap: 10px; align-items: center; padding-top: 4px; }
+.nav-link {
+  font-family: var(--font-mono); font-size: 11px;
+  text-decoration: none; border: 1px solid var(--rule);
+  padding: 6px 14px; color: var(--muted);
+  transition: all .15s; background: transparent;
+}
+.nav-link:hover { border-color: var(--ink); color: var(--ink); }
+.nav-link.home { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.nav-link.home:hover { background: var(--accent); border-color: var(--accent); }
+
+.deck {
+  font-family: var(--font-body); font-size: 15px;
+  color: var(--muted); max-width: 600px; line-height: 1.6;
+  border-left: 3px solid var(--accent); padding-left: 16px; margin-top: 16px;
 }
 
-.logo-sub {
-  font-size: 11px; color: var(--muted);
-  margin-top: 2px; letter-spacing: .1em;
+/* ── Legend ── */
+.legend {
+  position: relative; z-index: 1;
+  display: flex; gap: 20px; flex-wrap: wrap; align-items: center;
+  padding: 14px 48px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--bg);
+  font-family: var(--font-mono); font-size: 11px;
 }
 
-.back-btn {
-  font-size: 11px; color: var(--muted);
-  text-decoration: none; border: 1px solid var(--border);
-  padding: 6px 14px; border-radius: 4px;
-  transition: all .15s;
+.legend-label { color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
+.legend-items { display: flex; gap: 16px; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  flex-shrink: 0;
 }
-.back-btn:hover { color: var(--green); border-color: var(--green-border); }
+.dot-low    { background: #4CAF50; }
+.dot-med    { background: #FF9800; }
+.dot-high   { background: #F44336; }
+.dot-vhigh  { background: #9C27B0; }
 
-.status-bar {
-  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
-}
-
-.status-item {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 11px; color: var(--muted);
-}
-
-.status-val {
-  font-size: 20px; font-weight: 700;
-  font-family: var(--font-head); color: var(--green);
-}
-
-#last-updated { font-size: 11px; color: var(--muted); margin-left: auto; }
-
-/* ── Main ────────────────────────────────────────────────── */
+/* ── Main ── */
 main {
   position: relative; z-index: 1;
-  max-width: 1200px; margin: 0 auto;
-  padding: 32px 48px 80px;
+  padding: 48px 48px 80px;
+  max-width: 1400px; margin: 0 auto;
 }
 
-/* ── Refresh btn ──────────────────────────────────────────── */
-.refresh-row {
-  display: flex; align-items: center; gap: 12px;
-  margin-bottom: 28px;
-}
-
-.refresh-btn {
-  font-family: var(--font-mono); font-size: 12px;
-  padding: 9px 20px; border-radius: 4px;
-  background: var(--green-dim); border: 1px solid var(--green-border);
-  color: var(--green); cursor: pointer; transition: all .15s;
-  display: flex; align-items: center; gap: 8px;
-}
-.refresh-btn:hover { background: var(--green); color: #000; }
-.refresh-btn:disabled { opacity: .4; cursor: not-allowed; }
-
-.spin { animation: spin .8s linear infinite; display: inline-block; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.filter-row { display: flex; gap: 8px; flex-wrap: wrap; }
-.filter-btn {
-  font-family: var(--font-mono); font-size: 10px;
-  padding: 5px 12px; border-radius: 3px;
-  background: transparent; border: 1px solid var(--border);
-  color: var(--muted); cursor: pointer; transition: all .15s;
-}
-.filter-btn.active, .filter-btn:hover { border-color: var(--green-border); color: var(--green); background: var(--green-dim); }
-
-/* ── Job cards ────────────────────────────────────────────── */
-.section-label {
-  font-size: 10px; color: var(--muted);
-  letter-spacing: .15em; text-transform: uppercase;
-  margin-bottom: 14px; padding-bottom: 8px;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 8px;
-}
-
-.section-label::before {
-  content: ''; display: inline-block;
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--green);
-}
-
-.jobs-grid {
+/* ── Cards grid ── */
+.cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 12px; margin-bottom: 40px;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 2px;
+  border: 2px solid var(--ink);
+  margin-bottom: 48px;
 }
 
-.job-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 16px 18px;
-  transition: border-color .15s, transform .15s;
-  animation: fadeIn .3s ease both;
+.career-card {
+  background: var(--paper);
+  padding: 28px 28px 24px;
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
   position: relative; overflow: hidden;
+  transition: background .2s;
+  animation: fadeUp .4s ease both;
 }
 
-.job-card::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: var(--green); opacity: 0;
-  transition: opacity .2s;
-}
+.career-card:hover { background: #FFFEF9; }
 
-.job-card:hover { border-color: var(--green-border); transform: translateY(-1px); }
-.job-card:hover::before { opacity: 1; }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.job-top {
-  display: flex; align-items: flex-start;
-  justify-content: space-between; gap: 8px;
-  margin-bottom: 8px;
+.career-card:nth-child(1) { animation-delay: .05s; }
+.career-card:nth-child(2) { animation-delay: .1s; }
+.career-card:nth-child(3) { animation-delay: .15s; }
+.career-card:nth-child(4) { animation-delay: .2s; }
+.career-card:nth-child(5) { animation-delay: .25s; }
+.career-card:nth-child(6) { animation-delay: .3s; }
+
+.card-accent {
+  position: absolute; top: 0; left: 0; bottom: 0;
+  width: 4px;
 }
 
-.job-company {
-  font-family: var(--font-head); font-size: 15px;
-  font-weight: 600; color: var(--text);
+.card-number {
+  font-family: var(--font-display); font-size: 48px;
+  color: var(--rule); line-height: 1; margin-bottom: 8px;
+  letter-spacing: .02em;
 }
 
-.job-new {
-  font-size: 9px; padding: 2px 7px; border-radius: 3px;
-  background: var(--green-dim); border: 1px solid var(--green-border);
-  color: var(--green); flex-shrink: 0;
-  animation: blink 2s infinite;
+.card-title {
+  font-family: var(--font-display); font-size: 28px;
+  letter-spacing: .02em; margin-bottom: 4px; color: var(--ink);
 }
 
-.job-role {
-  font-size: 12px; color: var(--muted);
-  margin-bottom: 10px; line-height: 1.5;
+.card-abbr {
+  font-family: var(--font-mono); font-size: 11px;
+  color: var(--muted); letter-spacing: .15em;
+  text-transform: uppercase; margin-bottom: 14px;
 }
 
-.job-meta {
-  display: flex; gap: 8px; flex-wrap: wrap;
-  margin-bottom: 12px;
+.card-desc {
+  font-size: 13px; color: var(--muted); line-height: 1.6;
+  margin-bottom: 16px; padding-bottom: 16px;
+  border-bottom: 1px solid var(--rule);
 }
 
-.meta-tag {
-  font-size: 10px; padding: 2px 8px; border-radius: 3px;
-  background: rgba(255,255,255,.04); border: 1px solid var(--border);
-  color: var(--muted);
+.card-what {
+  font-size: 12px; line-height: 1.65; color: var(--ink);
+  margin-bottom: 20px;
 }
 
-.job-actions { display: flex; gap: 8px; }
-
-.job-btn {
+.card-what strong {
   font-family: var(--font-mono); font-size: 10px;
-  padding: 5px 12px; border-radius: 3px;
-  text-decoration: none; transition: all .15s;
-  border: 1px solid var(--green-border);
-  background: var(--green-dim); color: var(--green);
-}
-.job-btn:hover { background: var(--green); color: #000; }
-
-.job-btn.secondary {
-  background: transparent; border-color: var(--border); color: var(--muted);
-}
-.job-btn.secondary:hover { border-color: var(--green-border); color: var(--green); }
-
-/* ── Empty / Loading states ───────────────────────────────── */
-.state-box {
-  text-align: center; padding: 60px 20px;
-  color: var(--muted); font-size: 13px;
+  letter-spacing: .1em; color: var(--muted);
+  text-transform: uppercase; display: block; margin-bottom: 4px;
 }
 
-.state-icon { font-size: 40px; display: block; margin-bottom: 16px; filter: grayscale(1); opacity: .4; }
-.state-title { font-family: var(--font-head); font-size: 18px; color: var(--text); margin-bottom: 8px; }
+/* ── Metric bars ── */
+.metrics { display: flex; flex-direction: column; gap: 8px; }
 
-.terminal-loader {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 12px; color: var(--green);
-  margin-bottom: 8px;
+.metric {
+  display: grid;
+  grid-template-columns: 80px 1fr 60px;
+  align-items: center; gap: 10px;
 }
-.cursor { animation: blink .8s infinite; }
 
-/* ── Company filter chips ─────────────────────────────────── */
-.company-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
-.company-chip {
-  font-size: 10px; padding: 3px 10px; border-radius: 20px;
-  background: transparent; border: 1px solid var(--border);
-  color: var(--muted); cursor: pointer; transition: all .15s;
+.metric-label {
+  font-family: var(--font-mono); font-size: 10px;
+  color: var(--muted); letter-spacing: .05em;
+  text-transform: uppercase;
 }
-.company-chip.active { background: var(--green-dim); border-color: var(--green-border); color: var(--green); }
 
-/* ── Resources sidebar ────────────────────────────────────── */
-.resources {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 6px; padding: 16px 18px; margin-bottom: 28px;
+.metric-bar-bg {
+  height: 6px; background: var(--rule); border-radius: 3px; overflow: hidden;
 }
-.resources-title { font-size: 10px; color: var(--muted); letter-spacing: .15em; text-transform: uppercase; margin-bottom: 12px; }
-.resource-links { display: flex; gap: 8px; flex-wrap: wrap; }
-.resource-link {
-  font-size: 11px; padding: 5px 12px; border-radius: 3px;
-  text-decoration: none; border: 1px solid var(--border);
-  color: var(--muted); transition: all .15s;
-}
-.resource-link:hover { color: var(--green); border-color: var(--green-border); }
 
-@media (max-width: 600px) {
+.metric-bar-fill {
+  height: 100%; border-radius: 3px;
+  transition: width .6s cubic-bezier(.4,0,.2,1);
+}
+
+.metric-value {
+  font-family: var(--font-mono); font-size: 10px;
+  text-align: right;
+}
+
+/* Level colors */
+.lvl-low    { background: #4CAF50; }
+.lvl-med    { background: #FF9800; }
+.lvl-medhi  { background: #FF5722; }
+.lvl-high   { background: #F44336; }
+.lvl-vhigh  { background: #9C27B0; }
+
+.txt-low    { color: #2E7D32; }
+.txt-med    { color: #E65100; }
+.txt-medhi  { color: #BF360C; }
+.txt-high   { color: #C62828; }
+.txt-vhigh  { color: #6A1B9A; }
+
+/* ── Card accent colors ── */
+.accent-am { background: #1976D2; }
+.accent-pe { background: #388E3C; }
+.accent-hf { background: #F57C00; }
+.accent-qf { background: #7B1FA2; }
+.accent-ib { background: #C62828; }
+.accent-vc { background: #00796B; }
+
+/* ── Comparison table ── */
+.table-section { margin-top: 48px; }
+
+.section-head {
+  font-family: var(--font-display); font-size: 36px;
+  margin-bottom: 24px; letter-spacing: .02em;
+}
+
+.section-head span { color: var(--accent); }
+
+.compare-table {
+  width: 100%; border-collapse: collapse;
+  border: 2px solid var(--ink);
+  font-size: 13px;
+}
+
+.compare-table th {
+  background: var(--ink); color: var(--bg);
+  font-family: var(--font-mono); font-size: 11px;
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 12px 16px; text-align: left;
+  border-right: 1px solid #333;
+}
+
+.compare-table th:first-child { width: 120px; }
+
+.compare-table td {
+  padding: 10px 16px; border: 1px solid var(--rule);
+  vertical-align: middle;
+}
+
+.compare-table tr:hover td { background: #F0EDE6; }
+
+.field-label {
+  font-family: var(--font-display); font-size: 20px;
+  letter-spacing: .02em;
+}
+
+.chip {
+  display: inline-block; font-family: var(--font-mono); font-size: 10px;
+  padding: 3px 8px; border-radius: 2px; letter-spacing: .05em;
+}
+.chip-low   { background: #E8F5E9; color: #2E7D32; border: 1px solid #C8E6C9; }
+.chip-med   { background: #FFF3E0; color: #E65100; border: 1px solid #FFE0B2; }
+.chip-medhi { background: #FBE9E7; color: #BF360C; border: 1px solid #FFCCBC; }
+.chip-high  { background: #FFEBEE; color: #C62828; border: 1px solid #FFCDD2; }
+.chip-vhigh { background: #F3E5F5; color: #6A1B9A; border: 1px solid #E1BEE7; }
+
+/* ── Princeton note ── */
+.princeton-note {
+  margin-top: 48px; padding: 24px 28px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  display: grid; grid-template-columns: auto 1fr; gap: 20px;
+}
+
+.princeton-flag {
+  font-family: var(--font-display); font-size: 64px;
+  color: var(--accent); line-height: 1;
+}
+
+.princeton-title {
+  font-family: var(--font-display); font-size: 22px;
+  letter-spacing: .02em; margin-bottom: 10px;
+}
+
+.princeton-list {
+  list-style: none; display: flex; flex-direction: column; gap: 6px;
+}
+
+.princeton-list li {
+  font-size: 13px; color: var(--muted); padding-left: 16px;
+  position: relative; line-height: 1.5;
+}
+
+.princeton-list li::before {
+  content: '—'; position: absolute; left: 0; color: var(--accent);
+  font-family: var(--font-mono);
+}
+
+.princeton-list li strong { color: var(--ink); }
+
+@media (max-width: 700px) {
   header, main { padding-left: 20px; padding-right: 20px; }
-  .jobs-grid { grid-template-columns: 1fr; }
+  .legend { padding-left: 20px; padding-right: 20px; }
+  .cards-grid { grid-template-columns: 1fr; }
+  h1 { font-size: 48px; }
+  .compare-table { font-size: 11px; }
+  .compare-table th, .compare-table td { padding: 8px 10px; }
 }
 </style>
 </head>
@@ -292,365 +333,374 @@ main {
 <header>
   <div class="header-top">
     <div>
-      <div class="logo">
-        <div class="logo-dot"></div>
-        <div>
-          <div class="logo-text">Intern Alert</div>
-          <div class="logo-sub">DAILY POSTINGS // SIMPLIFY JOBS + GITHUB</div>
-        </div>
-      </div>
+      <div class="eyebrow">Princeton CS & ORFE // Career Intelligence</div>
+      <h1>Finance<br><span>Career Paths</span></h1>
+      <p class="deck">A field guide to AM, PE, HF, QF, IB, and VC — what each path demands, what you do, and how to position yourself as a freshman.</p>
     </div>
-    <a href="index.html" class="back-btn">← Back to Tracker</a>
-  </div>
-  <div class="status-bar">
-    <div class="status-item"><span class="status-val" id="count-new">—</span>&nbsp;new today</div>
-    <div class="status-item"><span class="status-val" id="count-commits">—</span>&nbsp;repo commits</div>
-    <div class="status-item"><span class="status-val" id="count-companies">288</span>&nbsp;companies tracked</div>
-    <span id="last-updated"></span>
+    <div class="nav-links">
+      <a class="nav-link home" href="index.html">← Tracker</a>
+      <a class="nav-link" href="alerts.html">Daily Alerts</a>
+      <a class="nav-link" href="intern-openings.html">Openings</a>
+    </div>
   </div>
 </header>
 
+<div class="legend">
+  <span class="legend-label">Difficulty scale —</span>
+  <div class="legend-items">
+    <div class="legend-item"><div class="dot dot-low"></div><span>Low</span></div>
+    <div class="legend-item"><div class="dot dot-med"></div><span>Medium</span></div>
+    <div class="legend-item"><div class="dot dot-high"></div><span>High</span></div>
+    <div class="legend-item"><div class="dot dot-vhigh"></div><span>Very High</span></div>
+  </div>
+</div>
+
 <main>
 
-  <!-- Resources -->
-  <div class="resources">
-    <div class="resources-title">Quick links</div>
-    <div class="resource-links">
-      <a class="resource-link" href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank">SimplifyJobs GitHub ↗</a>
-      <a class="resource-link" href="https://simplify.jobs/l/Top-AI-Startup-Internships" target="_blank">Simplify: AI Startups ↗</a>
-      <a class="resource-link" href="https://simplify.jobs/l/Freshman-and-Sophomore-Internships" target="_blank">Simplify: Freshman ↗</a>
-      <a class="resource-link" href="https://princeton.joinhandshake.com/" target="_blank">Handshake ↗</a>
-      <a class="resource-link" href="https://swelist.com" target="_blank">SWEList Email Alerts ↗</a>
-      <a class="resource-link" href="https://careerdevelopment.princeton.edu/" target="_blank">Princeton Careers ↗</a>
+  <!-- Cards -->
+  <div class="cards-grid">
+
+    <!-- AM -->
+    <div class="career-card">
+      <div class="card-accent accent-am"></div>
+      <div class="card-number">01</div>
+      <div class="card-title">Asset Management</div>
+      <div class="card-abbr">AM · Long-only investing</div>
+      <div class="card-desc">Managing money for clients — pensions, endowments, retail investors — over long investment horizons. Think Vanguard, BlackRock, Fidelity.</div>
+      <div class="card-what">
+        <strong>What you do</strong>
+        Build portfolios, pick stocks & bonds, track markets, write investment memos, present to portfolio managers.
+      </div>
+      <div class="metrics">
+        <div class="metric">
+          <span class="metric-label">Math</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-low" style="width:25%"></div></div>
+          <span class="metric-value txt-low">Low</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Coding</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-low" style="width:25%"></div></div>
+          <span class="metric-value txt-low">Low</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Business</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-med" style="width:50%"></div></div>
+          <span class="metric-value txt-med">Medium</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Hours</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-med" style="width:50%"></div></div>
+          <span class="metric-value txt-med">Medium</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Entry Diff.</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-med" style="width:50%"></div></div>
+          <span class="metric-value txt-med">Medium</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PE -->
+    <div class="career-card">
+      <div class="card-accent accent-pe"></div>
+      <div class="card-number">02</div>
+      <div class="card-title">Private Equity</div>
+      <div class="card-abbr">PE · Buyouts & growth</div>
+      <div class="card-desc">Buying private companies, improving them over 3–7 years, then selling at a profit. Think Blackstone, KKR, Apollo. Typically requires IB experience first.</div>
+      <div class="card-what">
+        <strong>What you do</strong>
+        Analyze companies, build LBO models, source & execute deals, work on acquisitions, manage portfolio companies.
+      </div>
+      <div class="metrics">
+        <div class="metric">
+          <span class="metric-label">Math</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-low" style="width:25%"></div></div>
+          <span class="metric-value txt-low">Low</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Coding</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-low" style="width:25%"></div></div>
+          <span class="metric-value txt-low">Low</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Business</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-high" style="width:75%"></div></div>
+          <span class="metric-value txt-high">High</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Hours</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-vhigh" style="width:95%"></div></div>
+          <span class="metric-value txt-vhigh">Very High</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Entry Diff.</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-vhigh" style="width:95%"></div></div>
+          <span class="metric-value txt-vhigh">Very High</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- HF -->
+    <div class="career-card">
+      <div class="card-accent accent-hf"></div>
+      <div class="card-number">03</div>
+      <div class="card-title">Hedge Fund</div>
+      <div class="card-abbr">HF · Active alpha generation</div>
+      <div class="card-desc">Actively investing across any asset class using sophisticated strategies to generate returns regardless of market direction. Think Citadel, Millennium, Point72.</div>
+      <div class="card-what">
+        <strong>What you do</strong>
+        Trade markets, research investment strategies, manage risk, size positions, generate investment theses.
+      </div>
+      <div class="metrics">
+        <div class="metric">
+          <span class="metric-label">Math</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-med" style="width:50%"></div></div>
+          <span class="metric-value txt-med">Medium</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Coding</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-med" style="width:50%"></div></div>
+          <span class="metric-value txt-med">Medium</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Business</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-med" style="width:50%"></div></div>
+          <span class="metric-value txt-med">Medium</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Hours</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-high" style="width:75%"></div></div>
+          <span class="metric-value txt-high">High</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Entry Diff.</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-high" style="width:75%"></div></div>
+          <span class="metric-value txt-high">High</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- QF -->
+    <div class="career-card">
+      <div class="card-accent accent-qf"></div>
+      <div class="card-number">04</div>
+      <div class="card-title">Quant Finance</div>
+      <div class="card-abbr">QF · Math + CS = alpha</div>
+      <div class="card-desc">Using advanced mathematics and computer science to trade, model, and find alpha in markets. Think Jane Street, D.E. Shaw, Renaissance. The ORFE dream path.</div>
+      <div class="card-what">
+        <strong>What you do</strong>
+        Build trading algorithms, model probabilities, analyze massive datasets, backtest strategies, write production-grade systems.
+      </div>
+      <div class="metrics">
+        <div class="metric">
+          <span class="metric-label">Math</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-vhigh" style="width:95%"></div></div>
+          <span class="metric-value txt-vhigh">Very High</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Coding</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-vhigh" style="width:95%"></div></div>
+          <span class="metric-value txt-vhigh">Very High</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Business</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-low" style="width:25%"></div></div>
+          <span class="metric-value txt-low">Low</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Hours</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-medhi" style="width:65%"></div></div>
+          <span class="metric-value txt-medhi">Med–High</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Entry Diff.</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-vhigh" style="width:95%"></div></div>
+          <span class="metric-value txt-vhigh">Very High</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- IB -->
+    <div class="career-card">
+      <div class="card-accent accent-ib"></div>
+      <div class="card-number">05</div>
+      <div class="card-title">Investment Banking</div>
+      <div class="card-abbr">IB · Capital markets & M&A</div>
+      <div class="card-desc">Helping companies raise capital (IPOs, debt) and execute major transactions (mergers, acquisitions). Think Goldman Sachs, Morgan Stanley, JPMorgan. A classic Princeton path.</div>
+      <div class="card-what">
+        <strong>What you do</strong>
+        Build financial models, create pitch decks, execute M&A deals, coordinate due diligence, manage client relationships.
+      </div>
+      <div class="metrics">
+        <div class="metric">
+          <span class="metric-label">Math</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-low" style="width:25%"></div></div>
+          <span class="metric-value txt-low">Low</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Coding</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-low" style="width:25%"></div></div>
+          <span class="metric-value txt-low">Low</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Business</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-high" style="width:75%"></div></div>
+          <span class="metric-value txt-high">High</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Hours</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-vhigh" style="width:95%"></div></div>
+          <span class="metric-value txt-vhigh">Very High</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Entry Diff.</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-high" style="width:75%"></div></div>
+          <span class="metric-value txt-high">High</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- VC -->
+    <div class="career-card">
+      <div class="card-accent accent-vc"></div>
+      <div class="card-number">06</div>
+      <div class="card-title">Venture Capital</div>
+      <div class="card-abbr">VC · Early-stage investing</div>
+      <div class="card-desc">Investing in early-stage startups in exchange for equity, betting on founders and markets before a company proves itself. Think a16z, Sequoia, Kleiner Perkins.</div>
+      <div class="card-what">
+        <strong>What you do</strong>
+        Evaluate founders & business models, conduct market research, source deals, support portfolio companies, build founder relationships.
+      </div>
+      <div class="metrics">
+        <div class="metric">
+          <span class="metric-label">Math</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-low" style="width:25%"></div></div>
+          <span class="metric-value txt-low">Low</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Coding</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-low" style="width:25%"></div></div>
+          <span class="metric-value txt-low">Low</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Business</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-vhigh" style="width:95%"></div></div>
+          <span class="metric-value txt-vhigh">Very High</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Hours</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-med" style="width:50%"></div></div>
+          <span class="metric-value txt-med">Medium</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Entry Diff.</span>
+          <div class="metric-bar-bg"><div class="metric-bar-fill lvl-vhigh" style="width:95%"></div></div>
+          <span class="metric-value txt-vhigh">Very High</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Comparison Table -->
+  <div class="table-section">
+    <div class="section-head">Side-by-<span>Side</span></div>
+    <div style="overflow-x:auto;">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Path</th>
+            <th>What it is</th>
+            <th>What you do</th>
+            <th>Math</th>
+            <th>Coding</th>
+            <th>Business</th>
+            <th>Hours</th>
+            <th>Entry Diff.</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="field-label" style="color:#1976D2">AM</div><div style="font-size:10px;font-family:var(--font-mono);color:var(--muted)">Asset Mgmt</div></td>
+            <td>Managing money for clients over long horizons</td>
+            <td>Build portfolios, pick stocks/bonds, track markets</td>
+            <td><span class="chip chip-low">Low</span></td>
+            <td><span class="chip chip-low">Low</span></td>
+            <td><span class="chip chip-med">Medium</span></td>
+            <td><span class="chip chip-med">Medium</span></td>
+            <td><span class="chip chip-med">Medium</span></td>
+          </tr>
+          <tr>
+            <td><div class="field-label" style="color:#388E3C">PE</div><div style="font-size:10px;font-family:var(--font-mono);color:var(--muted)">Private Equity</div></td>
+            <td>Buying and improving companies, then selling them</td>
+            <td>Analyze companies, model deals, work on acquisitions</td>
+            <td><span class="chip chip-low">Low</span></td>
+            <td><span class="chip chip-low">Low</span></td>
+            <td><span class="chip chip-high">High</span></td>
+            <td><span class="chip chip-vhigh">Very High</span></td>
+            <td><span class="chip chip-vhigh">Very High</span></td>
+          </tr>
+          <tr>
+            <td><div class="field-label" style="color:#F57C00">HF</div><div style="font-size:10px;font-family:var(--font-mono);color:var(--muted)">Hedge Fund</div></td>
+            <td>Actively investing to generate high returns</td>
+            <td>Trade markets, research strategies, manage risk</td>
+            <td><span class="chip chip-med">Medium</span></td>
+            <td><span class="chip chip-med">Medium</span></td>
+            <td><span class="chip chip-med">Medium</span></td>
+            <td><span class="chip chip-high">High</span></td>
+            <td><span class="chip chip-high">High</span></td>
+          </tr>
+          <tr>
+            <td><div class="field-label" style="color:#7B1FA2">QF</div><div style="font-size:10px;font-family:var(--font-mono);color:var(--muted)">Quant Finance</div></td>
+            <td>Using math + CS to trade/model markets</td>
+            <td>Build algorithms, model probabilities, analyze data</td>
+            <td><span class="chip chip-vhigh">Very High</span></td>
+            <td><span class="chip chip-vhigh">Very High</span></td>
+            <td><span class="chip chip-low">Low</span></td>
+            <td><span class="chip chip-medhi">Med–High</span></td>
+            <td><span class="chip chip-vhigh">Very High</span></td>
+          </tr>
+          <tr>
+            <td><div class="field-label" style="color:#C62828">IB</div><div style="font-size:10px;font-family:var(--font-mono);color:var(--muted)">Investment Banking</div></td>
+            <td>Helping companies raise money or do deals</td>
+            <td>Financial modeling, pitch decks, M&A execution</td>
+            <td><span class="chip chip-low">Low</span></td>
+            <td><span class="chip chip-low">Low</span></td>
+            <td><span class="chip chip-high">High</span></td>
+            <td><span class="chip chip-vhigh">Very High</span></td>
+            <td><span class="chip chip-high">High</span></td>
+          </tr>
+          <tr>
+            <td><div class="field-label" style="color:#00796B">VC</div><div style="font-size:10px;font-family:var(--font-mono);color:var(--muted)">Venture Capital</div></td>
+            <td>Investing in startups</td>
+            <td>Evaluate founders, markets, and early-stage companies</td>
+            <td><span class="chip chip-low">Low</span></td>
+            <td><span class="chip chip-low">Low</span></td>
+            <td><span class="chip chip-vhigh">Very High</span></td>
+            <td><span class="chip chip-med">Medium</span></td>
+            <td><span class="chip chip-vhigh">Very High</span></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
-  <!-- Controls -->
-  <div class="refresh-row">
-    <button class="refresh-btn" id="refresh-btn" onclick="fetchAlerts()">
-      <span id="refresh-icon">⟳</span> Check for new postings
-    </button>
-    <div class="filter-row">
-      <button class="filter-btn active" onclick="setFilter('all', this)">All tiers</button>
-      <button class="filter-btn" onclick="setFilter('tier1', this)">Tier 1 — AI</button>
-      <button class="filter-btn" onclick="setFilter('tier2', this)">Tier 2 — Big Tech</button>
-      <button class="filter-btn" onclick="setFilter('tier3', this)">Tier 3 — Consumer</button>
-      <button class="filter-btn" onclick="setFilter('tier8', this)">Tier 8 — Unicorns</button>
-    </div>
-  </div>
-
-  <!-- Results -->
-  <div id="results">
-    <div class="state-box">
-      <span class="state-icon">📡</span>
-      <div class="state-title">Ready to scan</div>
-      <div>Click "Check for new postings" to fetch today's internship updates from the SimplifyJobs GitHub repo</div>
+  <!-- Princeton Note -->
+  <div class="princeton-note">
+    <div class="princeton-flag">P</div>
+    <div>
+      <div class="princeton-title">Princeton CS & ORFE — Where you fit</div>
+      <ul class="princeton-list">
+        <li><strong>ORFE → Quant Finance</strong> is the most natural path. Stochastic calculus, probability, and optimization map directly to QF skills. Jane Street, D.E. Shaw, and Two Sigma actively recruit ORFE students.</li>
+        <li><strong>CS → Quant Engineering</strong> — If you pair strong CS with some ORFE electives (ORF 245, ORF 309), you become a top candidate for quant trader and quant researcher roles.</li>
+        <li><strong>CS → IB Tech</strong> — Goldman, JPMorgan, and Morgan Stanley all have dedicated technology analyst programs for CS students. Lower math bar, high hours, strong exit opps to PE/VC.</li>
+        <li><strong>VC is the hardest to break into as an undergrad</strong> — most VCs prefer post-startup or post-IB analysts. Focus on QF or IB first, then lateral.</li>
+        <li><strong>Apply early</strong> — IB and QF recruiting starts in August/September of your sophomore year for summer 2027 internships. Freshman year is for building skills and networking.</li>
+      </ul>
     </div>
   </div>
 
 </main>
 
-<script>
-// ── All 288 tracked companies ────────────────────────────────
-const COMPANIES = [
-  {id:"netflix",    name:"Netflix",       tier:"tier1", link:"https://jobs.netflix.com/search?q=intern"},
-  {id:"anthropic",  name:"Anthropic",     tier:"tier1", link:"https://www.anthropic.com/careers"},
-  {id:"databricks", name:"Databricks",    tier:"tier1", link:"https://www.databricks.com/company/careers"},
-  {id:"snowflake",  name:"Snowflake",     tier:"tier1", link:"https://careers.snowflake.com/us/en/search-results?keywords=intern"},
-  {id:"openai",     name:"OpenAI",        tier:"tier1", link:"https://openai.com/careers"},
-  {id:"deepmind",   name:"DeepMind",      tier:"tier1", link:"https://www.deepmind.com/careers"},
-  {id:"xai",        name:"xAI",           tier:"tier1", link:"https://x.ai/careers"},
-  {id:"janestreet", name:"Jane Street",   tier:"tier1", link:"https://www.janestreet.com/join-jane-street/internships/"},
-  {id:"citadel",    name:"Citadel",       tier:"tier1", link:"https://www.citadel.com/careers/open-positions/"},
-  {id:"deshaw",     name:"D.E. Shaw",     tier:"tier1", link:"https://www.deshaw.com/careers/internships"},
-  {id:"twosigma",   name:"Two Sigma",     tier:"tier1", link:"https://www.twosigma.com/careers/"},
-  {id:"imc",        name:"IMC Trading",   tier:"tier1", link:"https://www.imc.com/us/careers/"},
-  {id:"jumptrading", name:"Jump Trading", tier:"tier1", link:"https://www.jumptrading.com/careers/"},
-  {id:"hrt",        name:"Hudson River Trading", tier:"tier1", link:"https://www.hudsonrivertrading.com/careers/"},
-  {id:"akuna",      name:"Akuna Capital", tier:"tier1", link:"https://akunacapital.com/careers"},
-  {id:"optiver",    name:"Optiver",       tier:"tier1", link:"https://optiver.com/working-at-optiver/career-opportunities/"},
-  {id:"susquehanna",name:"Susquehanna (SIG)", tier:"tier1", link:"https://careers.sig.com/"},
-  {id:"mistral",    name:"Mistral AI",    tier:"tier1", link:"https://mistral.ai/careers/"},
-  {id:"cohere",     name:"Cohere",        tier:"tier1", link:"https://cohere.com/careers"},
-  {id:"perplexity", name:"Perplexity AI", tier:"tier1", link:"https://www.perplexity.ai/hub/careers"},
-  {id:"scaleai",    name:"Scale AI",      tier:"tier1", link:"https://scale.com/careers"},
-  {id:"huggingface",name:"Hugging Face",  tier:"tier1", link:"https://apply.workable.com/huggingface/"},
-  {id:"wandb",      name:"Weights & Biases", tier:"tier1", link:"https://wandb.ai/site/careers"},
-  {id:"coreweave",  name:"CoreWeave",     tier:"tier1", link:"https://www.coreweave.com/careers"},
-  {id:"groq",       name:"Groq",          tier:"tier1", link:"https://groq.com/careers/"},
-  {id:"anyscale",   name:"Anyscale",      tier:"tier1", link:"https://www.anyscale.com/careers"},
-  {id:"waymo",      name:"Waymo",         tier:"tier1", link:"https://waymo.com/careers/"},
-  {id:"figure",     name:"Figure AI",     tier:"tier1", link:"https://www.figure.ai/careers"},
-  {id:"boston",     name:"Boston Dynamics",tier:"tier1", link:"https://bostondynamics.com/careers/"},
-  {id:"meta",       name:"Meta",          tier:"tier2", link:"https://www.metacareers.com/students-and-grads/"},
-  {id:"google",     name:"Google",        tier:"tier2", link:"https://careers.google.com/students/"},
-  {id:"nvidia",     name:"NVIDIA",        tier:"tier2", link:"https://nvidia.wd5.myworkdayjobs.com/UniversityJobs"},
-  {id:"apple",      name:"Apple",         tier:"tier2", link:"https://jobs.apple.com/en-us/search?team=internships-STDNT-INTRN"},
-  {id:"microsoft",  name:"Microsoft",     tier:"tier2", link:"https://careers.microsoft.com/students/us/en/usuniversityinternship"},
-  {id:"amazon",     name:"Amazon",        tier:"tier2", link:"https://www.amazon.jobs/en/business_units/internships-and-student-programs"},
-  {id:"bytedance",  name:"ByteDance",     tier:"tier2", link:"https://jobs.bytedance.com/en/campus"},
-  {id:"twitter",    name:"X (Twitter)",   tier:"tier2", link:"https://careers.x.com/en"},
-  {id:"twitch",     name:"Twitch",        tier:"tier2", link:"https://www.twitch.tv/p/en/jobs/"},
-  {id:"goldmansachs",name:"Goldman Sachs",tier:"tier3", link:"https://www.goldmansachs.com/careers/students/"},
-  {id:"jpmorgan",   name:"JPMorgan Chase",tier:"tier3", link:"https://careers.jpmorgan.com/us/en/students/programs"},
-  {id:"morganst",   name:"Morgan Stanley",tier:"tier3", link:"https://www.morganstanley.com/people/students-graduates"},
-  {id:"blackrock",  name:"BlackRock",     tier:"tier3", link:"https://careers.blackrock.com/early-careers/"},
-  {id:"bloomberg",  name:"Bloomberg",     tier:"tier3", link:"https://www.bloomberg.com/careers/technology/"},
-  {id:"visa",       name:"Visa",          tier:"tier3", link:"https://usa.visa.com/careers/students-graduates.html"},
-  {id:"mastercard", name:"Mastercard",    tier:"tier3", link:"https://careers.mastercard.com/us/en/students"},
-  {id:"roblox",     name:"Roblox",        tier:"tier3", link:"https://corp.roblox.com/careers/"},
-  {id:"figma",      name:"Figma",         tier:"tier3", link:"https://www.figma.com/careers/"},
-  {id:"airbnb",     name:"Airbnb",        tier:"tier3", link:"https://careers.airbnb.com/university/"},
-  {id:"uber",       name:"Uber",          tier:"tier3", link:"https://university-uber.icims.com/"},
-  {id:"palantir",   name:"Palantir",      tier:"tier3", link:"https://www.palantir.com/careers/"},
-  {id:"stripe",     name:"Stripe",        tier:"tier3", link:"https://stripe.com/jobs/university"},
-  {id:"doordash",   name:"DoorDash",      tier:"tier3", link:"https://careers.doordash.com/university"},
-  {id:"reddit",     name:"Reddit",        tier:"tier3", link:"https://www.redditinc.com/careers"},
-  {id:"tiktok",     name:"TikTok",        tier:"tier3", link:"https://careers.tiktok.com/"},
-  {id:"duolingo",   name:"Duolingo",      tier:"tier3", link:"https://careers.duolingo.com/"},
-  {id:"mckinsey",   name:"McKinsey QuantumBlack", tier:"tier3", link:"https://www.mckinsey.com/careers/students"},
-  {id:"bcg",        name:"BCG Gamma",     tier:"tier3", link:"https://www.bcg.com/careers/paths/internship"},
-  {id:"plaid",      name:"Plaid",         tier:"tier3", link:"https://plaid.com/careers/"},
-  {id:"affirm",     name:"Affirm",        tier:"tier3", link:"https://www.affirm.com/careers"},
-  {id:"klarna",     name:"Klarna",        tier:"tier3", link:"https://www.klarna.com/careers/"},
-  {id:"chime",      name:"Chime",         tier:"tier3", link:"https://www.chime.com/careers/"},
-  {id:"ramp",       name:"Ramp",          tier:"tier3", link:"https://ramp.com/careers"},
-  {id:"rippling",   name:"Rippling",      tier:"tier3", link:"https://www.rippling.com/careers"},
-  {id:"salesforce", name:"Salesforce",    tier:"tier4", link:"https://www.salesforce.com/company/careers/university-recruiting/"},
-  {id:"atlassian",  name:"Atlassian",     tier:"tier4", link:"https://www.atlassian.com/company/careers/interns"},
-  {id:"discord",    name:"Discord",       tier:"tier4", link:"https://discord.com/jobs"},
-  {id:"amd",        name:"AMD",           tier:"tier4", link:"https://jobs.amd.com/go/Students-&-New-Graduates/2567701/"},
-  {id:"elastic",    name:"Elastic",       tier:"tier4", link:"https://www.elastic.co/about/careers"},
-  {id:"confluent",  name:"Confluent",     tier:"tier4", link:"https://www.confluent.io/careers/"},
-  {id:"adobe",      name:"Adobe",         tier:"tier4", link:"https://www.adobe.com/careers/university.html"},
-  {id:"spotify",    name:"Spotify",       tier:"tier4", link:"https://www.lifeatspotify.com/students"},
-  {id:"hubspot",    name:"HubSpot",       tier:"tier4", link:"https://www.hubspot.com/careers/students"},
-  {id:"zendesk",    name:"Zendesk",       tier:"tier4", link:"https://www.zendesk.com/jobs/"},
-  {id:"gusto",      name:"Gusto",         tier:"tier4", link:"https://gusto.com/about/careers"},
-  {id:"deel",       name:"Deel",          tier:"tier4", link:"https://www.letsdeel.com/careers"},
-  {id:"epichealth", name:"Epic Systems",  tier:"tier4", link:"https://www.epic.com/careers/"},
-  {id:"microsoft2", name:"Twilio",        tier:"tier4", link:"https://www.twilio.com/en-us/company/jobs"},
-  {id:"cloudflare", name:"Cloudflare",    tier:"tier4", link:"https://www.cloudflare.com/careers/jobs/"},
-  {id:"gitlab",     name:"GitLab",        tier:"tier4", link:"https://about.gitlab.com/jobs/"},
-  {id:"paloalto",   name:"Palo Alto Networks", tier:"tier5", link:"https://jobs.paloaltonetworks.com/en/jobs/"},
-  {id:"crowdstrike",name:"CrowdStrike",   tier:"tier5", link:"https://www.crowdstrike.com/careers/"},
-  {id:"sentinelone",name:"SentinelOne",   tier:"tier5", link:"https://www.sentinelone.com/careers/"},
-  {id:"zscaler",    name:"Zscaler",       tier:"tier5", link:"https://www.zscaler.com/careers"},
-  {id:"okta",       name:"Okta",          tier:"tier5", link:"https://www.okta.com/company/careers/"},
-  {id:"datadog",    name:"Datadog",       tier:"tier5", link:"https://www.datadoghq.com/careers/"},
-  {id:"servicenow", name:"ServiceNow",    tier:"tier5", link:"https://careers.servicenow.com/en/internships/"},
-  {id:"zoom",       name:"Zoom",          tier:"tier5", link:"https://careers.zoom.us/"},
-  {id:"paypal",     name:"PayPal",        tier:"tier5", link:"https://careers.pypl.com/students.html"},
-  {id:"lyft",       name:"Lyft",          tier:"tier5", link:"https://www.lyft.com/careers"},
-  {id:"intuit",     name:"Intuit",        tier:"tier5", link:"https://jobs.intuit.com/category/students-and-interns/"},
-  {id:"walmart",    name:"Walmart Global Tech", tier:"tier5", link:"https://careers.walmart.com/technology"},
-  {id:"deloitte",   name:"Deloitte",      tier:"tier5", link:"https://www2.deloitte.com/us/en/pages/careers/articles/join-deloitte-internship-programs.html"},
-  {id:"nasa",       name:"NASA",          tier:"tier5", link:"https://intern.nasa.gov/"},
-  {id:"tesla",      name:"Tesla",         tier:"tier6", link:"https://www.tesla.com/careers/search/?type=3"},
-  {id:"ibm",        name:"IBM",           tier:"tier6", link:"https://www.ibm.com/employment/internships/"},
-  {id:"cisco",      name:"Cisco",         tier:"tier6", link:"https://jobs.cisco.com/jobs/SearchJobs/intern"},
-  {id:"intel",      name:"Intel",         tier:"tier6", link:"https://jobs.intel.com/en/search-jobs/Intern/"},
-  {id:"cognizant",  name:"Cognizant",     tier:"tier7", link:"https://careers.cognizant.com/global/en/internship"},
-  {id:"infosys",    name:"Infosys",       tier:"tier7", link:"https://www.infosys.com/careers/interns.html"},
-  {id:"wipro",      name:"Wipro",         tier:"tier7", link:"https://careers.wipro.com/en-US"},
-  {id:"tcs",        name:"Tata (TCS)",    tier:"tier7", link:"https://ibegin.tcs.com/iBegin/"},
-  // Tier 8 Unicorns
-  {id:"u_openai",   name:"OpenAI",        tier:"tier8", link:"https://openai.com/careers"},
-  {id:"u_anthropic",name:"Anthropic",     tier:"tier8", link:"https://www.anthropic.com/careers"},
-  {id:"u_stripe",   name:"Stripe",        tier:"tier8", link:"https://stripe.com/jobs/university"},
-  {id:"u_waymo",    name:"Waymo",         tier:"tier8", link:"https://waymo.com/careers/"},
-  {id:"u_anduril",  name:"Anduril",       tier:"tier8", link:"https://www.anduril.com/open-roles/"},
-  {id:"u_chime",    name:"Chime",         tier:"tier8", link:"https://www.chime.com/careers/"},
-  {id:"u_rippling", name:"Rippling",      tier:"tier8", link:"https://www.rippling.com/careers"},
-  {id:"u_scaleai",  name:"Scale AI",      tier:"tier8", link:"https://scale.com/careers"},
-  {id:"u_glean",    name:"Glean",         tier:"tier8", link:"https://www.glean.com/careers"},
-  {id:"u_cursor",   name:"Cursor",        tier:"tier8", link:"https://www.cursor.com/careers"},
-  {id:"u_wiz",      name:"Wiz",           tier:"tier8", link:"https://www.wiz.io/careers"},
-  {id:"u_figma",    name:"Figma",         tier:"tier8", link:"https://www.figma.com/careers/"},
-  {id:"u_canva",    name:"Canva",         tier:"tier8", link:"https://www.canva.com/careers/"},
-  {id:"u_notion",   name:"Notion",        tier:"tier8", link:"https://www.notion.so/careers"},
-  {id:"u_miro",     name:"Miro",          tier:"tier8", link:"https://miro.com/careers/"},
-  {id:"u_vercel",   name:"Vercel",        tier:"tier8", link:"https://vercel.com/careers"},
-  {id:"u_ramp",     name:"Ramp",          tier:"tier8", link:"https://ramp.com/careers"},
-  {id:"u_harvey",   name:"Harvey AI",     tier:"tier8", link:"https://www.harvey.ai/careers"},
-  {id:"u_groq",     name:"Groq",          tier:"tier8", link:"https://groq.com/careers/"},
-  {id:"u_elevenlab",name:"ElevenLabs",    tier:"tier8", link:"https://elevenlabs.io/careers"},
-];
-
-const TIER_LABELS = {
-  tier1:"Tier 1 — AI & High-Growth", tier2:"Tier 2 — Big Tech",
-  tier3:"Tier 3 — Consumer/Fintech", tier4:"Tier 4 — Enterprise SaaS",
-  tier5:"Tier 5 — Cloud/Infra",      tier6:"Tier 6 — Legacy/Hardware",
-  tier7:"Tier 7 — Global IT",        tier8:"Tier 8 — Unicorns"
-};
-
-let currentFilter = 'all';
-let lastResults = [];
-
-function setFilter(tier, btn) {
-  currentFilter = tier;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderResults(lastResults);
-}
-
-async function fetchAlerts() {
-  const btn = document.getElementById('refresh-btn');
-  const icon = document.getElementById('refresh-icon');
-  const results = document.getElementById('results');
-
-  btn.disabled = true;
-  icon.classList.add('spin');
-  icon.textContent = '⟳';
-
-  results.innerHTML = `
-    <div class="state-box">
-      <div class="terminal-loader">$ scanning SimplifyJobs/Summer2026-Internships<span class="cursor">_</span></div>
-      <div style="font-size:11px;color:var(--muted);">Fetching latest commits from GitHub API...</div>
-    </div>`;
-
-  try {
-    const res = await fetch('https://api.github.com/repos/SimplifyJobs/Summer2026-Internships/commits?per_page=10');
-    if (!res.ok) throw new Error('GitHub API rate limit — try again in a minute');
-    const commits = await res.json();
-
-    const cutoff = new Date(Date.now() - 48 * 3600000); // last 48h
-    const recent = commits.filter(c => new Date(c.commit.author.date) > cutoff);
-
-    document.getElementById('count-commits').textContent = recent.length;
-    document.getElementById('last-updated').textContent = 'Last checked: ' + new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-
-    if (!recent.length) {
-      results.innerHTML = `<div class="state-box">
-        <span class="state-icon">💤</span>
-        <div class="state-title">No updates in last 48 hours</div>
-        <div>The repo hasn't been updated recently. Check back tomorrow or <a href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank" style="color:var(--green)">view GitHub directly ↗</a></div>
-      </div>`;
-      btn.disabled = false; icon.classList.remove('spin'); icon.textContent = '⟳';
-      return;
-    }
-
-    // Fetch diffs for recent commits
-    const found = new Map(); // id -> {company, roles, commitDate}
-
-    for (const commit of recent.slice(0, 5)) {
-      try {
-        const dr = await fetch(commit.url);
-        const dd = await dr.json();
-        if (!dd.files) continue;
-        for (const file of dd.files) {
-          if (!file.patch) continue;
-          const addedLines = file.patch.split('\n').filter(l => l.startsWith('+') && !l.startsWith('+++'));
-          for (const line of addedLines) {
-            const low = line.toLowerCase();
-            for (const co of COMPANIES) {
-              if (co.name.length > 3 && low.includes(co.name.toLowerCase())) {
-                if (!found.has(co.id)) {
-                  found.set(co.id, {
-                    company: co,
-                    commitDate: new Date(commit.commit.author.date),
-                    commitMsg: commit.commit.message.split('\n')[0].slice(0, 80),
-                    line: line.replace(/^\+/, '').trim().slice(0, 120)
-                  });
-                }
-              }
-            }
-          }
-        }
-      } catch(e) {}
-    }
-
-    document.getElementById('count-new').textContent = found.size;
-    lastResults = [...found.values()];
-    renderResults(lastResults);
-
-  } catch(err) {
-    results.innerHTML = `<div class="state-box">
-      <span class="state-icon">⚠️</span>
-      <div class="state-title">Could not fetch</div>
-      <div>${err.message || 'GitHub API error'}</div>
-      <br><a href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank" style="color:var(--green)">Check GitHub directly ↗</a>
-    </div>`;
-  }
-
-  btn.disabled = false;
-  icon.classList.remove('spin');
-  icon.textContent = '⟳';
-}
-
-function renderResults(items) {
-  const results = document.getElementById('results');
-  const filtered = currentFilter === 'all' ? items : items.filter(i => i.company.tier === currentFilter);
-
-  if (!items.length) {
-    results.innerHTML = `<div class="state-box">
-      <span class="state-icon">🔍</span>
-      <div class="state-title">No tracked companies found in recent commits</div>
-      <div style="margin-top:12px">
-        <a href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank" class="job-btn">View all new postings on GitHub ↗</a>
-      </div>
-    </div>`;
-    return;
-  }
-
-  if (!filtered.length) {
-    results.innerHTML = `<div class="state-box">
-      <span class="state-icon">🔍</span>
-      <div class="state-title">No matches for this tier filter</div>
-      <div>Try "All tiers" to see all ${items.length} results</div>
-    </div>`;
-    return;
-  }
-
-  // Group by tier
-  const grouped = {};
-  for (const item of filtered) {
-    const t = item.company.tier;
-    if (!grouped[t]) grouped[t] = [];
-    grouped[t].push(item);
-  }
-
-  let html = '';
-  const tierOrder = ['tier8','tier1','tier2','tier3','tier4','tier5','tier6','tier7'];
-  for (const tier of tierOrder) {
-    if (!grouped[tier]) continue;
-    html += `<div class="section-label">${TIER_LABELS[tier]} &nbsp;— ${grouped[tier].length} new</div>`;
-    html += '<div class="jobs-grid">';
-    for (const item of grouped[tier]) {
-      const timeAgo = getTimeAgo(item.commitDate);
-      html += `<div class="job-card">
-        <div class="job-top">
-          <div class="job-company">${item.company.name}</div>
-          <span class="job-new">NEW</span>
-        </div>
-        <div class="job-role">${item.line || 'New internship posting detected'}</div>
-        <div class="job-meta">
-          <span class="meta-tag">${TIER_LABELS[item.company.tier]}</span>
-          <span class="meta-tag">🕐 ${timeAgo}</span>
-        </div>
-        <div class="job-actions">
-          <a class="job-btn" href="${item.company.link}" target="_blank">Apply ↗</a>
-          <a class="job-btn secondary" href="https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(item.company.name + ' intern')}&f_JT=I" target="_blank">LinkedIn ↗</a>
-          <a class="job-btn secondary" href="https://github.com/SimplifyJobs/Summer2026-Internships" target="_blank">GitHub ↗</a>
-        </div>
-      </div>`;
-    }
-    html += '</div>';
-  }
-
-  results.innerHTML = html;
-}
-
-function getTimeAgo(date) {
-  const diff = Date.now() - date;
-  const h = Math.floor(diff / 3600000);
-  if (h < 1) return 'just now';
-  if (h < 24) return h + 'h ago';
-  return Math.floor(h / 24) + 'd ago';
-}
-
-// Auto-fetch on load
-fetchAlerts();
-</script>
 </body>
 </html>
